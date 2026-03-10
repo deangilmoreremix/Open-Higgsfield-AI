@@ -2,7 +2,6 @@ import { templates, getAllCategories } from '../lib/templates.js';
 import { navigate } from '../lib/router.js';
 import { getTemplateThumbnail, createThumbnailImg } from '../lib/thumbnails.js';
 import { createInlineInstructions } from './InlineInstructions.js';
-import { createInlineInstructions } from './InlineInstructions.js';
 
 export function TemplatesPage() {
   const container = document.createElement('div');
@@ -55,11 +54,6 @@ export function TemplatesPage() {
 
   controlsRow.appendChild(filterRow);
   inner.appendChild(controlsRow);
-  const inlineInstructions = createInlineInstructions('templates');
-  inlineInstructions.classList.add('max-w-4xl', 'mb-8');
-  inner.appendChild(inlineInstructions);
-
-
   const inlineInstructions = createInlineInstructions('templates');
   inlineInstructions.classList.add('max-w-4xl', 'mb-8');
   inner.appendChild(inlineInstructions);

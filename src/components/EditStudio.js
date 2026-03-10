@@ -80,18 +80,61 @@ export function EditStudio() {
   toolTitle.className = 'text-sm font-bold text-primary';
   workCard.appendChild(toolTitle);
 
-  const uploadSection = document.createElement('div');
-  uploadSection.className = 'flex items-center gap-4';
-  const picker = createUploadPicker({
-    anchorContainer: container,
-    onSelect: ({ url }) => { uploadedUrl = url; },
-    onClear: () => { uploadedUrl = null; },
-  });
-  uploadSection.appendChild(picker.trigger);
+  const previewImg = document.createElement('img');
+  previewImg.className = 'hidden w-full h-48 object-cover rounded-xl border border-white/10';
+
   const uploadHint = document.createElement('span');
   uploadHint.className = 'text-sm text-muted';
   uploadHint.textContent = 'Upload source image';
-  uploadSection.appendChild(uploadHint);
+
+  const clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.className = 'hidden text-xs font-bold text-red-400 hover:text-red-300 transition-colors';
+  clearBtn.textContent = 'Remove';
+
+  const uploadSection = document.createElement('div');
+  uploadSection.className = 'flex flex-col gap-3';
+  const uploadRow = document.createElement('div');
+  uploadRow.className = 'flex items-center gap-4';
+  const picker = createUploadPicker({
+    anchorContainer: container,
+    onSelect: ({ url }) => {
+      uploadedUrl = url;
+      previewImg.src = url;
+      previewImg.classList.remove('hidden');
+      uploadHint.textContent = 'Image uploaded';
+      clearBtn.classList.remove('hidden');
+    },
+    onClear: () => {
+      uploadedUrl = null;
+      previewImg.classList.add('hidden');
+      previewImg.src = '';
+      uploadHint.textContent = 'Upload source image';
+      clearBtn.classList.add('hidden');
+    },
+    onFilePreview: (file) => {
+      const blobUrl = URL.createObjectURL(file);
+      previewImg.src = blobUrl;
+      previewImg.classList.remove('hidden');
+      uploadHint.textContent = file.name;
+    },
+  });
+
+  clearBtn.onclick = (e) => {
+    e.stopPropagation();
+    picker.reset();
+    uploadedUrl = null;
+    previewImg.classList.add('hidden');
+    previewImg.src = '';
+    uploadHint.textContent = 'Upload source image';
+    clearBtn.classList.add('hidden');
+  };
+
+  uploadRow.appendChild(picker.trigger);
+  uploadRow.appendChild(uploadHint);
+  uploadRow.appendChild(clearBtn);
+  uploadSection.appendChild(uploadRow);
+  uploadSection.appendChild(previewImg);
   workCard.appendChild(uploadSection);
   container.appendChild(picker.panel);
 

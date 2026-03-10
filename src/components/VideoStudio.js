@@ -223,6 +223,17 @@ export function VideoStudio() {
         textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
     };
 
+    const videoPrefill = localStorage.getItem('prefill_prompt');
+    if (videoPrefill) {
+        textarea.value = videoPrefill;
+        localStorage.removeItem('prefill_prompt');
+        requestAnimationFrame(() => {
+            textarea.style.height = 'auto';
+            const maxHeight = window.innerWidth < 768 ? 150 : 250;
+            textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
+        });
+    }
+
     topRow.appendChild(textarea);
     bar.appendChild(topRow);
 

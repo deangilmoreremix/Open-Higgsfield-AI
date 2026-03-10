@@ -108,6 +108,17 @@ export function ImageStudio() {
         textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
     };
 
+    const prefill = localStorage.getItem('prefill_prompt');
+    if (prefill) {
+        textarea.value = prefill;
+        localStorage.removeItem('prefill_prompt');
+        requestAnimationFrame(() => {
+            textarea.style.height = 'auto';
+            const maxHeight = window.innerWidth < 768 ? 150 : 250;
+            textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
+        });
+    }
+
     topRow.appendChild(textarea);
     bar.appendChild(topRow);
 

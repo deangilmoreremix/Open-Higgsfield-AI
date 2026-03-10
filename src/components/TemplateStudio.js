@@ -82,26 +82,63 @@ export function TemplateStudio(templateId) {
     fieldWrapper.appendChild(label);
 
     if (input.type === 'image') {
+      const previewImg = document.createElement('img');
+      previewImg.className = 'hidden w-full h-48 object-cover rounded-xl border border-white/10';
+
+      const uploadLabel = document.createElement('span');
+      uploadLabel.className = 'text-sm text-muted';
+      uploadLabel.textContent = 'Click to upload an image';
+
+      const clearBtn = document.createElement('button');
+      clearBtn.type = 'button';
+      clearBtn.className = 'hidden text-xs font-bold text-red-400 hover:text-red-300 transition-colors';
+      clearBtn.textContent = 'Remove';
+
       const picker = createUploadPicker({
         anchorContainer: container,
         onSelect: ({ url }) => {
           uploadedUrl = url;
           formState[input.name] = url;
+          previewImg.src = url;
+          previewImg.classList.remove('hidden');
+          uploadLabel.textContent = 'Image uploaded';
+          clearBtn.classList.remove('hidden');
         },
         onClear: () => {
           uploadedUrl = null;
           formState[input.name] = null;
+          previewImg.classList.add('hidden');
+          previewImg.src = '';
+          uploadLabel.textContent = 'Click to upload an image';
+          clearBtn.classList.add('hidden');
+        },
+        onFilePreview: (file) => {
+          const blobUrl = URL.createObjectURL(file);
+          previewImg.src = blobUrl;
+          previewImg.classList.remove('hidden');
+          uploadLabel.textContent = file.name;
         },
       });
       pickerRef = picker;
+
+      clearBtn.onclick = (e) => {
+        e.stopPropagation();
+        picker.reset();
+        uploadedUrl = null;
+        formState[input.name] = null;
+        previewImg.classList.add('hidden');
+        previewImg.src = '';
+        uploadLabel.textContent = 'Click to upload an image';
+        clearBtn.classList.add('hidden');
+      };
+
       const uploadRow = document.createElement('div');
       uploadRow.className = 'flex items-center gap-3';
       uploadRow.appendChild(picker.trigger);
-      const uploadLabel = document.createElement('span');
-      uploadLabel.className = 'text-sm text-muted';
-      uploadLabel.textContent = 'Click to upload an image';
       uploadRow.appendChild(uploadLabel);
+      uploadRow.appendChild(clearBtn);
       fieldWrapper.appendChild(uploadRow);
+      fieldWrapper.appendChild(previewImg);
       container.appendChild(picker.panel);
     } else if (input.type === 'text' || input.type === 'textarea') {
       const el = document.createElement(input.type === 'textarea' ? 'textarea' : 'input');

@@ -124,11 +124,20 @@ export function CinemaStudio() {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
     };
+    const cinemaPrefill = localStorage.getItem('prefill_prompt');
+    if (cinemaPrefill) {
+        textarea.value = cinemaPrefill;
+        localStorage.removeItem('prefill_prompt');
+        requestAnimationFrame(() => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        });
+    }
+
     inputRow.appendChild(textarea);
 
     leftColumn.appendChild(inputRow);
 
-    // 2. Settings Toolbar (Bottom Left)
     // 2. Settings Toolbar (Bottom Left)
     const settingsToolbar = document.createElement('div');
     settingsToolbar.className = 'flex items-center gap-3'; // Removed pl-11 to align left
