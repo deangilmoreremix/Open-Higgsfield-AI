@@ -1,6 +1,5 @@
-import { templates, TEMPLATE_CATEGORIES, getAllCategories } from '../lib/templates.js';
 import { navigate } from '../lib/router.js';
-import { getStudioThumbnail, getTemplateThumbnail, createThumbnailImg } from '../lib/thumbnails.js';
+import { getStudioThumbnail, createThumbnailImg } from '../lib/thumbnails.js';
 
 const CORE_STUDIOS = [
   { id: 'image', name: 'Image Studio', description: 'Generate images with 20+ AI models', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>', badge: '20+ models', color: 'bg-primary/10 text-primary border-primary/20' },
@@ -17,7 +16,7 @@ const TOOL_STUDIOS = [
   { id: 'commercial', name: 'Commercial Studio', description: 'Product photography and ads', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>', badge: 'Ads', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
 ];
 
-export function AppsHub({ scrollToTemplates = false } = {}) {
+export function AppsHub() {
   const container = document.createElement('div');
   container.className = 'w-full h-full overflow-y-auto bg-app-bg';
 
@@ -57,25 +56,7 @@ export function AppsHub({ scrollToTemplates = false } = {}) {
     onClick: () => { saveRecent(s.id, s.name); navigate(s.id); },
   })), true));
 
-  const categories = getAllCategories();
-  let templatesAnchor = null;
-  categories.forEach((cat, i) => {
-    const catTemplates = templates.filter(t => t.category === cat);
-    const section = createTemplateSection(cat, catTemplates);
-    if (i === 0) {
-      section.id = 'templates-section';
-      templatesAnchor = section;
-    }
-    inner.appendChild(section);
-  });
-
   container.appendChild(inner);
-
-  if (scrollToTemplates && templatesAnchor) {
-    requestAnimationFrame(() => {
-      templatesAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
 
   searchInput.oninput = () => {
     const q = searchInput.value.toLowerCase();
@@ -151,19 +132,6 @@ function createSection(title, items, isStudio = false) {
 
   section.appendChild(grid);
   return section;
-}
-
-function createTemplateSection(category, catTemplates) {
-  const items = catTemplates.map(t => ({
-    name: t.name,
-    description: t.description,
-    icon: `<span class="text-lg">${t.icon}</span>`,
-    badge: t.outputType === 'video' ? 'Video' : 'Image',
-    color: t.outputType === 'video' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-primary/10 text-primary border-primary/20',
-    thumbnail: getTemplateThumbnail(t.id),
-    onClick: () => { saveRecent(t.id, t.name); navigate(`template/${t.id}`); },
-  }));
-  return createSection(category, items, false);
 }
 
 function createRecentRow() {

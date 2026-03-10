@@ -24,7 +24,7 @@ const pageLoaders = {
   video: () => import('../components/VideoStudio.js').then(m => m.VideoStudio()),
   cinema: () => import('../components/CinemaStudio.js').then(m => m.CinemaStudio()),
   apps: () => import('../components/AppsHub.js').then(m => m.AppsHub()),
-  templates: () => import('../components/AppsHub.js').then(m => m.AppsHub({ scrollToTemplates: true })),
+  templates: () => import('../components/TemplatesPage.js').then(m => m.TemplatesPage()),
   effects: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
   edit: () => import('../components/EditStudio.js').then(m => m.EditStudio()),
   upscale: () => import('../components/UpscaleStudio.js').then(m => m.UpscaleStudio()),

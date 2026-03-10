@@ -109,7 +109,7 @@ export function Header(navigate) {
   header.addEventListener('route-changed', (e) => {
     const page = e.detail.page;
     Object.entries(links).forEach(([route, el]) => {
-      if (route === page || (page.startsWith('template/') && (route === 'apps' || route === 'templates'))) {
+      if (route === page || (page.startsWith('template/') && route === 'templates')) {
         el.classList.add('text-white');
         el.classList.remove('text-secondary');
       } else {
