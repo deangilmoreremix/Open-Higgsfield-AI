@@ -20,12 +20,10 @@ export function removeUpload(id) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
 }
 
-/**
- * Generates a square 80×80 base64 JPEG thumbnail from a File.
- * @param {File} file
- * @returns {Promise<string|null>}
- */
 export async function generateThumbnail(file) {
+    if (file.type.startsWith('video/')) {
+        return generateVideoThumbnail(file);
+    }
     return new Promise((resolve) => {
         const objectUrl = URL.createObjectURL(file);
         const img = new Image();
@@ -35,7 +33,6 @@ export async function generateThumbnail(file) {
             canvas.width = SIZE;
             canvas.height = SIZE;
             const ctx = canvas.getContext('2d');
-            // Center-crop to square
             const size = Math.min(img.width, img.height);
             const sx = (img.width - size) / 2;
             const sy = (img.height - size) / 2;
@@ -48,5 +45,58 @@ export async function generateThumbnail(file) {
             resolve(null);
         };
         img.src = objectUrl;
+    });
+}
+
+export function generateVideoThumbnail(file) {
+    return new Promise((resolve) => {
+        const objectUrl = URL.createObjectURL(file);
+        const video = document.createElement('video');
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = 'metadata';
+
+        video.onloadeddata = () => {
+            video.currentTime = Math.min(1, video.duration / 4);
+        };
+
+        video.onseeked = () => {
+            const SIZE = 80;
+            const canvas = document.createElement('canvas');
+            canvas.width = SIZE;
+            canvas.height = SIZE;
+            const ctx = canvas.getContext('2d');
+            const vw = video.videoWidth;
+            const vh = video.videoHeight;
+            const size = Math.min(vw, vh);
+            const sx = (vw - size) / 2;
+            const sy = (vh - size) / 2;
+            ctx.drawImage(video, sx, sy, size, size, 0, 0, SIZE, SIZE);
+
+            const playIcon = SIZE / 3;
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            ctx.arc(SIZE / 2, SIZE / 2, playIcon / 2 + 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            const cx = SIZE / 2 + 2;
+            const cy = SIZE / 2;
+            ctx.moveTo(cx - 6, cy - 8);
+            ctx.lineTo(cx + 8, cy);
+            ctx.lineTo(cx - 6, cy + 8);
+            ctx.closePath();
+            ctx.fill();
+
+            URL.revokeObjectURL(objectUrl);
+            resolve(canvas.toDataURL('image/jpeg', 0.6));
+        };
+
+        video.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            resolve(null);
+        };
+
+        video.src = objectUrl;
     });
 }

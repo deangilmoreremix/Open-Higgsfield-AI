@@ -13,15 +13,14 @@ import { getUploadHistory, saveUpload, removeUpload, generateThumbnail } from '.
  * @param {number} [options.maxImages=1] - Maximum number of images selectable
  * @returns {{ trigger: HTMLElement, panel: HTMLElement, reset: function, setMaxImages: function }}
  */
-export function createUploadPicker({ anchorContainer, onSelect, onClear, maxImages: initialMaxImages = 1 }) {
+export function createUploadPicker({ anchorContainer, onSelect, onClear, maxImages: initialMaxImages = 1, acceptVideo = false, onFilePreview = null }) {
     let panelOpen = false;
     let maxImages = initialMaxImages;
-    let selectedEntries = []; // [{ url, thumbnail }, ...]
+    let selectedEntries = [];
 
-    // ── Hidden file input ─────────────────────────────────────────────────────
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
-    fileInput.accept = 'image/*';
+    fileInput.accept = acceptVideo ? 'image/*,video/*' : 'image/*';
     fileInput.className = 'hidden';
 
     // ── Trigger button ────────────────────────────────────────────────────────
@@ -324,11 +323,12 @@ export function createUploadPicker({ anchorContainer, onSelect, onClear, maxImag
             return;
         }
 
+        if (onFilePreview) onFilePreview(files[0]);
+
         showSpinner();
 
         try {
             if (maxImages === 1) {
-                // Single mode: upload first file only, replace selection
                 const file = files[0];
                 const [uploadedUrl, thumbnail] = await Promise.all([
                     muapi.uploadFile(file),
