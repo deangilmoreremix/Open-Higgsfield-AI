@@ -64,8 +64,10 @@ export function LibraryPage() {
   container.appendChild(previewOverlay);
 
   function getHistory() {
-    const imageHistory = JSON.parse(localStorage.getItem('muapi_history') || '[]');
-    const videoHistory = JSON.parse(localStorage.getItem('video_history') || '[]');
+    let imageHistory = [];
+    let videoHistory = [];
+    try { imageHistory = JSON.parse(localStorage.getItem('muapi_history') || '[]'); } catch (e) { /* ignore */ }
+    try { videoHistory = JSON.parse(localStorage.getItem('video_history') || '[]'); } catch (e) { /* ignore */ }
     return [
       ...imageHistory.map(h => ({ ...h, type: h.type || 'image' })),
       ...videoHistory.map(h => ({ ...h, type: 'video' })),

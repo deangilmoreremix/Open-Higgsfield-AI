@@ -29,6 +29,7 @@ export default {
                 'glow': '0 0 20px rgba(217, 255, 0, 0.4)',
                 'glow-accent': '0 0 20px rgba(168, 85, 247, 0.4)',
                 '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.8)',
+                '4xl': '0 45px 80px -20px rgba(0, 0, 0, 0.9)',
             }
         },
     },

@@ -1,72 +1,46 @@
 export function SettingsModal(onClose) {
     const overlay = document.createElement('div');
-    overlay.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50';
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.right = '0';
-    overlay.style.bottom = '0';
-    overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    overlay.style.zIndex = '100';
+    overlay.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm px-6';
 
-    const modal = document.createElement('div');
-    modal.className = 'bg-card p-6 rounded-xl border border-border-color w-96 glass';
-    modal.style.background = 'var(--bg-card)';
-    modal.style.padding = '1.5rem';
-    modal.style.borderRadius = 'var(--border-radius-xl)';
-    modal.style.border = '1px solid var(--border-color)';
-    modal.style.width = '24rem';
-
-    const title = document.createElement('h2');
-    title.textContent = 'Settings';
-    title.className = 'text-xl font-bold mb-4';
-    title.style.marginBottom = '1rem';
-
-    const label = document.createElement('label');
-    label.textContent = 'Muapi API Key';
-    label.className = 'block text-sm text-secondary mb-2';
-
-    const input = document.createElement('input');
-    input.type = 'password';
-    input.className = 'w-full mb-4 p-2 rounded bg-input border border-border-color';
-    input.value = localStorage.getItem('muapi_key') || '';
-    input.placeholder = 'sk-...';
-    input.style.width = '100%';
-    input.style.marginBottom = '1rem';
-
-    const btnContainer = document.createElement('div');
-    btnContainer.className = 'flex justify-end gap-2';
-    btnContainer.style.display = 'flex';
-    btnContainer.style.justifyContent = 'flex-end';
-    btnContainer.style.gap = '0.5rem';
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.className = 'px-4 py-2 rounded hover:bg-white/5';
-    cancelBtn.onclick = () => {
-        document.body.removeChild(overlay);
+    const removeModal = () => {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
         if (onClose) onClose();
     };
 
+    const modal = document.createElement('div');
+    modal.className = 'w-full max-w-sm bg-panel-bg border border-white/10 rounded-3xl p-8 shadow-3xl animate-fade-in-up';
+
+    const title = document.createElement('h2');
+    title.textContent = 'Settings';
+    title.className = 'text-xl font-black text-white mb-6';
+
+    const label = document.createElement('label');
+    label.textContent = 'Muapi API Key';
+    label.className = 'block text-[10px] font-bold text-muted uppercase tracking-widest mb-2 ml-1';
+
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.className = 'w-full mb-6 bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-white placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-inner';
+    input.value = localStorage.getItem('muapi_key') || '';
+    input.placeholder = 'sk-...';
+
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'flex justify-end gap-3';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.className = 'px-5 py-2.5 rounded-xl text-sm font-bold text-white/60 hover:text-white hover:bg-white/5 transition-all';
+    cancelBtn.onclick = removeModal;
+
     const saveBtn = document.createElement('button');
     saveBtn.textContent = 'Save';
-    saveBtn.className = 'px-4 py-2 rounded bg-primary text-black font-medium';
-    saveBtn.style.backgroundColor = 'var(--color-primary)';
-    saveBtn.style.color = 'black';
-    saveBtn.style.fontWeight = '500';
+    saveBtn.className = 'px-6 py-2.5 rounded-xl bg-primary text-black font-black text-sm hover:shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all';
 
     saveBtn.onclick = () => {
         const key = input.value.trim();
         if (key) {
             localStorage.setItem('muapi_key', key);
-            alert('API Key saved!');
-            document.body.removeChild(overlay);
-            if (onClose) onClose();
-        } else {
-            alert('Please enter a valid key');
+            removeModal();
         }
     };
 
@@ -80,12 +54,8 @@ export function SettingsModal(onClose) {
 
     overlay.appendChild(modal);
 
-    // Close on outside click
     overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            document.body.removeChild(overlay);
-            if (onClose) onClose();
-        }
+        if (e.target === overlay) removeModal();
     });
 
     return overlay;

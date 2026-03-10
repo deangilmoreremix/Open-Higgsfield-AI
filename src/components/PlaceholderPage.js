@@ -19,9 +19,25 @@ export function PlaceholderPage(pageName) {
     bannerWrapper.appendChild(overlay);
     const textOverlay = document.createElement('div');
     textOverlay.className = 'absolute bottom-0 left-0 right-0 p-5 z-10';
-    textOverlay.innerHTML = `<h2 class="text-xl font-bold text-white mb-1">${pageName.charAt(0).toUpperCase() + pageName.slice(1)}</h2><p class="text-white/60 text-sm">Coming soon</p>`;
+    const heading = document.createElement('h2');
+    heading.className = 'text-xl font-bold text-white mb-1';
+    heading.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+    const subtitle = document.createElement('p');
+    subtitle.className = 'text-white/60 text-sm';
+    subtitle.textContent = 'Coming soon';
+    textOverlay.appendChild(heading);
+    textOverlay.appendChild(subtitle);
     bannerWrapper.appendChild(textOverlay);
     wrapper.appendChild(bannerWrapper);
+  } else {
+    const fallbackHeading = document.createElement('h2');
+    fallbackHeading.className = 'text-2xl font-bold text-white mb-2';
+    fallbackHeading.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+    const fallbackSub = document.createElement('p');
+    fallbackSub.className = 'text-secondary text-sm';
+    fallbackSub.textContent = 'Coming soon';
+    wrapper.appendChild(fallbackHeading);
+    wrapper.appendChild(fallbackSub);
   }
 
   container.appendChild(wrapper);

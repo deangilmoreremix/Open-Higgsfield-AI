@@ -133,9 +133,11 @@ export function createMediaPreview(options = {}) {
     mediaContainer.innerHTML = `
       <div class="flex flex-col items-center justify-center py-16 gap-3">
         <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"></div>
-        <span class="text-xs text-muted">${message}</span>
+        <span class="text-xs text-muted loading-msg"></span>
       </div>
     `;
+    const loadingMsg = mediaContainer.querySelector('.loading-msg');
+    if (loadingMsg) loadingMsg.textContent = message;
     metaBar.classList.add('hidden');
   }
 
@@ -143,9 +145,11 @@ export function createMediaPreview(options = {}) {
     mediaContainer.innerHTML = `
       <div class="flex flex-col items-center justify-center py-12 text-red-400 gap-2">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span class="text-xs">${message}</span>
+        <span class="text-xs error-msg"></span>
       </div>
     `;
+    const errorMsg = mediaContainer.querySelector('.error-msg');
+    if (errorMsg) errorMsg.textContent = message;
   }
 
   function clear() {
@@ -221,8 +225,18 @@ export function createFullscreenPreview() {
     if (meta.prompt || meta.model) {
       const info = document.createElement('div');
       info.className = 'mt-4 text-center max-w-lg';
-      if (meta.prompt) info.innerHTML += `<div class="text-sm text-white mb-1">${meta.prompt}</div>`;
-      if (meta.model) info.innerHTML += `<div class="text-xs text-muted">${meta.model}</div>`;
+      if (meta.prompt) {
+        const promptEl = document.createElement('div');
+        promptEl.className = 'text-sm text-white mb-1';
+        promptEl.textContent = meta.prompt;
+        info.appendChild(promptEl);
+      }
+      if (meta.model) {
+        const modelEl = document.createElement('div');
+        modelEl.className = 'text-xs text-muted';
+        modelEl.textContent = meta.model;
+        info.appendChild(modelEl);
+      }
       wrapper.appendChild(info);
     }
 

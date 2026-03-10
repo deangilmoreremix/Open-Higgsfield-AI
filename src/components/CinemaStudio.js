@@ -78,7 +78,7 @@ export function CinemaStudio() {
     });
     overlayContent.appendChild(cameraControls);
 
-    document.body.appendChild(overlayBackdrop); // Append to body to sit above everything
+    container.appendChild(overlayBackdrop);
 
     // Overlay Logic
     const openOverlay = () => {

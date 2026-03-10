@@ -83,7 +83,10 @@ export function CommercialStudio() {
     onClear: () => { uploadedUrl = null; },
   });
   uploadRow.appendChild(picker.trigger);
-  uploadRow.innerHTML += '<span class="text-sm text-muted">Upload product photo</span>';
+  const uploadHint = document.createElement('span');
+  uploadHint.className = 'text-sm text-muted';
+  uploadHint.textContent = 'Upload product photo';
+  uploadRow.appendChild(uploadHint);
   formCard.appendChild(uploadRow);
   container.appendChild(picker.panel);
 

@@ -957,16 +957,15 @@ export function VideoStudio() {
                 throw new Error('No video URL returned by API');
             }
         } catch (e) {
-            console.error(e);
             generateBtn.innerHTML = `Error: ${e.message.slice(0, 40)}`;
             setTimeout(() => {
                 generateBtn.innerHTML = `Generate ✨`;
                 generateBtn.disabled = false;
             }, 3000);
-        } finally {
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = `Generate ✨`;
+            return;
         }
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `Generate ✨`;
     };
 
     return container;

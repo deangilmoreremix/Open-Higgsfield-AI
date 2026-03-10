@@ -85,6 +85,9 @@ export function Header(navigate) {
     mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
   };
 
+  const existingMobileMenu = document.querySelector('[data-mobile-menu]');
+  if (existingMobileMenu) existingMobileMenu.remove();
+  mobileMenu.setAttribute('data-mobile-menu', '');
   document.body.appendChild(mobileMenu);
 
   const rightPart = document.createElement('div');

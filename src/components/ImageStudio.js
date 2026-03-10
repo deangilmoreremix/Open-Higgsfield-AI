@@ -150,7 +150,10 @@ export function ImageStudio() {
     // Show quality button if the default model has quality/resolution options
     const _initResolutions = getResolutionsForModel(defaultModel.id);
     qualityBtn.style.display = _initResolutions.length > 0 ? 'flex' : 'none';
-    if (_initResolutions.length > 0) document.getElementById('quality-btn-label').textContent = _initResolutions[0];
+    if (_initResolutions.length > 0) {
+        const qlabel = qualityBtn.querySelector('#quality-btn-label');
+        if (qlabel) qlabel.textContent = _initResolutions[0];
+    }
 
     const generateBtn = document.createElement('button');
     generateBtn.className = 'bg-primary text-black px-6 md:px-8 py-3 md:py-3.5 rounded-xl md:rounded-[1.5rem] font-black text-sm md:text-base hover:shadow-glow hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2.5 w-full sm:w-auto shadow-lg';
@@ -611,16 +614,15 @@ export function ImageStudio() {
                 throw new Error('No image URL returned by API');
             }
         } catch (e) {
-            console.error(e);
             generateBtn.innerHTML = `Error: ${e.message.slice(0, 40)}`;
             setTimeout(() => {
                 generateBtn.innerHTML = `Generate ✨`;
                 generateBtn.disabled = false;
             }, 3000);
-        } finally {
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = `Generate ✨`;
+            return;
         }
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `Generate ✨`;
     };
 
     return container;
