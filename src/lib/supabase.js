@@ -16,3 +16,21 @@ export function getUserKey() {
   }
   return 'user_' + Math.abs(hash).toString(36);
 }
+
+export async function uploadFileToStorage(file) {
+  const ext = file.name.split('.').pop() || 'bin';
+  const uniqueName = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+  const path = `${getUserKey()}/${uniqueName}`;
+
+  const { error } = await supabase.storage
+    .from('uploads')
+    .upload(path, file, { contentType: file.type, upsert: false });
+
+  if (error) throw new Error(`Upload failed: ${error.message}`);
+
+  const { data: urlData } = supabase.storage
+    .from('uploads')
+    .getPublicUrl(path);
+
+  return urlData.publicUrl;
+}

@@ -1,4 +1,5 @@
 import { getModelById, getVideoModelById, getI2IModelById, getI2VModelById, getV2VModelById } from './models.js';
+import { uploadFileToStorage } from './supabase.js';
 
 export class MuapiClient {
     constructor() {
@@ -264,28 +265,7 @@ export class MuapiClient {
     }
 
     async uploadFile(file) {
-        const key = this.getKey();
-        const url = `${this.baseUrl}/api/v1/upload_file`;
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'x-api-key': key },
-            body: formData
-        });
-
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`File upload failed: ${response.status} - ${errText.slice(0, 100)}`);
-        }
-
-        const data = await response.json();
-
-        const fileUrl = data.url || data.file_url || data.data?.url;
-        if (!fileUrl) throw new Error('No URL returned from file upload');
-        return fileUrl;
+        return uploadFileToStorage(file);
     }
 
     async processV2V(params) {
