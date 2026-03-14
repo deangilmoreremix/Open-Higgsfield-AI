@@ -3,7 +3,7 @@ import { uploadFileToStorage } from './supabase.js';
 
 export class MuapiClient {
     constructor() {
-        this.baseUrl = import.meta.env.DEV ? '' : 'https://api.muapi.ai';
+        this.proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/muapi-proxy`;
     }
 
     getKey() {
@@ -13,11 +13,8 @@ export class MuapiClient {
     }
 
     async generateImage(params) {
-        const key = this.getKey();
-
         const modelInfo = getModelById(params.model);
         const endpoint = modelInfo?.endpoint || params.model;
-        const url = `${this.baseUrl}/api/v1/${endpoint}`;
 
         const finalPayload = {
             prompt: params.prompt,
@@ -47,13 +44,17 @@ export class MuapiClient {
         }
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(this.proxyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': key
                 },
-                body: JSON.stringify(finalPayload)
+                body: JSON.stringify({
+                    endpoint,
+                    params: finalPayload,
+                    generationType: 'image',
+                    studioType: params.studioType || 'image'
+                })
             });
 
             if (!response.ok) {
@@ -68,7 +69,7 @@ export class MuapiClient {
                 return submitData;
             }
 
-            const result = await this.pollForResult(requestId, key);
+            const result = await this.pollForResult(requestId);
 
             const imageUrl = result.outputs?.[0] || result.url || result.output?.url;
             return { ...result, url: imageUrl };
@@ -78,19 +79,23 @@ export class MuapiClient {
         }
     }
 
-    async pollForResult(requestId, key, maxAttempts = 60, interval = 2000) {
-        const pollUrl = `${this.baseUrl}/api/v1/predictions/${requestId}/result`;
+    async pollForResult(requestId, maxAttempts = 60, interval = 2000) {
+        const pollUrl = `https://api.muapi.ai/api/v1/predictions/${requestId}/result`;
 
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             await new Promise(resolve => setTimeout(resolve, interval));
 
             try {
-                const response = await fetch(pollUrl, {
-                    method: 'GET',
+                const response = await fetch(this.proxyUrl, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-api-key': key
-                    }
+                    },
+                    body: JSON.stringify({
+                        endpoint: `predictions/${requestId}/result`,
+                        params: {},
+                        generationType: 'poll'
+                    })
                 });
 
                 if (!response.ok) {
@@ -120,11 +125,8 @@ export class MuapiClient {
     }
 
     async generateVideo(params) {
-        const key = this.getKey();
-
         const modelInfo = getVideoModelById(params.model);
         const endpoint = modelInfo?.endpoint || params.model;
-        const url = `${this.baseUrl}/api/v1/${endpoint}`;
 
         const finalPayload = {};
 
@@ -137,13 +139,17 @@ export class MuapiClient {
         if (params.image_url) finalPayload.image_url = params.image_url;
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(this.proxyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': key
                 },
-                body: JSON.stringify(finalPayload)
+                body: JSON.stringify({
+                    endpoint,
+                    params: finalPayload,
+                    generationType: 'video',
+                    studioType: params.studioType || 'video'
+                })
             });
 
             if (!response.ok) {
@@ -156,7 +162,7 @@ export class MuapiClient {
             const requestId = submitData.request_id || submitData.id;
             if (!requestId) return submitData;
 
-            const result = await this.pollForResult(requestId, key, 120, 2000);
+            const result = await this.pollForResult(requestId, 120, 2000);
 
             const videoUrl = result.outputs?.[0] || result.url || result.output?.url;
             return { ...result, url: videoUrl };
@@ -167,10 +173,8 @@ export class MuapiClient {
     }
 
     async generateI2I(params) {
-        const key = this.getKey();
         const modelInfo = getI2IModelById(params.model);
         const endpoint = modelInfo?.endpoint || params.model;
-        const url = `${this.baseUrl}/api/v1/${endpoint}`;
 
         const finalPayload = {};
 
@@ -191,10 +195,15 @@ export class MuapiClient {
         if (params.quality) finalPayload.quality = params.quality;
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(this.proxyUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': key },
-                body: JSON.stringify(finalPayload)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    endpoint,
+                    params: finalPayload,
+                    generationType: 'i2i',
+                    studioType: params.studioType || 'edit'
+                })
             });
 
             if (!response.ok) {
@@ -207,7 +216,7 @@ export class MuapiClient {
             const requestId = submitData.request_id || submitData.id;
             if (!requestId) return submitData;
 
-            const result = await this.pollForResult(requestId, key);
+            const result = await this.pollForResult(requestId);
             const imageUrl = result.outputs?.[0] || result.url || result.output?.url;
             return { ...result, url: imageUrl };
         } catch (error) {
@@ -216,10 +225,8 @@ export class MuapiClient {
     }
 
     async generateI2V(params) {
-        const key = this.getKey();
         const modelInfo = getI2VModelById(params.model);
         const endpoint = modelInfo?.endpoint || params.model;
-        const url = `${this.baseUrl}/api/v1/${endpoint}`;
 
         const finalPayload = {};
 
@@ -240,10 +247,15 @@ export class MuapiClient {
         if (params.quality) finalPayload.quality = params.quality;
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(this.proxyUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': key },
-                body: JSON.stringify(finalPayload)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    endpoint,
+                    params: finalPayload,
+                    generationType: 'i2v',
+                    studioType: params.studioType || 'video'
+                })
             });
 
             if (!response.ok) {
@@ -256,7 +268,7 @@ export class MuapiClient {
             const requestId = submitData.request_id || submitData.id;
             if (!requestId) return submitData;
 
-            const result = await this.pollForResult(requestId, key, 120, 2000);
+            const result = await this.pollForResult(requestId, 120, 2000);
             const videoUrl = result.outputs?.[0] || result.url || result.output?.url;
             return { ...result, url: videoUrl };
         } catch (error) {
@@ -269,19 +281,22 @@ export class MuapiClient {
     }
 
     async processV2V(params) {
-        const key = this.getKey();
         const modelInfo = getV2VModelById(params.model);
         const endpoint = modelInfo?.endpoint || params.model;
-        const url = `${this.baseUrl}/api/v1/${endpoint}`;
 
         const videoField = modelInfo?.videoField || 'video_url';
         const finalPayload = { [videoField]: params.video_url };
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(this.proxyUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': key },
-                body: JSON.stringify(finalPayload)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    endpoint,
+                    params: finalPayload,
+                    generationType: 'v2v',
+                    studioType: params.studioType || 'upscale'
+                })
             });
 
             if (!response.ok) {
@@ -294,7 +309,7 @@ export class MuapiClient {
             const requestId = submitData.request_id || submitData.id;
             if (!requestId) return submitData;
 
-            const result = await this.pollForResult(requestId, key, 120, 2000);
+            const result = await this.pollForResult(requestId, 120, 2000);
             const videoUrl = result.outputs?.[0] || result.url || result.output?.url;
             return { ...result, url: videoUrl };
         } catch (error) {
