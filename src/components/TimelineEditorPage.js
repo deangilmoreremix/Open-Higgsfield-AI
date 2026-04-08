@@ -3,11 +3,6 @@ export function TimelineEditorPage() {
   container.className = 'w-full h-full';
   container.style.background = '#05070b';
 
-  const iframe = document.createElement('iframe');
-  iframe.title = 'Timeline Editor';
-  iframe.style.cssText = 'width:100%;height:100%;border:0;background:#05070b;';
-  iframe.sandbox = 'allow-scripts allow-same-origin';
-
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -784,8 +779,7 @@ export function TimelineEditorPage() {
 </body>
 </html>`;
 
-  iframe.src = `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
-  container.appendChild(iframe);
+  container.innerHTML = html;
 
   // Cleanup function to clear timers
   container.cleanup = () => {
