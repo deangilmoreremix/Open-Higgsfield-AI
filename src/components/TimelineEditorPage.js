@@ -369,6 +369,7 @@ export function TimelineEditorPage() {
         { role: 'ai', text: 'Opening idea ready. Use Generate or Retake.' }
       ]
     };
+    let panState = { x: 0, scale: 1 };
     const els = {
       topActions: document.getElementById('topActions'),
       toolGroup: document.getElementById('toolGroup'),
@@ -625,14 +626,14 @@ export function TimelineEditorPage() {
       document.getElementById('uploadBtn').addEventListener('click', () => showToast('Upload flow placeholder triggered'));
       document.getElementById('backBtn').addEventListener('click', () => { if (parent && parent.window && parent.window.navigate) { parent.window.navigate('apps'); } else { showToast('Back action clicked'); } });
     }
-    function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); }
+    function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = `translateX(${panState.x}px) scaleX(${panState.scale})`; }
     renderAll();
     bindEvents();
   </script>
 </body>
 </html>`;
 
-  iframe.srcdoc = html;
+  iframe.src = `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
   container.appendChild(iframe);
 
   // Cleanup function to clear timers
