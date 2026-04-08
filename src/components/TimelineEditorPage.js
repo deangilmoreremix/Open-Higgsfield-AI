@@ -341,24 +341,31 @@ export function TimelineEditorPage() {
       playheadPercent: 32,
       zoom: 1,
       timelineSeconds: 60,
+      proxy: false,
+      camera: { x: 0, y: 0, z: 0, rotateX: 0, rotateY: 0, rotateZ: 0 },
+      language: 'en',
+      subtitles: [],
+      animations: [],
+      plugins: [],
+      composition: { width: 1920, height: 1080, fps: 30, duration: 60 },
       tracks: [
         { id: 'video-1', name: 'Video', muted: false, solo: false, locked: true, clips: [
-          { id: 1, name: 'Opening Shot', left: 8, width: 18, type: 'video', start: 8, duration: 18, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1 },
-          { id: 2, name: 'Generated Clip', left: 34, width: 16, type: 'video', start: 34, duration: 16, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1 }
+          { id: 1, name: 'Opening Shot', left: 8, width: 18, type: 'video', start: 8, duration: 18, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, transition: { type: 'fade', duration: 1 }, camera: { x: 0, y: 0, z: 0 } },
+          { id: 2, name: 'Generated Clip', left: 34, width: 16, type: 'video', start: 34, duration: 16, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, transition: null, camera: { x: 0, y: 0, z: 0 } }
         ] },
         { id: 'audio-1', name: 'Audio', muted: false, solo: false, locked: false, clips: [
-          { id: 3, name: 'Music Bed', left: 5, width: 42, type: 'audio', start: 5, duration: 42, keyframes: [{ time: 0, volume: 1 }], zIndex: 0 }
+          { id: 3, name: 'Music Bed', left: 5, width: 42, type: 'audio', start: 5, duration: 42, keyframes: [{ time: 0, volume: 1 }], zIndex: 0, transition: null, camera: null }
         ] },
         { id: 'text-1', name: 'Text', muted: false, solo: false, locked: false, clips: [
-          { id: 4, name: 'Title Card', left: 14, width: 12, type: 'text', start: 14, duration: 12, keyframes: [{ time: 0, opacity: 1 }], zIndex: 2 }
+          { id: 4, name: 'Title Card', left: 14, width: 12, type: 'text', start: 14, duration: 12, keyframes: [{ time: 0, opacity: 1 }], zIndex: 2, transition: { type: 'dissolve', duration: 0.5 }, camera: null }
         ] },
         { id: 'broll-1', name: 'B-Roll', muted: false, solo: false, locked: false, clips: [
-          { id: 5, name: 'City Cutaway', left: 52, width: 20, type: 'broll', start: 52, duration: 20, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1 }
+          { id: 5, name: 'City Cutaway', left: 52, width: 20, type: 'broll', start: 52, duration: 20, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, transition: null, camera: { x: 0, y: 0, z: 0 } }
         ] }
       ],
       tools: [['↖', 'Select'], ['✂', 'Blade'], ['⤵', 'Ripple'], ['⤶', 'Roll'], ['⇿', 'Slip'], ['⇆', 'Slide'], ['🎵', 'Music'], ['🔗', 'Fill Gap'], ['➡️', 'Extend'], ['🎭', 'Mask'], ['🔍', 'Zoom'], ['✋', 'Hand']],
       pills: ['Text to Video', 'Image to Video', 'Retake', 'Extend', 'B-Roll', 'Music Gen', 'Audio Sync', 'Fill Gap AI', 'Elements', 'Dual Viewer'],
-      topIcons: ['👁','📺','📁','⚡','🎵','🔊','🎞️','👤','⚙️','💬','📋'],
+      topIcons: ['👁','📺','📁','⚡','🎵','🔊','🎞️','👤','⚙️','💬','📋','💾'],
       media: [
         { icon: '🎬', label: 'Video Clip', desc: 'Insert a source shot or generated video clip.' },
         { icon: '🖼️', label: 'Image Frame', desc: 'Add still images, frames, or storyboard art.' },
@@ -432,7 +439,10 @@ export function TimelineEditorPage() {
         const btn = document.createElement('button');
         btn.className = 'top-icon ' + (i === 3 ? 'active' : '');
         btn.textContent = icon;
-        btn.addEventListener('click', () => showToast(icon + ' action clicked'));
+        btn.addEventListener('click', () => {
+          if (icon === '💾') exportVideo('MP4');
+          else showToast(icon + ' action clicked');
+        });
         els.topActions.appendChild(btn);
       });
       const ready = document.createElement('div');
@@ -494,13 +504,18 @@ export function TimelineEditorPage() {
           clipEl.style.width = clip.width + '%';
           clipEl.style.zIndex = clip.zIndex || 1;
           clipEl.innerHTML = '<span class="clip-label">' + clip.name + '</span>';
-          clipEl.addEventListener('click', (e) => { 
-            e.stopPropagation(); 
+          if (clip.type === 'audio' && state.proxy) renderWaveform(clipEl, clip);
+          if (clip.transition) applyTransition(clip, clip.transition);
+          if (clip.camera) applyCamera(clip, clip.camera);
+          clipEl.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (state.selectedTool === 'Select') {
               state.selectedClipId = clip.id; updatePreview(clip); renderTracks(); showToast(clip.name + ' selected');
             } else if (state.selectedTool === 'Blade') {
               // Split clip
               showToast('Splitting ' + clip.name);
+            } else if (state.selectedTool === 'Fill Gap') {
+              showToast('Filling gap for ' + clip.name);
             } else {
               showToast(state.selectedTool + ' tool on ' + clip.name);
             }
@@ -522,7 +537,7 @@ export function TimelineEditorPage() {
           const targetTrack = media.label === 'Audio Track' ? (state.tracks.find((t) => t.name === 'Audio') || state.tracks[1] || state.tracks[0]) : media.label === 'Image Frame' ? (state.tracks.find((t) => t.name === 'Text') || state.tracks[0]) : media.label === 'B-Roll Asset' ? (state.tracks.find((t) => t.name === 'B-Roll') || state.tracks[0]) : (state.tracks.find((t) => t.name === 'Video') || state.tracks[0]);
           const newId = Date.now() + index;
           const startPos = Math.min(78, 8 + targetTrack.clips.length * 10);
-          targetTrack.clips.push({ id: newId, name: media.label + ' ' + (targetTrack.clips.length + 1), left: startPos, width: 12, start: startPos, duration: 12, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, type: media.label === 'Audio Track' ? 'audio' : media.label === 'Image Frame' ? 'text' : media.label === 'B-Roll Asset' ? 'broll' : 'video' });
+          targetTrack.clips.push({ id: newId, name: media.label + ' ' + (targetTrack.clips.length + 1), left: startPos, width: 12, start: startPos, duration: 12, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, type: media.label === 'Audio Track' ? 'audio' : media.label === 'Image Frame' ? 'text' : media.label === 'B-Roll Asset' ? 'broll' : 'video', transition: null, camera: media.label === 'Audio Track' || media.label === 'Image Frame' ? null : { x: 0, y: 0, z: 0 } });
           state.selectedClipId = newId;
           renderTracks();
           updatePreview();
@@ -625,7 +640,7 @@ export function TimelineEditorPage() {
       const track = state.tracks.find(t => t.name === 'Video') || state.tracks[0];
       const clipId = Date.now();
       const startPos = Math.min(76, 10 + track.clips.length * 9);
-      track.clips.push({ id: clipId, name: state.generateType + ': ' + prompt.slice(0, 18), left: startPos, width: 14, start: startPos, duration: 14, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, type: 'video' });
+      track.clips.push({ id: clipId, name: state.generateType + ': ' + prompt.slice(0, 18), left: startPos, width: 14, start: startPos, duration: 14, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, type: 'video', transition: null, camera: { x: 0, y: 0, z: 0 } });
       state.selectedClipId = clipId;
       state.chat.push({ role: 'user', text: state.generateType + ' generate: ' + prompt });
       state.chat.push({ role: 'ai', text: 'Created a ' + state.generateType.toLowerCase() + ' clip with ' + els.durationSelect.value + ', ' + els.aspectSelect.value + ', ' + els.styleSelect.value + '.' });
@@ -638,15 +653,19 @@ export function TimelineEditorPage() {
       const text = els.chatInput.value.trim();
       if (!text) return;
       state.chat.push({ role: 'user', text });
-      let reply = 'Command added to the workflow.';
-      if (/generate/i.test(text)) reply = 'Generate command staged. Use the Generate panel to create the clip.';
-      if (/retake/i.test(text)) reply = 'Retake command staged for the selected clip.';
-      if (/extend/i.test(text)) reply = 'Extend command queued for the selected clip.';
-      if (/b-roll|broll/i.test(text)) reply = 'B-Roll suggestion added to the sequence.';
+      let reply = 'Command processed.';
+      if (/generate/i.test(text)) reply = 'Generate command staged. Use the Generate panel.';
+      if (/retake/i.test(text)) reply = 'Retake staged for selected clip.';
+      if (/extend/i.test(text)) reply = 'Extend queued.';
+      if (/b-roll|broll/i.test(text)) reply = 'B-Roll added.';
+      if (/@(\w+)/.test(text)) reply = 'Element referenced.';
+      if (/\d+:\d+/.test(text)) reply = 'Timestamp linked to timeline.';
+      if (/cut/i.test(text)) reply = 'Cut mode: Analyzing timeline.';
+      if (/search/i.test(text)) reply = 'Searching project...';
       state.chat.push({ role: 'ai', text: reply });
       els.chatInput.value = '';
       renderChat();
-      showToast('AI command processed');
+      showToast('Chat processed');
     }
     function addTrack(type) {
       const id = type.toLowerCase() + '-' + Date.now();
@@ -687,6 +706,76 @@ export function TimelineEditorPage() {
           });
         });
       }
+    }
+    function interpolate(value, inputRange, outputRange) {
+      // Simple linear interpolation
+      const [inputMin, inputMax] = inputRange;
+      const [outputMin, outputMax] = outputRange;
+      const ratio = (value - inputMin) / (inputMax - inputMin);
+      return outputMin + ratio * (outputMax - outputMin);
+    }
+    function easeIn(t) { return t * t; }
+    function easeOut(t) { return 1 - (1 - t) * (1 - t); }
+    function spring(t, config) { return t; } // Placeholder
+    function renderWaveform(trackEl, clip) {
+      // Placeholder for Canvas waveform
+      const canvas = document.createElement('canvas');
+      canvas.width = 100; canvas.height = 20;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 10, 100, 2); // Simple line
+      trackEl.appendChild(canvas);
+    }
+    function applyTransition(clip, transition) {
+      // Placeholder for CSS transitions
+      if (transition) showToast('Applying ' + transition.type + ' transition');
+    }
+    function applyCamera(clip, camera) {
+      // Placeholder for camera movements
+      if (camera) showToast('Applying camera movement');
+    }
+    function exportVideo(format) {
+      // Placeholder for export
+      showToast('Exporting to ' + format);
+    }
+    function generateSubtitles(clip) {
+      // Placeholder
+      state.subtitles.push({ time: clip.start, text: 'Generated subtitle' });
+    }
+    function animateKeyframe(clip, time) {
+      // Placeholder for keyframe animation
+      const keyframe = clip.keyframes.find(k => k.time <= time);
+      if (keyframe) {
+        // Apply properties
+      }
+    }
+    function renderSubtitles() {
+      // Placeholder for subtitles display
+      showToast('Subtitles rendered');
+    }
+    function openAnimationIDE(clip) {
+      // Placeholder for HTML animation IDE
+      showToast('Animation IDE opened for ' + clip.name);
+    }
+    function detectScenes() {
+      // Placeholder for scene detection
+      showToast('Scenes detected');
+    }
+    function semanticSearch(query) {
+      // Placeholder
+      showToast('Searching for ' + query);
+    }
+    function loadPlugin(plugin) {
+      // Placeholder
+      showToast('Plugin loaded: ' + plugin);
+    }
+    function connectMCP() {
+      // Placeholder
+      showToast('MCP connected');
+    }
+    function startAgentWorkflow() {
+      // Placeholder
+      showToast('Agent workflow started');
     }
     function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderElements(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = 'translateX(' + panState.x + 'px) scaleX(' + panState.scale + ')'; }
     renderAll();
