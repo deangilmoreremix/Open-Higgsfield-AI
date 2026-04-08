@@ -343,17 +343,17 @@ export function TimelineEditorPage() {
       timelineSeconds: 60,
       tracks: [
         { id: 'video-1', name: 'Video', muted: false, solo: false, locked: true, clips: [
-          { id: 1, name: 'Opening Shot', left: 8, width: 18, type: 'video' },
-          { id: 2, name: 'Generated Clip', left: 34, width: 16, type: 'video' }
+          { id: 1, name: 'Opening Shot', left: 8, width: 18, type: 'video', start: 8, duration: 18, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1 },
+          { id: 2, name: 'Generated Clip', left: 34, width: 16, type: 'video', start: 34, duration: 16, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1 }
         ] },
         { id: 'audio-1', name: 'Audio', muted: false, solo: false, locked: false, clips: [
-          { id: 3, name: 'Music Bed', left: 5, width: 42, type: 'audio' }
+          { id: 3, name: 'Music Bed', left: 5, width: 42, type: 'audio', start: 5, duration: 42, keyframes: [{ time: 0, volume: 1 }], zIndex: 0 }
         ] },
         { id: 'text-1', name: 'Text', muted: false, solo: false, locked: false, clips: [
-          { id: 4, name: 'Title Card', left: 14, width: 12, type: 'text' }
+          { id: 4, name: 'Title Card', left: 14, width: 12, type: 'text', start: 14, duration: 12, keyframes: [{ time: 0, opacity: 1 }], zIndex: 2 }
         ] },
         { id: 'broll-1', name: 'B-Roll', muted: false, solo: false, locked: false, clips: [
-          { id: 5, name: 'City Cutaway', left: 52, width: 20, type: 'broll' }
+          { id: 5, name: 'City Cutaway', left: 52, width: 20, type: 'broll', start: 52, duration: 20, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1 }
         ] }
       ],
       tools: [['↖', 'Select'], ['✂', 'Blade'], ['⤵', 'Ripple'], ['⤶', 'Roll'], ['⇿', 'Slip'], ['⇆', 'Slide'], ['🎵', 'Music'], ['🔗', 'Fill Gap'], ['➡️', 'Extend'], ['🎭', 'Mask'], ['🔍', 'Zoom'], ['✋', 'Hand']],
@@ -492,8 +492,19 @@ export function TimelineEditorPage() {
           clipEl.className = 'clip ' + (state.selectedClipId === clip.id ? 'active' : '');
           clipEl.style.left = clip.left + '%';
           clipEl.style.width = clip.width + '%';
+          clipEl.style.zIndex = clip.zIndex || 1;
           clipEl.innerHTML = '<span class="clip-label">' + clip.name + '</span>';
-          clipEl.addEventListener('click', (e) => { e.stopPropagation(); state.selectedClipId = clip.id; updatePreview(clip); renderTracks(); showToast(clip.name + ' selected'); });
+          clipEl.addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            if (state.selectedTool === 'Select') {
+              state.selectedClipId = clip.id; updatePreview(clip); renderTracks(); showToast(clip.name + ' selected');
+            } else if (state.selectedTool === 'Blade') {
+              // Split clip
+              showToast('Splitting ' + clip.name);
+            } else {
+              showToast(state.selectedTool + ' tool on ' + clip.name);
+            }
+          });
           lane.appendChild(clipEl);
         });
         row.appendChild(meta);
@@ -510,7 +521,8 @@ export function TimelineEditorPage() {
         item.addEventListener('click', () => {
           const targetTrack = media.label === 'Audio Track' ? (state.tracks.find((t) => t.name === 'Audio') || state.tracks[1] || state.tracks[0]) : media.label === 'Image Frame' ? (state.tracks.find((t) => t.name === 'Text') || state.tracks[0]) : media.label === 'B-Roll Asset' ? (state.tracks.find((t) => t.name === 'B-Roll') || state.tracks[0]) : (state.tracks.find((t) => t.name === 'Video') || state.tracks[0]);
           const newId = Date.now() + index;
-          targetTrack.clips.push({ id: newId, name: media.label + ' ' + (targetTrack.clips.length + 1), left: Math.min(78, 8 + targetTrack.clips.length * 10), width: 12, type: media.label === 'Audio Track' ? 'audio' : media.label === 'Image Frame' ? 'text' : media.label === 'B-Roll Asset' ? 'broll' : 'video' });
+          const startPos = Math.min(78, 8 + targetTrack.clips.length * 10);
+          targetTrack.clips.push({ id: newId, name: media.label + ' ' + (targetTrack.clips.length + 1), left: startPos, width: 12, start: startPos, duration: 12, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, type: media.label === 'Audio Track' ? 'audio' : media.label === 'Image Frame' ? 'text' : media.label === 'B-Roll Asset' ? 'broll' : 'video' });
           state.selectedClipId = newId;
           renderTracks();
           updatePreview();
@@ -612,7 +624,8 @@ export function TimelineEditorPage() {
       const prompt = els.promptInput.value.trim() || (state.generateType + ' cinematic shot');
       const track = state.tracks.find(t => t.name === 'Video') || state.tracks[0];
       const clipId = Date.now();
-      track.clips.push({ id: clipId, name: state.generateType + ': ' + prompt.slice(0, 18), left: Math.min(76, 10 + track.clips.length * 9), width: 14, type: 'video' });
+      const startPos = Math.min(76, 10 + track.clips.length * 9);
+      track.clips.push({ id: clipId, name: state.generateType + ': ' + prompt.slice(0, 18), left: startPos, width: 14, start: startPos, duration: 14, keyframes: [{ time: 0, opacity: 1 }], zIndex: 1, type: 'video' });
       state.selectedClipId = clipId;
       state.chat.push({ role: 'user', text: state.generateType + ' generate: ' + prompt });
       state.chat.push({ role: 'ai', text: 'Created a ' + state.generateType.toLowerCase() + ' clip with ' + els.durationSelect.value + ', ' + els.aspectSelect.value + ', ' + els.styleSelect.value + '.' });
@@ -652,6 +665,28 @@ export function TimelineEditorPage() {
       document.querySelectorAll('[data-action="zoom-out"]').forEach((btn) => btn.addEventListener('click', () => { state.zoom = Math.max(0.5, state.zoom - 0.1); showToast('Zoom ' + state.zoom.toFixed(1) + 'x'); }));
       document.getElementById('uploadBtn').addEventListener('click', () => showToast('Upload flow placeholder triggered'));
       document.getElementById('backBtn').addEventListener('click', () => { if (parent && parent.window && parent.window.navigate) { parent.window.navigate('apps'); } else { showToast('Back action clicked'); } });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === ' ') { e.preventDefault(); togglePlayback(); }
+        else if (e.key === 'Escape') { state.selectedClipId = null; renderTracks(); }
+        else if (e.key === 'Delete') { /* delete selected clip */ showToast('Delete tool placeholder'); }
+      });
+    }
+    function getCurrentTime() { return (state.playheadPercent / 100) * state.timelineSeconds; }
+    function addKeyframe(clipId, time, property, value) {
+      const clip = state.tracks.flatMap(t => t.clips).find(c => c.id === clipId);
+      if (clip) clip.keyframes.push({ time, [property]: value });
+    }
+    function rippleTrim(clipId, delta) {
+      const clip = state.tracks.flatMap(t => t.clips).find(c => c.id === clipId);
+      if (clip) {
+        clip.width += delta;
+        // Shift subsequent clips
+        state.tracks.forEach(track => {
+          track.clips.forEach(c => {
+            if (c.left > clip.left + clip.width) c.left += delta;
+          });
+        });
+      }
     }
     function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderElements(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = 'translateX(' + panState.x + 'px) scaleX(' + panState.scale + ')'; }
     renderAll();
