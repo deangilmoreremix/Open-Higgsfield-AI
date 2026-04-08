@@ -626,7 +626,7 @@ export function TimelineEditorPage() {
       document.getElementById('uploadBtn').addEventListener('click', () => showToast('Upload flow placeholder triggered'));
       document.getElementById('backBtn').addEventListener('click', () => { if (parent && parent.window && parent.window.navigate) { parent.window.navigate('apps'); } else { showToast('Back action clicked'); } });
     }
-    function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = `translateX(${panState.x}px) scaleX(${panState.scale})`; }
+    function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = 'translateX(' + panState.x + 'px) scaleX(' + panState.scale + ')'; }
     renderAll();
     bindEvents();
   </script>
