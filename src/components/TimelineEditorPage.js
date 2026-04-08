@@ -322,6 +322,10 @@ export function TimelineEditorPage() {
           </div>
           <button class="primary-btn" id="generateBtn">⚡ Generate</button>
         </aside>
+        <aside class="side-card">
+          <div class="card-title">🎭 Elements</div>
+          <div id="elementsGrid"></div>
+        </aside>
       </div>
     </div>
   </div>
@@ -352,7 +356,7 @@ export function TimelineEditorPage() {
           { id: 5, name: 'City Cutaway', left: 52, width: 20, type: 'broll' }
         ] }
       ],
-      tools: [['↖', 'Select'], ['✂', 'Blade'], ['⤵', 'Ripple'], ['⤶', 'Roll'], ['⇿', 'Slip'], ['⇆', 'Slide'], ['🔍', 'Zoom'], ['✋', 'Hand']],
+      tools: [['↖', 'Select'], ['✂', 'Blade'], ['⤵', 'Ripple'], ['⤶', 'Roll'], ['⇿', 'Slip'], ['⇆', 'Slide'], ['🎵', 'Music'], ['🔗', 'Fill Gap'], ['➡️', 'Extend'], ['🎭', 'Mask'], ['🔍', 'Zoom'], ['✋', 'Hand']],
       pills: ['Text to Video', 'Image to Video', 'Retake', 'Extend', 'B-Roll', 'Music Gen', 'Audio Sync', 'Fill Gap AI', 'Elements', 'Dual Viewer'],
       topIcons: ['👁','📺','📁','⚡','🎵','🔊','🎞️','👤','⚙️','💬','📋'],
       media: [
@@ -361,7 +365,13 @@ export function TimelineEditorPage() {
         { icon: '🎵', label: 'Audio Track', desc: 'Place music, voiceover, or sound design assets.' },
         { icon: '🎞️', label: 'B-Roll Asset', desc: 'Drop in cutaways, overlays, or support footage.' }
       ],
-      generateTypes: [['✍️', 'Text'], ['🖼️', 'Image'], ['🔄', 'Retake'], ['➡️', 'Extend'], ['🎞️', 'B-Roll']],
+      generateTypes: [['✍️', 'Text'], ['🖼️', 'Image'], ['🔄', 'Retake'], ['➡️', 'Extend'], ['🎞️', 'B-Roll'], ['🎵', 'Music'], ['🔊', 'Audio Sync'], ['🎭', 'Mask'], ['🔍', 'Scene Detect'], ['🔎', 'Semantic Search']],
+      elements: {
+        characters: [{ icon: '👤', label: 'Hero', desc: 'Main character' }],
+        locations: [{ icon: '🏞️', label: 'Forest', desc: 'Mystical forest' }],
+        props: [{ icon: '⚔️', label: 'Sword', desc: 'Hero sword' }],
+        vehicles: [{ icon: '🚗', label: 'Car', desc: 'Sports car' }]
+      },
       quickCommands: ['⚡Generate','Retake','Extend','B-Roll'],
       railActions: [['⚡', 'Generate', true], ['✂️', 'Split'], ['🎬', 'Scenes'], ['💬', 'Subtitle'], ['🎞️', 'B-Roll'], ['⏱️', 'Speed'], ['🪄', 'Stabilize'], ['📝', 'Text']],
       chat: [
@@ -399,7 +409,8 @@ export function TimelineEditorPage() {
       styleSelect: document.getElementById('styleSelect'),
       generateBtn: document.getElementById('generateBtn'),
       chatInput: document.getElementById('chatInput'),
-      toast: document.getElementById('toast')
+      toast: document.getElementById('toast'),
+      elementsGrid: document.getElementById('elementsGrid')
     };
     let playbackTimer = null;
     function showToast(message) {
@@ -527,6 +538,22 @@ export function TimelineEditorPage() {
         els.chatStack.appendChild(bubble);
       });
     }
+    function renderElements() {
+      els.elementsGrid.innerHTML = '';
+      Object.keys(state.elements).forEach(cat => {
+        state.elements[cat].forEach(el => {
+          const item = document.createElement('button');
+          item.className = 'media-item';
+          item.innerHTML = '<span class="media-icon">' + el.icon + '</span><span class="media-copy"><div class="media-label">' + el.label + '</div><div class="media-desc">' + el.desc + '</div></span>';
+          item.addEventListener('click', () => {
+            const prompt = els.promptInput.value;
+            els.promptInput.value = prompt + ' @' + el.label.toLowerCase();
+            showToast('Element ' + el.label + ' added to prompt');
+          });
+          els.elementsGrid.appendChild(item);
+        });
+      });
+    }
     function renderQuickCommands() {
       els.quickCommands.innerHTML = '';
       state.quickCommands.forEach((command) => {
@@ -626,7 +653,7 @@ export function TimelineEditorPage() {
       document.getElementById('uploadBtn').addEventListener('click', () => showToast('Upload flow placeholder triggered'));
       document.getElementById('backBtn').addEventListener('click', () => { if (parent && parent.window && parent.window.navigate) { parent.window.navigate('apps'); } else { showToast('Back action clicked'); } });
     }
-    function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = 'translateX(' + panState.x + 'px) scaleX(' + panState.scale + ')'; }
+    function renderAll() { renderTopActions(); renderTools(); renderPills(); renderTracks(); renderMedia(); renderGenerateTypes(); renderChat(); renderElements(); renderQuickCommands(); renderRail(); updatePreview(); updatePlaybackUI(); els.timelineBody.style.transform = 'translateX(' + panState.x + 'px) scaleX(' + panState.scale + ')'; }
     renderAll();
     bindEvents();
   </script>
