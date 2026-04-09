@@ -29,286 +29,556 @@ const USE_CASES = [
 
 export function VideoAgentPage() {
     const container = document.createElement('div');
-    container.className = 'w-full h-full flex flex-col items-center justify-center bg-app-bg relative p-4 md:p-6 overflow-y-auto custom-scrollbar overflow-x-hidden';
+    container.className = 'w-full h-full bg-app-bg text-white font-sans';
 
-    // AbortController for cancelling async operations
-    const abortController = new AbortController();
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        body { background:#0b0b0c; }
+
+        .card {
+          background: rgba(17,17,17,0.9);
+          backdrop-filter: blur(20px);
+          border:1px solid rgba(255,255,255,0.08);
+          border-radius:1.5rem;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .subtle-card {
+          background: rgba(255,255,255,0.03);
+          border:1px solid rgba(255,255,255,0.05);
+          border-radius:1rem;
+          transition: all 0.25s ease;
+        }
+
+        .subtle-card:hover {
+          border-color: rgba(139,92,246,0.3);
+          transform: translateY(-2px);
+        }
+
+        .goal-btn {
+          background: rgba(255,255,255,0.05);
+          border:1px solid rgba(255,255,255,0.08);
+          padding:12px 14px;
+          border-radius:12px;
+          font-size:14px;
+          text-align:left;
+          transition: all 0.25s ease;
+        }
+
+        .goal-btn:hover {
+          border-color: rgba(139,92,246,0.3);
+          background: rgba(255,255,255,0.08);
+          transform: translateY(-2px);
+        }
+
+        .primary-btn {
+          background:#a855f7;
+          color:black;
+          font-weight:900;
+          border-radius:12px;
+          padding:10px 16px;
+          transition: all 0.2s ease;
+        }
+
+        .primary-btn:hover {
+          transform: scale(1.04);
+          box-shadow: 0 0 20px rgba(168,85,247,0.6);
+        }
+
+        .ghost-btn {
+          background: rgba(255,255,255,0.06);
+          border:1px solid rgba(255,255,255,0.08);
+          color: rgba(255,255,255,0.88);
+          border-radius: 12px;
+          padding: 10px 14px;
+          transition: all 0.2s ease;
+        }
+
+        .ghost-btn:hover {
+          background: rgba(255,255,255,0.1);
+          border-color: rgba(139,92,246,0.25);
+        }
+
+        .hero-banner {
+          position: relative;
+          overflow: hidden;
+          min-height: 180px;
+          background:
+            radial-gradient(circle at 20% 20%, rgba(168,85,247,0.25), transparent 30%),
+            radial-gradient(circle at 80% 30%, rgba(59,130,246,0.18), transparent 30%),
+            linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+        }
+
+        .hero-banner::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(17,17,17,0.95), rgba(17,17,17,0.25), transparent);
+          pointer-events: none;
+        }
+
+        .status-pill {
+          background: rgba(168,85,247,0.12);
+          border: 1px solid rgba(168,85,247,0.25);
+          color: #d8b4fe;
+          border-radius: 999px;
+          padding: 6px 10px;
+          font-size: 11px;
+          font-weight: 700;
+        }
+
+        .timeline-track {
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 14px;
+          min-height: 56px;
+        }
+
+        .timeline-block {
+          height: 34px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, rgba(168,85,247,0.32), rgba(255,255,255,0.08));
+          border: 1px solid rgba(168,85,247,0.22);
+          color: rgba(255,255,255,0.92);
+          font-size: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          flex-shrink: 0;
+        }
+
+        .mini-label {
+          color: rgba(255,255,255,0.42);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+        }
+
+        .chat-bubble-user {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 14px;
+          padding: 10px 12px;
+        }
+
+        .chat-bubble-agent {
+          background: rgba(168,85,247,0.08);
+          border: 1px solid rgba(168,85,247,0.16);
+          border-radius: 14px;
+          padding: 10px 12px;
+        }
+
+        .progress-bar {
+          background: linear-gradient(90deg, #a855f7, #c084fc);
+          box-shadow: 0 0 18px rgba(168,85,247,0.45);
+        }
+
+        .workspace-grid {
+          display: grid;
+          grid-template-columns: 240px minmax(0, 1.7fr) 300px;
+          gap: 1rem;
+          align-items: start;
+        }
+
+        .preview-stage {
+          position: relative;
+          min-height: 620px;
+          border-radius: 1.25rem;
+          background:
+            radial-gradient(circle at center, rgba(168,85,247,0.08), transparent 35%),
+            #000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .preview-stage video {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          display: block;
+          background: #000;
+        }
+
+        @media (max-width: 1535px) {
+          .workspace-grid {
+            grid-template-columns: 220px minmax(0, 1.55fr) 280px;
+          }
+
+          .preview-stage {
+            min-height: 560px;
+          }
+        }
+
+        @media (max-width: 1279px) {
+          .workspace-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .preview-stage {
+            min-height: 480px;
+          }
+        }
+    `;
+    container.appendChild(style);
 
     const urlParams = new URLSearchParams(window.location.search);
     const videoId = urlParams.get('videoId') || '';
     const videoUrl = urlParams.get('videoUrl') || '';
+
+    let jobs = [];
+    let currentProgress = 0;
     
-    let processingQueue = [];
-    let isProcessing = false;
-    
-    // ==========================================
-    // 1. HERO SECTION
-    // ==========================================
-    const hero = document.createElement('div');
-    hero.className = 'flex flex-col items-center mb-8 md:mb-12 animate-fade-in-up transition-all duration-700 w-full max-w-5xl';
-    const heroBanner = createHeroSection('videoagent', 'h-32 md:h-44 mb-4');
-    if (heroBanner) {
-        const heroContent = document.createElement('div');
-        heroContent.className = 'absolute bottom-0 left-0 right-0 p-6 z-10';
-        heroContent.innerHTML = `
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight mb-1">VideoAgent</h1>
-            <p class="text-white/60 text-sm font-medium">AI-powered video processing & enhancement</p>
-        `;
-        heroBanner.appendChild(heroContent);
-        hero.appendChild(heroBanner);
-    }
-    container.appendChild(hero);
-    
-    // Main content wrapper with max-width
-    const contentWrapper = document.createElement('div');
-    contentWrapper.className = 'w-full max-w-5xl relative z-40 animate-fade-in-up';
-    contentWrapper.style.animationDelay = '0.1s';
-    
-    contentWrapper.innerHTML = `
-        <!-- Back Button -->
-        <div class="mb-6">
-            <button id="back-btn" class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all text-white/70 hover:text-white">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Back to Video
-            </button>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="flex flex-col lg:flex-row gap-6">
-            <!-- Left: Video Preview + Use Cases -->
-            <div class="flex-1 flex flex-col">
-                <!-- Video Preview Card -->
-                <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-4 md:p-6 shadow-3xl mb-6">
-                    <div class="aspect-video flex items-center justify-center bg-black rounded-xl overflow-hidden">
-                        ${videoUrl ? `
-                            <video 
-                                id="videoagent-video" 
-                                class="max-w-full max-h-full" 
-                                controls
-                                src="${escapeHtml(videoUrl)}"
-                            >
-                                Your browser does not support video playback.
-                            </video>
-                        ` : `
-                            <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
-                                <img src="/thumbnails/videoagent/empty-video.png" alt="No video loaded" class="absolute inset-0 w-full h-full object-cover opacity-40" onerror="this.style.display='none'" />
-                                <div class="relative text-center p-8 z-10">
-                                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted mx-auto mb-4">
-                                        <polygon points="5 3 19 12 5 21 5 3"/>
-                                    </svg>
-                                    <p class="text-white/50">No video loaded</p>
-                                    <p class="text-xs text-muted mt-2">Generate a video first to process</p>
-                                </div>
-                            </div>
-                        `}
-                    </div>
-                </div>
-                
-                <!-- Use Cases -->
-                <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-3xl">
-                    <div class="relative w-full h-28 overflow-hidden">
-                        <img src="/thumbnails/videoagent/header-use-cases.png" alt="AI Use Cases" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#111] via-[#111]/50 to-transparent"></div>
-                        <h3 class="absolute bottom-3 left-5 font-black text-white text-sm tracking-wide z-10">AI USE CASES</h3>
-                    </div>
-                    <div class="p-4 md:p-6 pt-4">
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        ${USE_CASES.map(uc => `
-                            <button class="usecase-btn overflow-hidden bg-white/5 hover:bg-white/10 border border-white/5 hover:border-primary/30 rounded-2xl text-left transition-all hover:scale-[1.02] cursor-pointer" data-usecase="${uc.id}">
-                                <div class="relative w-full aspect-square overflow-hidden">
-                                    <img src="${uc.thumbnail}" alt="${uc.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-3">
-                                        <div class="font-bold text-white text-sm">${uc.name}</div>
-                                        <div class="text-[10px] text-white/60">${uc.description}</div>
-                                    </div>
-                                </div>
-                            </button>
-                        `).join('')}
-                    </div>
-                    </div>
-                </div>
-                
-                <!-- Processing Results -->
-                <div id="results-panel" class="mt-6 hidden">
-                    <h3 class="font-black text-white mb-3 text-sm tracking-wide">PROCESSING RESULTS</h3>
-                    <div id="results-content" class="space-y-2">
-                    </div>
-                </div>
+    container.innerHTML = `
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
+
+  <!-- TOP BAR -->
+  <div class="w-full flex items-center justify-between px-6 py-4 card">
+    <div class="flex items-center gap-4">
+      <div>
+        <div class="font-black text-lg leading-none">VideoAgent</div>
+        <div class="text-xs text-white/50 mt-1">Project: Summer Campaign Edit</div>
+      </div>
+      <span class="status-pill">AI READY</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="ghost-btn">Version History</button>
+      <button class="ghost-btn">Save</button>
+      <button class="primary-btn">Export</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="card hero-banner p-6 md:p-8 flex items-end">
+    <div class="relative z-10 max-w-3xl">
+      <div class="text-xs text-white/50 font-bold tracking-[0.25em] mb-3">AI VIDEO AGENT WORKSPACE</div>
+      <h1 class="text-3xl md:text-5xl font-black tracking-tight mb-2">Edit, repurpose, and direct videos with AI.</h1>
+      <p class="text-sm md:text-base text-white/65 max-w-2xl">Use Director-style planning, ArcReel-style job flow, and FireRed-style editing actions inside one cinematic workspace built in the Storyboard theme.</p>
+      <div class="flex flex-wrap gap-3 mt-5">
+        <button class="primary-btn" id="start-ai-plan">Start With AI Plan</button>
+        <button class="ghost-btn">Open Existing Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="card p-4 md:p-6">
+    <h2 class="text-xl font-black text-white mb-1">Agent Capabilities</h2>
+    <p class="text-sm text-muted mb-6">Built like a premium storyboard app, but designed for AI-powered editing workflows.</p>
+    <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div class="subtle-card p-4">
+        <div class="text-3xl mb-3">🎬</div>
+        <div class="font-black mb-1">Goal-Based Editing</div>
+        <div class="text-sm text-white/55">Tell the agent what outcome you want instead of manually chaining tools together.</div>
+      </div>
+      <div class="subtle-card p-4">
+        <div class="text-3xl mb-3">🧠</div>
+        <div class="font-black mb-1">AI Planning</div>
+        <div class="text-sm text-white/55">The agent builds a task plan for highlights, shorts, captions, dubbing, and quality improvements.</div>
+      </div>
+      <div class="subtle-card p-4">
+        <div class="text-3xl mb-3">📝</div>
+        <div class="font-black mb-1">Timeline + Outputs</div>
+        <div class="text-sm text-white/55">Review scenes, generated clips, captions, and timeline changes from one unified workspace.</div>
+      </div>
+      <div class="subtle-card p-4">
+        <div class="text-3xl mb-3">✨</div>
+        <div class="font-black mb-1">Premium Workflow UX</div>
+        <div class="text-sm text-white/55">Storyboard-style cards, polished interaction states, and a cinematic editing environment.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="card p-4 md:p-6">
+    <h2 class="text-xl font-black text-white mb-1">Quick Actions</h2>
+    <p class="text-sm text-white/50 mb-6">Launch the agent with common editing goals.</p>
+    <div class="flex flex-wrap gap-3" id="quick-actions">
+      <button class="goal-btn" data-prompt="Create highlights from this video">Create Highlights</button>
+      <button class="goal-btn" data-prompt="Make 3 short vertical clips">Make Shorts</button>
+      <button class="goal-btn" data-prompt="Add captions to this video">Add Captions</button>
+      <button class="goal-btn" data-prompt="Dub this video into Spanish">Dub Video</button>
+      <button class="goal-btn" data-prompt="Improve video quality and pacing">Improve Quality</button>
+      <button class="goal-btn" data-prompt="Build a trailer cut from this video">Build Trailer</button>
+    </div>
+  </div>
+
+  <!-- EXAMPLE OUTPUTS -->
+  <div class="card p-4 md:p-6">
+    <h2 class="text-xl font-black text-white mb-1">Example Outputs</h2>
+    <p class="text-sm text-white/50 mb-6">Preview the kinds of transformations the agent can create.</p>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="subtle-card p-4 cursor-pointer">
+        <div class="mb-3"><span class="status-pill">HIGHLIGHTS</span></div>
+        <div class="text-white/80 text-sm">Three high-energy clips pulled from the strongest moments in your source video.</div>
+      </div>
+      <div class="subtle-card p-4 cursor-pointer">
+        <div class="mb-3"><span class="status-pill">CAPTIONS</span></div>
+        <div class="text-white/80 text-sm">Clean branded captions generated from transcript timing and scene pacing.</div>
+      </div>
+      <div class="subtle-card p-4 cursor-pointer">
+        <div class="mb-3"><span class="status-pill">SHORTS</span></div>
+        <div class="text-white/80 text-sm">Vertical edits with tighter pacing, stronger hooks, and mobile-first framing.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="workspace-grid">
+
+    <!-- LEFT: GOALS + JOBS -->
+    <div class="space-y-4">
+      <div class="card p-4 flex flex-col gap-3">
+        <div class="mini-label mb-1">AGENT GOALS</div>
+        <button class="goal-btn">🎬 Create Highlights</button>
+        <button class="goal-btn">📱 Make Shorts</button>
+        <button class="goal-btn">📝 Add Captions</button>
+        <button class="goal-btn">🌍 Dub Video</button>
+        <button class="goal-btn">✨ Improve Quality</button>
+      </div>
+
+      <div class="card p-4">
+        <div class="mini-label mb-3">JOB CENTER</div>
+        <div class="space-y-3" id="job-list">
+          <div class="subtle-card p-3">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-sm font-bold">Current Session</div>
+              <div class="text-xs text-white/45">Idle</div>
             </div>
-            
-            <!-- Right Panel - AI Tools -->
-            <div class="w-full lg:w-96 flex-shrink-0">
-                <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-3xl">
-                    <!-- Tools Header Banner -->
-                    <div class="relative w-full h-28 overflow-hidden">
-                        <img src="/thumbnails/videoagent/header-tools.png" alt="AI Processing Tools" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#111] via-[#111]/50 to-transparent"></div>
-                        <h3 class="absolute bottom-3 left-5 font-black text-white text-sm tracking-wide z-10">AI PROCESSING TOOLS</h3>
-                    </div>
-                    <div class="p-4 md:p-6 pt-4">
-                    <!-- Category Tabs -->
-                    <div class="flex border-b border-white/10 mb-4 -mx-4 px-4">
-                        <button class="category-tab flex-1 py-2 text-xs font-bold text-primary border-b-2 border-primary" data-category="all">
-                            ALL
-                        </button>
-                        <button class="category-tab flex-1 py-2 text-xs font-bold text-muted hover:text-white" data-category="understanding">
-                            UNDERSTAND
-                        </button>
-                        <button class="category-tab flex-1 py-2 text-xs font-bold text-muted hover:text-white" data-category="editing">
-                            EDIT
-                        </button>
-                        <button class="category-tab flex-1 py-2 text-xs font-bold text-muted hover:text-white" data-category="audio">
-                            AUDIO
-                        </button>
-                    </div>
-                    
-                    <!-- AI Tools Grid -->
-                    <div id="tools-grid" class="grid grid-cols-2 gap-3 mb-6">
-                        ${AI_TOOLS.map(tool => `
-                            <button class="tool-btn overflow-hidden bg-white/5 hover:bg-white/10 border border-white/5 hover:border-primary/30 rounded-2xl text-left transition-all hover:scale-[1.02] cursor-pointer" data-tool="${tool.id}" data-category="${tool.category}">
-                                <div class="relative w-full aspect-square overflow-hidden">
-                                    <img src="${tool.thumbnail}" alt="${tool.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-2.5">
-                                        <div class="font-bold text-white text-xs">${tool.name}</div>
-                                        <div class="text-[9px] text-white/60">${tool.description}</div>
-                                    </div>
-                                </div>
-                            </button>
-                        `).join('')}
-                    </div>
-                    
-                    <!-- Processing Queue -->
-                    <div class="border-t border-white/10 pt-4 mb-4">
-                        <h3 class="font-black text-white mb-3 text-sm flex items-center gap-2">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                <polyline points="22 4 12 14.01 9 11.01"/>
-                            </svg>
-                            PROCESSING QUEUE
-                        </h3>
-                        <div id="queue-list" class="space-y-2 max-h-40 overflow-auto">
-                            <div class="text-sm text-muted italic p-2">No jobs in queue</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Full Pipeline -->
-                    <button id="run-full-pipeline" class="w-full py-4 bg-primary text-black font-black rounded-2xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 mb-4">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                        </svg>
-                        Run Full Pipeline
-                    </button>
-                    
-                    <!-- Settings -->
-                    <div class="border-t border-white/10 pt-4">
-                        <h4 class="font-black text-white text-sm mb-3">SETTINGS</h4>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="text-xs text-muted block mb-1">Output Quality</label>
-                                <select class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white">
-                                    <option>720p</option>
-                                    <option selected>1080p</option>
-                                    <option>4K</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-xs text-muted block mb-1">Output Format</label>
-                                <select class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white">
-                                    <option selected>MP4</option>
-                                    <option>WebM</option>
-                                    <option>MOV</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-muted">Auto-save results</span>
-                                <button class="w-10 h-5 bg-primary rounded-full relative">
-                                    <span class="absolute right-0.5 top-0.5 w-4 h-4 bg-black rounded-full"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    </div>
-                </div>
+            <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+              <div id="job-progress" class="progress-bar h-full w-0 rounded-full"></div>
             </div>
+            <div class="text-xs text-white/45 mt-2" id="job-status-text">Waiting for a goal...</div>
+          </div>
         </div>
-        
-        <!-- Processing Modal -->
-        <div id="processing-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden">
-            <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-8 max-w-md w-full mx-4 shadow-3xl">
-                <div class="text-center mb-6">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-full flex items-center justify-center">
-                        <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"></div>
-                    </div>
-                    <h3 class="text-xl font-black text-white mb-2">Processing Video</h3>
-                    <p id="processing-name" class="text-sm text-muted">Initializing...</p>
-                </div>
-                
-                <div class="mb-6">
-                    <div class="flex justify-between text-xs mb-2">
-                        <span class="text-muted">Progress</span>
-                        <span id="processing-percent" class="text-primary font-black">0%</span>
-                    </div>
-                    <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                        <div id="modal-progress-bar" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
-                    </div>
-                </div>
-                
-                <div id="processing-steps" class="space-y-2 mb-6">
-                </div>
-                
-                <button id="cancel-processing" class="w-full py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors">
-                    Cancel
-                </button>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="space-y-4">
+      <div class="card p-4 md:p-5">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="mini-label mb-1">VIDEO PREVIEW</div>
+            <div class="text-sm text-white/55">Source video, generated cuts, and scene-aware review.</div>
+          </div>
+          <div class="flex gap-2">
+            <button class="ghost-btn">Original</button>
+            <button class="primary-btn">AI Version</button>
+          </div>
+        </div>
+        <div class="preview-stage">
+          <video id="video" controls aria-label="Video preview player"></video>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="text-center px-6">
+              <div class="text-6xl mb-4 opacity-70">▶</div>
+              <div class="text-base text-white/55 font-medium">Preview the current working cut here</div>
+              <div class="text-sm text-white/35 mt-2">Large native HTML5 video stage — not an iframe</div>
             </div>
+          </div>
         </div>
+        <div class="grid md:grid-cols-3 gap-3 mt-4">
+          <div class="subtle-card p-3">
+            <div class="mini-label mb-2">SOURCE</div>
+            <div class="text-sm">Summer-Campaign-Full.mp4</div>
+            <div class="text-xs text-white/45 mt-1">03:42 • 1080p • 16:9</div>
+          </div>
+          <div class="subtle-card p-3">
+            <div class="mini-label mb-2">SCENES</div>
+            <div class="text-sm">12 detected scenes</div>
+            <div class="text-xs text-white/45 mt-1">Hook, demo, proof, CTA</div>
+          </div>
+          <div class="subtle-card p-3">
+            <div class="mini-label mb-2">ACTIVE OUTPUT</div>
+            <div class="text-sm">AI Short v2</div>
+            <div class="text-xs text-white/45 mt-1">Captioned vertical export</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-4 md:p-5">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="mini-label mb-1">TIMELINE</div>
+            <div class="text-sm text-white/55">Scene structure, captions, and AI-generated edits.</div>
+          </div>
+          <div class="text-xs text-white/40">00:00 — 03:42</div>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <div class="mini-label mb-2">VIDEO TRACK</div>
+            <div class="timeline-track p-3 flex items-center gap-2 overflow-x-auto">
+              <div class="timeline-block" style="width: 80px">Hook</div>
+              <div class="timeline-block" style="width: 100px">Demo</div>
+              <div class="timeline-block" style="width: 90px">Social Proof</div>
+              <div class="timeline-block" style="width: 110px">Offer</div>
+              <div class="timeline-block" style="width: 82px">CTA</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="mini-label mb-2">CAPTION TRACK</div>
+            <div class="timeline-track p-3 flex items-center gap-2 overflow-x-auto">
+              <div class="timeline-block" style="width: 70px">Cap 1</div>
+              <div class="timeline-block" style="width: 90px">Cap 2</div>
+              <div class="timeline-block" style="width: 85px">Cap 3</div>
+              <div class="timeline-block" style="width: 75px">Cap 4</div>
+              <div class="timeline-block" style="width: 100px">Cap 5</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="mini-label mb-2">AI SUGGESTIONS</div>
+            <div class="timeline-track p-3 flex items-center gap-2 overflow-x-auto">
+              <div class="timeline-block" style="width: 120px">Tighten Intro</div>
+              <div class="timeline-block" style="width: 135px">Boost Hook</div>
+              <div class="timeline-block" style="width: 145px">Shorten Pause</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="space-y-4">
+      <div class="card flex flex-col min-h-[620px]">
+        <div class="p-4 border-b border-white/10 flex items-center justify-between">
+          <div>
+            <div class="mini-label mb-1">AI AGENT</div>
+            <div class="text-sm text-white/55">Chat with the editing agent and review its plan.</div>
+          </div>
+          <span class="status-pill">LIVE</span>
+        </div>
+
+        <div class="px-4 pt-4 grid grid-cols-3 gap-2">
+          <button class="ghost-btn text-xs">Chat</button>
+          <button class="ghost-btn text-xs">Outputs</button>
+          <button class="ghost-btn text-xs">Inspector</button>
+        </div>
+
+        <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <div class="chat-bubble-agent text-sm text-white/80">I can plan edits, create shorts, add captions, improve pacing, and help you build new video versions.</div>
+          <div class="chat-bubble-agent text-sm text-white/80">Try: "Make 3 short clips from the strongest moments."</div>
+        </div>
+
+        <div class="p-4 border-t border-white/10 space-y-3">
+          <div class="subtle-card p-3">
+            <div class="mini-label mb-2">CURRENT PLAN</div>
+            <div id="plan-preview" class="text-sm text-white/65">No active plan yet.</div>
+          </div>
+          <input id="input" placeholder="Tell the agent what to do..." class="w-full bg-black/50 px-3 py-3 rounded-xl border border-white/10 focus:border-purple-500 outline-none" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+`;
+
+    // Add JavaScript functionality
+    const script = document.createElement('script');
+    script.textContent = `
+function parseIntent(input) {
+  const normalized = input.toLowerCase();
+  if (normalized.includes('highlight')) return 'highlights';
+  if (normalized.includes('short')) return 'shorts';
+  if (normalized.includes('caption')) return 'captions';
+  if (normalized.includes('dub')) return 'dub';
+  if (normalized.includes('quality') || normalized.includes('improve')) return 'enhance';
+  return 'unknown';
+}
+
+function planTasks(intent) {
+  const plans = {
+    highlights: ['scene-detect', 'score-moments', 'cut-clips', 'export'],
+    shorts: ['detect-hooks', 'resize-vertical', 'caption', 'export'],
+    captions: ['transcribe', 'generate-captions', 'overlay'],
+    dub: ['transcribe', 'translate', 'tts', 'replace-audio'],
+    enhance: ['analyze-quality', 'improve-pacing', 'color-balance', 'export']
+  };
+  return plans[intent] || ['analyze-video', 'build-plan'];
+}
+
+let jobs = [];
+let currentProgress = 0;
+
+async function runTasks(tasks) {
+  const progressBar = document.getElementById('job-progress');
+  const statusText = document.getElementById('job-status-text');
+  for (let i = 0; i < tasks.length; i++) {
+    const t = tasks[i];
+    log('Running: ' + t, 'agent');
+    statusText.textContent = 'Running ' + t + '...';
+    currentProgress = Math.round(((i + 1) / tasks.length) * 100);
+    progressBar.style.width = currentProgress + '%';
+    await new Promise(r => setTimeout(r, 700));
+  }
+  statusText.textContent = 'Plan completed.';
+  log('✅ Done', 'agent');
+}
+
+function createJob(tasks) {
+  const job = { id: Date.now(), tasks, status: 'running' };
+  jobs.push(job);
+  executeJob(job);
+}
+
+async function executeJob(job) {
+  await runTasks(job.tasks);
+  job.status = 'done';
+}
+
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const planPreview = document.getElementById('plan-preview');
+
+input.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    const val = input.value.trim();
+    if (!val) return;
+    input.value = '';
+
+    log(val, 'user');
+    const intent = parseIntent(val);
+    const tasks = planTasks(intent);
+    const planText = tasks.join(' → ');
+    log('Plan: ' + planText, 'agent');
+    planPreview.textContent = planText;
+    createJob(tasks);
+  }
+});
+
+function log(text, type = 'agent') {
+  const el = document.createElement('div');
+  el.className = type === 'user' ? 'chat-bubble-user text-sm text-white/85' : 'chat-bubble-agent text-sm text-white/80';
+  el.textContent = type === 'user' ? 'You: ' + text : 'Agent: ' + text;
+  chat.appendChild(el);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+document.querySelectorAll('#quick-actions [data-prompt]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    input.value = btn.dataset.prompt;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+  });
+});
+
+// Handle start AI plan button
+document.getElementById('start-ai-plan').addEventListener('click', () => {
+  log('Starting AI planning session...', 'agent');
+  planPreview.textContent = 'Analyzing video → Building plan → Ready for execution';
+});
     `;
-    
-    // Append content wrapper
-    container.appendChild(contentWrapper);
-    
-    // Event handlers
-    container.querySelector('#back-btn').onclick = () => {
-        navigate('render', { videoId, videoUrl });
-    };
-    
-    // Category tabs
-    container.querySelectorAll('.category-tab').forEach(tab => {
-        tab.onclick = () => {
-            container.querySelectorAll('.category-tab').forEach(t => {
-                t.classList.remove('text-primary', 'border-primary');
-                t.classList.add('text-muted');
-            });
-            tab.classList.remove('text-muted');
-            tab.classList.add('text-primary', 'border-primary');
-            
-            const category = tab.dataset.category;
-            container.querySelectorAll('.tool-btn').forEach(btn => {
-                if (category === 'all' || btn.dataset.category === category) {
-                    btn.style.display = 'block';
-                } else {
-                    btn.style.display = 'none';
-                }
-            });
-        };
-    });
-    
-    // Tool buttons
-    container.querySelectorAll('.tool-btn').forEach(btn => {
-        btn.onclick = () => {
-            const toolId = btn.dataset.tool;
-            const tool = AI_TOOLS.find(t => t.id === toolId);
-            runTool(tool);
-        };
-    });
-    
-    // Use case buttons
-    container.querySelectorAll('.usecase-btn').forEach(btn => {
-        btn.onclick = () => {
+    container.appendChild(script);
+
+    return container;
+}
             const usecaseId = btn.dataset.usecase;
             const usecase = USE_CASES.find(u => u.id === usecaseId);
             runUseCase(usecase);
