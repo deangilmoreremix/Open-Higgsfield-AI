@@ -118,12 +118,20 @@ export function CutAIPage() {
 
   // Modal for CutAI editor
   const editorModal = document.createElement('div');
-  editorModal.className = 'fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4';
+  editorModal.className = 'fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-2 sm:p-4';
+  editorModal.setAttribute('role', 'dialog');
+  editorModal.setAttribute('aria-modal', 'true');
+  editorModal.setAttribute('aria-labelledby', 'modal-title');
   editorModal.innerHTML = `
-    <div class="bg-app-bg rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="bg-app-bg rounded-2xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto" role="document">
       <div class="p-6 border-b border-white/10">
-        <h2 class="text-xl font-black text-white">CutAI Storyboard Editor</h2>
-        <button class="close-modal float-right text-white/60 hover:text-white">&times;</button>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 id="modal-title" class="text-xl font-black text-white">CutAI Storyboard Editor</h2>
+            <p class="text-white/60 text-sm">v1.0.0 - AI-Powered Storyboarding</p>
+          </div>
+          <button class="close-modal text-white/60 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
+        </div>
       </div>
       <div class="p-6">
         <div class="flex gap-4 mb-6">
@@ -132,13 +140,16 @@ export function CutAIPage() {
         </div>
         <div class="mb-6">
           <label class="block text-sm font-bold text-white mb-2">Genre</label>
-          <input type="text" class="genre-input w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" placeholder="e.g., Action, Drama, Horror">
+          <input type="text" class="genre-input w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-primary transition-colors" placeholder="e.g., Action, Drama, Horror" title="Choose a genre for your storyboard">
         </div>
         <div class="mb-6">
           <label class="block text-sm font-bold text-white mb-2">Premise</label>
-          <textarea class="premise-input w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white h-24" placeholder="Describe your story premise..."></textarea>
+          <textarea class="premise-input w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white h-24 focus:border-primary transition-colors resize-none" placeholder="Describe your story premise..." title="Describe the core idea or plot of your story"></textarea>
         </div>
-        <button class="generate-script bg-primary text-black px-4 py-2 rounded-lg font-bold hover:shadow-glow">Generate Script</button>
+        <button class="generate-script bg-primary text-black px-4 py-2 rounded-lg font-bold hover:shadow-glow" aria-label="Generate AI storyboard script">
+          <span class="generate-text">Generate Script</span>
+          <span class="loading-spinner hidden animate-spin inline-block ml-2">⏳</span>
+        </button>
         <div class="scenes-container mt-6 hidden">
           <h3 class="text-lg font-bold text-white mb-4">Generated Scenes</h3>
           <div class="scenes-list space-y-4 mb-6"></div>
@@ -163,54 +174,128 @@ export function CutAIPage() {
   // CTA button opens modal
   container.querySelector('.cta-btn').onclick = () => {
     editorModal.classList.remove('hidden');
+    // Focus first input
+    editorModal.querySelector('.genre-input').focus();
   };
 
   // Close modal
-  editorModal.querySelector('.close-modal').onclick = () => {
+  const closeModal = () => {
     editorModal.classList.add('hidden');
+    // Clear any running animations or timers
+    const canvas = editorModal.querySelector('#moodCanvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
+  editorModal.querySelector('.close-modal').onclick = closeModal;
+
+  // Click outside to close
+  editorModal.onclick = (e) => {
+    if (e.target === editorModal) {
+      closeModal();
+    }
+  };
+
+  // Keyboard navigation
+  const handleKeydown = (e) => {
+    if (e.key === 'Escape' && !editorModal.classList.contains('hidden')) {
+      closeModal();
+    }
+  };
+  document.addEventListener('keydown', handleKeydown);
+
+  // Cleanup on component unmount (placeholder for framework integration)
+  container.cleanup = () => {
+    document.removeEventListener('keydown', handleKeydown);
   };
 
   // Save project
   editorModal.querySelector('.save-project').onclick = () => {
-    const genre = editorModal.querySelector('.genre-input').value;
-    const premise = editorModal.querySelector('.premise-input').value;
-    const project = { genre, premise, scenes: [] };
-    localStorage.setItem('cutai-project', JSON.stringify(project));
-    showToast('Project saved');
+    try {
+      const genre = editorModal.querySelector('.genre-input').value.trim();
+      const premise = editorModal.querySelector('.premise-input').value.trim();
+      const scenes = editorModal.querySelector('.scenes-list') ? Array.from(editorModal.querySelectorAll('.scenes-list > div')).map(() => ({})) : []; // Placeholder
+      const project = { genre, premise, scenes, timestamp: Date.now() };
+      localStorage.setItem('cutai-project', JSON.stringify(project));
+      showToast('Project saved successfully');
+    } catch (error) {
+      showToast('Error saving project: ' + error.message);
+    }
   };
 
   // Load project
   editorModal.querySelector('.load-project').onclick = () => {
-    const saved = localStorage.getItem('cutai-project');
-    if (saved) {
-      const project = JSON.parse(saved);
-      editorModal.querySelector('.genre-input').value = project.genre;
-      editorModal.querySelector('.premise-input').value = project.premise;
-      if (project.scenes.length > 0) {
-        displayScenes(editorModal, project.scenes);
+    try {
+      const saved = localStorage.getItem('cutai-project');
+      if (saved) {
+        const project = JSON.parse(saved);
+        editorModal.querySelector('.genre-input').value = project.genre || '';
+        editorModal.querySelector('.premise-input').value = project.premise || '';
+        if (project.scenes && project.scenes.length > 0) {
+          displayScenes(editorModal, project.scenes);
+        }
+        showToast('Project loaded successfully');
+      } else {
+        showToast('No saved project found');
       }
-      showToast('Project loaded');
-    } else {
-      showToast('No saved project found');
+    } catch (error) {
+      showToast('Error loading project: ' + error.message);
     }
   };
 
   // Generate script
-  editorModal.querySelector('.generate-script').onclick = () => {
-    const genre = editorModal.querySelector('.genre-input').value;
-    const premise = editorModal.querySelector('.premise-input').value;
-    if (!genre || !premise) {
-      showToast('Please enter genre and premise');
+  editorModal.querySelector('.generate-script').onclick = async () => {
+    const genreInput = editorModal.querySelector('.genre-input');
+    const premiseInput = editorModal.querySelector('.premise-input');
+    const genre = genreInput.value.trim();
+    const premise = premiseInput.value.trim();
+
+    if (!genre) {
+      showToast('Please enter a genre');
+      genreInput.focus();
+      return;
+    }
+    if (!premise) {
+      showToast('Please enter a premise');
+      premiseInput.focus();
+      return;
+    }
+    if (premise.length < 10) {
+      showToast('Premise should be at least 10 characters');
+      premiseInput.focus();
       return;
     }
 
-    // Mock AI generation
-    const scenes = generateMockScenes(genre, premise);
-    displayScenes(editorModal, scenes);
+    const btn = editorModal.querySelector('.generate-script');
+    const textSpan = btn.querySelector('.generate-text');
+    const spinner = btn.querySelector('.loading-spinner');
 
-    // Save scenes to project
-    const project = { genre, premise, scenes };
-    localStorage.setItem('cutai-project', JSON.stringify(project));
+    btn.disabled = true;
+    textSpan.classList.add('hidden');
+    spinner.classList.remove('hidden');
+
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Mock AI generation
+      const scenes = generateMockScenes(genre, premise);
+      displayScenes(editorModal, scenes);
+
+      // Save scenes to project
+      const project = { genre, premise, scenes };
+      localStorage.setItem('cutai-project', JSON.stringify(project));
+
+      showToast('Storyboard generated successfully!');
+    } catch (error) {
+      showToast('Error generating storyboard: ' + error.message);
+    } finally {
+      btn.disabled = false;
+      textSpan.classList.remove('hidden');
+      spinner.classList.add('hidden');
+    }
   };
 
   function generateMockScenes(genre, premise) {
