@@ -29,209 +29,17 @@ const USE_CASES = [
 
 export function VideoAgentPage() {
     const container = document.createElement('div');
-    container.className = 'w-full h-full bg-app-bg text-white font-sans';
+    container.className = 'w-full h-full flex flex-col items-center justify-center bg-app-bg relative p-4 md:p-6 overflow-y-auto custom-scrollbar overflow-x-hidden';
 
-    // Add styles
-    const style = document.createElement('style');
-    style.textContent = `
-        body { background:#0b0b0c; }
-
-        .card {
-          background: rgba(17,17,17,0.9);
-          backdrop-filter: blur(20px);
-          border:1px solid rgba(255,255,255,0.08);
-          border-radius:1.5rem;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-        }
-
-        .subtle-card {
-          background: rgba(255,255,255,0.03);
-          border:1px solid rgba(255,255,255,0.05);
-          border-radius:1rem;
-          transition: all 0.25s ease;
-        }
-
-        .subtle-card:hover {
-          border-color: rgba(139,92,246,0.3);
-          transform: translateY(-2px);
-        }
-
-        .goal-btn {
-          background: rgba(255,255,255,0.05);
-          border:1px solid rgba(255,255,255,0.08);
-          padding:12px 14px;
-          border-radius:12px;
-          font-size:14px;
-          text-align:left;
-          transition: all 0.25s ease;
-        }
-
-        .goal-btn:hover {
-          border-color: rgba(139,92,246,0.3);
-          background: rgba(255,255,255,0.08);
-          transform: translateY(-2px);
-        }
-
-        .primary-btn {
-          background:#a855f7;
-          color:black;
-          font-weight:900;
-          border-radius:12px;
-          padding:10px 16px;
-          transition: all 0.2s ease;
-        }
-
-        .primary-btn:hover {
-          transform: scale(1.04);
-          box-shadow: 0 0 20px rgba(168,85,247,0.6);
-        }
-
-        .ghost-btn {
-          background: rgba(255,255,255,0.06);
-          border:1px solid rgba(255,255,255,0.08);
-          color: rgba(255,255,255,0.88);
-          border-radius: 12px;
-          padding: 10px 14px;
-          transition: all 0.2s ease;
-        }
-
-        .ghost-btn:hover {
-          background: rgba(255,255,255,0.1);
-          border-color: rgba(139,92,246,0.25);
-        }
-
-        .hero-banner {
-          position: relative;
-          overflow: hidden;
-          min-height: 180px;
-          background:
-            radial-gradient(circle at 20% 20%, rgba(168,85,247,0.25), transparent 30%),
-            radial-gradient(circle at 80% 30%, rgba(59,130,246,0.18), transparent 30%),
-            linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
-        }
-
-        .hero-banner::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(17,17,17,0.95), rgba(17,17,17,0.25), transparent);
-          pointer-events: none;
-        }
-
-        .status-pill {
-          background: rgba(168,85,247,0.12);
-          border: 1px solid rgba(168,85,247,0.25);
-          color: #d8b4fe;
-          border-radius: 999px;
-          padding: 6px 10px;
-          font-size: 11px;
-          font-weight: 700;
-        }
-
-        .timeline-track {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 14px;
-          min-height: 56px;
-        }
-
-        .timeline-block {
-          height: 34px;
-          border-radius: 10px;
-          background: linear-gradient(135deg, rgba(168,85,247,0.32), rgba(255,255,255,0.08));
-          border: 1px solid rgba(168,85,247,0.22);
-          color: rgba(255,255,255,0.92);
-          font-size: 11px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-          flex-shrink: 0;
-        }
-
-        .mini-label {
-          color: rgba(255,255,255,0.42);
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-        }
-
-        .chat-bubble-user {
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 14px;
-          padding: 10px 12px;
-        }
-
-        .chat-bubble-agent {
-          background: rgba(168,85,247,0.08);
-          border: 1px solid rgba(168,85,247,0.16);
-          border-radius: 14px;
-          padding: 10px 12px;
-        }
-
-        .progress-bar {
-          background: linear-gradient(90deg, #a855f7, #c084fc);
-          box-shadow: 0 0 18px rgba(168,85,247,0.45);
-        }
-
-        .workspace-grid {
-          display: grid;
-          grid-template-columns: 240px minmax(0, 1.7fr) 300px;
-          gap: 1rem;
-          align-items: start;
-        }
-
-        .preview-stage {
-          position: relative;
-          min-height: 620px;
-          border-radius: 1.25rem;
-          background:
-            radial-gradient(circle at center, rgba(168,85,247,0.08), transparent 35%),
-            #000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .preview-stage video {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
-          background: #000;
-        }
-
-        @media (max-width: 1535px) {
-          .workspace-grid {
-            grid-template-columns: 220px minmax(0, 1.55fr) 280px;
-          }
-
-          .preview-stage {
-            min-height: 560px;
-          }
-        }
-
-        @media (max-width: 1279px) {
-          .workspace-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .preview-stage {
-            min-height: 480px;
-          }
-        }
-    `;
-    container.appendChild(style);
+    // AbortController for cancelling async operations
+    const abortController = new AbortController();
 
     const urlParams = new URLSearchParams(window.location.search);
     const videoId = urlParams.get('videoId') || '';
     const videoUrl = urlParams.get('videoUrl') || '';
 
-    let jobs = [];
-    let currentProgress = 0;
+    let processingQueue = [];
+    let isProcessing = false;
     
     container.innerHTML = `
 <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
@@ -505,367 +313,48 @@ function planTasks(intent) {
   return plans[intent] || ['analyze-video', 'build-plan'];
 }
 
-let jobs = [];
-let currentProgress = 0;
+    let processingQueue = [];
+    let isProcessing = false;
 
-async function runTasks(tasks) {
-  const progressBar = document.getElementById('job-progress');
-  const statusText = document.getElementById('job-status-text');
-  for (let i = 0; i < tasks.length; i++) {
-    const t = tasks[i];
-    log('Running: ' + t, 'agent');
-    statusText.textContent = 'Running ' + t + '...';
-    currentProgress = Math.round(((i + 1) / tasks.length) * 100);
-    progressBar.style.width = currentProgress + '%';
-    await new Promise(r => setTimeout(r, 700));
-  }
-  statusText.textContent = 'Plan completed.';
-  log('✅ Done', 'agent');
-}
+    // ==========================================
+    // 1. HERO SECTION
+    // ==========================================
+    const hero = document.createElement('div');
+    hero.className = 'flex flex-col items-center mb-8 md:mb-12 animate-fade-in-up transition-all duration-700 w-full max-w-5xl';
+    const heroBanner = createHeroSection('videoagent', 'h-32 md:h-44 mb-4');
+    if (heroBanner) {
+        const heroContent = document.createElement('div');
+        heroContent.className = 'absolute bottom-0 left-0 right-0 p-6 z-10';
+        heroContent.innerHTML = `
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight mb-1">VideoAgent</h1>
+            <p class="text-white/60 text-sm font-medium">AI-powered video processing & enhancement</p>
+        `;
+        heroBanner.appendChild(heroContent);
+        hero.appendChild(heroBanner);
+    }
+    container.appendChild(hero);
 
-function createJob(tasks) {
-  const job = { id: Date.now(), tasks, status: 'running' };
-  jobs.push(job);
-  executeJob(job);
-}
+    // Main content wrapper with max-width
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'w-full max-w-5xl relative z-40 animate-fade-in-up';
+    contentWrapper.style.animationDelay = '0.1s';
 
-async function executeJob(job) {
-  await runTasks(job.tasks);
-  job.status = 'done';
-}
+    contentWrapper.innerHTML = `
+        <!-- Back Button -->
+        <div class="mb-6">
+            <button id="back-btn" class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all text-white/70 hover:text-white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Video
+            </button>
+        </div>
 
-const chat = document.getElementById('chat');
-const input = document.getElementById('input');
-const planPreview = document.getElementById('plan-preview');
+        <!-- Main Content -->
+        <div class="flex flex-col lg:flex-row gap-6">
 
-input.addEventListener('keydown', async (e) => {
-  if (e.key === 'Enter') {
-    const val = input.value.trim();
-    if (!val) return;
-    input.value = '';
-
-    log(val, 'user');
-    const intent = parseIntent(val);
-    const tasks = planTasks(intent);
-    const planText = tasks.join(' → ');
-    log('Plan: ' + planText, 'agent');
-    planPreview.textContent = planText;
-    createJob(tasks);
-  }
-});
-
-function log(text, type = 'agent') {
-  const el = document.createElement('div');
-  el.className = type === 'user' ? 'chat-bubble-user text-sm text-white/85' : 'chat-bubble-agent text-sm text-white/80';
-  el.textContent = type === 'user' ? 'You: ' + text : 'Agent: ' + text;
-  chat.appendChild(el);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-document.querySelectorAll('#quick-actions [data-prompt]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    input.value = btn.dataset.prompt;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-  });
-});
-
-// Handle start AI plan button
-document.getElementById('start-ai-plan').addEventListener('click', () => {
-  log('Starting AI planning session...', 'agent');
-  planPreview.textContent = 'Analyzing video → Building plan → Ready for execution';
-});
-    `;
-    container.appendChild(script);
-
-    return container;
-}
-            const usecaseId = btn.dataset.usecase;
-            const usecase = USE_CASES.find(u => u.id === usecaseId);
-            runUseCase(usecase);
-        };
-    });
-    
-    // Full pipeline button
-    container.querySelector('#run-full-pipeline').onclick = async () => {
-        await runFullPipeline();
-    };
-    
-    // Cancel processing
-    container.querySelector('#cancel-processing').onclick = () => {
-        container.querySelector('#processing-modal').classList.add('hidden');
-        isProcessing = false;
-        showToast('Processing cancelled', 'info');
-    };
-    
-    const runTool = async (tool) => {
-        if (isProcessing) {
-            showToast('Already processing', 'error');
-            return;
-        }
-        
-        // Check if Supabase is configured
-        if (!isSupabaseConfigured()) {
-            showToast('Backend not configured. Using offline mode.', 'info');
-            await simulateToolProcessing(tool);
-            return;
-        }
-        
-        // Validate video is loaded
-        if (!videoId && !videoUrl) {
-            showToast('Please load a video first', 'error');
-            return;
-        }
-        
-        isProcessing = true;
-        addToQueue(tool.name, 'pending');
-        
-        const modal = container.querySelector('#processing-modal');
-        const nameEl = container.querySelector('#processing-name');
-        const stepsEl = container.querySelector('#processing-steps');
-        const progressBar = container.querySelector('#modal-progress-bar');
-        const percentEl = container.querySelector('#processing-percent');
-        
-        nameEl.textContent = tool.description;
-        modal.classList.remove('hidden');
-        
-        try {
-            // Call the videoagent API
-            const supabaseUrl = getSupabaseUrl();
-            const response = await fetch(`${supabaseUrl}/functions/v1/videoagent`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'process-tool',
-                    tool: tool.id,
-                    toolName: tool.name,
-                    videoId: videoId,
-                    videoUrl: videoUrl,
-                    settings: {
-                        quality: container.querySelector('select')?.value || '1080p',
-                        format: container.querySelectorAll('select')[1]?.value || 'MP4'
-                    }
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            // If we get a jobId, poll for completion
-            if (result.jobId) {
-                await pollToolJob(result.jobId, tool, stepsEl, progressBar, percentEl, abortController.signal);
-            } else if (result.status === 'completed') {
-                // Direct completion
-                updateProgress(stepsEl, progressBar, percentEl, 100);
-                await new Promise(r => setTimeout(r, 500));
-            } else {
-                // Fallback to simulation if no proper response
-                throw new Error('Invalid response');
-            }
-            
-            modal.classList.add('hidden');
-            isProcessing = false;
-            updateQueueItem(tool.name, 'complete');
-            showResults(tool);
-            showToast(`${tool.name} completed!`, 'success');
-            
-        } catch (error) {
-            console.error('[VideoAgent] Tool error:', error);
-            showToast('Processing failed. Using offline mode.', 'error');
-            modal.classList.add('hidden');
-            
-            // Fallback to simulation
-            await simulateToolProcessing(tool);
-        }
-    };
-    
-    const runUseCase = async (usecase) => {
-        if (isProcessing) {
-            showToast('Already processing', 'error');
-            return;
-        }
-        
-        // Check if Supabase is configured
-        if (!isSupabaseConfigured()) {
-            showToast('Backend not configured. Using offline mode.', 'info');
-            await simulateUseCaseProcessing(usecase);
-            return;
-        }
-        
-        // Validate video is loaded
-        if (!videoId && !videoUrl) {
-            showToast('Please load a video first', 'error');
-            return;
-        }
-        
-        isProcessing = true;
-        addToQueue(usecase.name, 'pending');
-        
-        const modal = container.querySelector('#processing-modal');
-        const nameEl = container.querySelector('#processing-name');
-        const stepsEl = container.querySelector('#processing-steps');
-        const progressBar = container.querySelector('#modal-progress-bar');
-        const percentEl = container.querySelector('#processing-percent');
-        
-        nameEl.textContent = usecase.description;
-        modal.classList.remove('hidden');
-        
-        try {
-            const supabaseUrl = getSupabaseUrl();
-            const response = await fetch(`${supabaseUrl}/functions/v1/videoagent`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'process-usecase',
-                    usecase: usecase.id,
-                    usecaseName: usecase.name,
-                    videoId: videoId,
-                    videoUrl: videoUrl
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.jobId) {
-                await pollToolJob(result.jobId, { name: usecase.name }, stepsEl, progressBar, percentEl, abortController.signal);
-            } else if (result.status === 'completed') {
-                updateProgress(stepsEl, progressBar, percentEl, 100);
-                await new Promise(r => setTimeout(r, 500));
-            } else {
-                throw new Error('Invalid response');
-            }
-            
-            modal.classList.add('hidden');
-            isProcessing = false;
-            updateQueueItem(usecase.name, 'complete');
-            showResults({ name: usecase.name, icon: usecase.icon });
-            showToast(`${usecase.name} completed!`, 'success');
-            
-        } catch (error) {
-            console.error('[VideoAgent] UseCase error:', error);
-            showToast('Processing failed. Using offline mode.', 'error');
-            modal.classList.add('hidden');
-            await simulateUseCaseProcessing(usecase);
-        }
-    };
-    
-    const runFullPipeline = async () => {
-        if (isProcessing) {
-            showToast('Already processing', 'error');
-            return;
-        }
-        
-        // Check if Supabase is configured
-        if (!isSupabaseConfigured()) {
-            showToast('Backend not configured. Using offline mode.', 'info');
-            await simulateFullPipeline();
-            return;
-        }
-        
-        // Validate video is loaded
-        if (!videoId && !videoUrl) {
-            showToast('Please load a video first', 'error');
-            return;
-        }
-        
-        isProcessing = true;
-        
-        const modal = container.querySelector('#processing-modal');
-        const nameEl = container.querySelector('#processing-name');
-        const stepsEl = container.querySelector('#processing-steps');
-        const progressBar = container.querySelector('#modal-progress-bar');
-        const percentEl = container.querySelector('#processing-percent');
-        
-        nameEl.textContent = 'Running full AI processing pipeline';
-        modal.classList.remove('hidden');
-        
-        try {
-            const supabaseUrl = getSupabaseUrl();
-            const response = await fetch(`${supabaseUrl}/functions/v1/videoagent`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'full-pipeline',
-                    videoId: videoId,
-                    videoUrl: videoUrl,
-                    settings: {
-                        quality: '1080p',
-                        format: 'MP4'
-                    }
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.jobId) {
-                await pollPipelineJob(result.jobId, stepsEl, progressBar, percentEl, abortController.signal);
-            } else if (result.status === 'completed') {
-                updateProgress(stepsEl, progressBar, percentEl, 100);
-                await new Promise(r => setTimeout(r, 500));
-            } else {
-                throw new Error('Invalid response');
-            }
-            
-            modal.classList.add('hidden');
-            isProcessing = false;
-            showToast('Full pipeline completed!', 'success');
-            
-        } catch (error) {
-            console.error('[VideoAgent] Pipeline error:', error);
-            showToast('Pipeline failed. Using offline mode.', 'error');
-            modal.classList.add('hidden');
-            await simulateFullPipeline();
-        }
-    };
-    
-    const addToQueue = (name, status) => {
-        processingQueue.push({ name, status, id: Date.now() });
-        renderQueue();
-    };
-    
-    const updateQueueItem = (name, status) => {
-        const item = processingQueue.find(q => q.name === name);
-        if (item) item.status = status;
-        renderQueue();
-    };
-    
-    const renderQueue = () => {
-        const queueEl = container.querySelector('#queue-list');
-        
-        if (processingQueue.length === 0) {
-            queueEl.innerHTML = '<div class="text-sm text-muted italic p-2">No jobs in queue</div>';
-            return;
-        }
-        
-        queueEl.innerHTML = processingQueue.map(item => `
-            <div class="flex items-center gap-2 p-2 bg-white/5 rounded-xl">
-                ${item.status === 'complete' ? `
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-primary">
-                        <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                ` : item.status === 'running' ? `
-                    <div class="animate-spin w-3 h-3 border border-primary border-t-transparent rounded-full"></div>
-                ` : `
-                    <span class="w-3 h-3 rounded-full bg-muted"></span>
-                `}
-                <span class="text-xs text-white flex-1">${item.name}</span>
-            </div>
+            <!-- Left: Video Preview + Use Cases -->
+            <div class="flex-1 flex flex-col">
         `).join('');
     };
     
