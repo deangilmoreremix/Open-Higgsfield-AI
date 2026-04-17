@@ -1,18 +1,25 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+<<<<<<< HEAD
     "isolatedModules": true,
     "noEmit": false,
     "outDir": "./dist",
     "types": ["node"]
+=======
+    "noEmit": false,
+    "outDir": ".",
+    "declaration": false,
+    "types": ["node", "jest"]
+>>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
   },
   "include": [
     "**/*.ts"

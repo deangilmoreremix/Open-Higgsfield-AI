@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Netlify Configuration - Single Source of Truth
 # This file consolidates all Netlify-specific configuration for the Open-Higgsfield-AI monorepo
 
@@ -16,6 +17,17 @@
   NODE_VERSION = "20.18.1"
   COREPACK_INTEGRITY_KEYS = "0"
   PNPM_FLAGS = "--no-frozen-lockfile"
+=======
+[build]
+  publish = "dist"
+  # Use pnpm for consistent monorepo workspace support
+  command = "pnpm install && pnpm run build:all"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NODE_PACKAGE_MANAGER = "pnpm"
+>>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
 
   # Production optimizations
   NODE_OPTIONS = "--max-old-space-size=4096"
