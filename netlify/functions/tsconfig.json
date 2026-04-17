@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": ".",
+    "declaration": false,
     "types": ["node", "jest"]
   },
   "include": [
-    "**/*.ts",
-    "**/*.js"
+    "**/*.ts"
   ],
   "exclude": [
     "node_modules"

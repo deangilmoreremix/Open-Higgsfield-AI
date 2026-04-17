@@ -14,7 +14,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:all": "npm run build:remix-go && npm run build",
-    "build:remix-go": "cd apps/remix-go && npm run build && cd ../.. && mkdir -p public/apps/remix-go && cp -r apps/remix-go/dist/* public/apps/remix-go/",
+    "build:remix-go": "cd apps/remix-go && npm run build && cd ../.. && if [ -d apps/remix-go/dist ]; then mkdir -p public/apps/remix-go && cp -r apps/remix-go/dist/* public/apps/remix-go/; else echo '❌ Remix-go build failed: dist/ missing'; exit 1; fi",
     "build:analyze": "vite build --mode analyze",
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.ts",

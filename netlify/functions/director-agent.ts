@@ -135,4 +135,53 @@ async function handleFacelessVideo(collection, prompt) {
 
     return {
       video_url: stream.url,
-    
+      status: 'completed'
+    }
+  } catch (error) {
+    console.error('Faceless video error:', error)
+    return {
+      error: error.message,
+      status: 'failed'
+    }
+  }
+}
+
+async function handleAIAd(collection, prompt) {
+  return {
+    message: 'AI ad creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handleLyricVideo(collection, prompt) {
+  return {
+    message: 'Lyric video creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handleVoiceover(collection, prompt) {
+  return {
+    message: 'Voiceover creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handleKidsStory(collection, prompt) {
+  return {
+    message: 'Kids story creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handlePhotoMontage(collection, prompt) {
+  return {
+    message: 'Photo montage creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+// Helper function (placeholder)
+async function generateScript(topic) {
+  return `Script about ${topic}: This is an engaging narrative...`
+}

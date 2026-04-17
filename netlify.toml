@@ -1,13 +1,12 @@
 [build]
   publish = "dist"
-  # Use pnpm for better monorepo support
-  command = "pnpm install && npm run build:all"
-
-[functions]
-  directory = "netlify/functions"
+  # Use pnpm for consistent monorepo workspace support
+  command = "pnpm install && pnpm run build:all"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
+  NODE_PACKAGE_MANAGER = "pnpm"
 
 # Environment variables are set via Netlify CLI or dashboard
 # Do not commit secrets to this file
