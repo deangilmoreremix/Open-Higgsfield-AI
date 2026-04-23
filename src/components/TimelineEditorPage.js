@@ -13,6 +13,15 @@ import TIMELINE_DESIGN_SYSTEM, { enforceDesignSystem } from '../lib/designSystem
 import { createVideoPreview } from '../lib/videoPlayer.js';
 // Import rendiv animation primitives
 import { interpolate, spring, blendColors, noise2D, useSequence, useSeries } from '../lib/editor/animationControls.jsx';
+
+// CineGen Feature Imports
+import { SpacesEditor } from './create/SpacesEditor.js';
+import { ElementsSystem } from './elements/ElementsSystem.js';
+import { LLMChat } from './llm/LLMChat.js';
+import { FillGapModal } from '../lib/editor/aiTools.js';
+import { ExtendModal } from '../lib/editor/extendTool.js';
+import { MusicGenerationModal } from '../lib/editor/musicGenerationTool.js';
+
 // ColorCorrectionSystem removed - file does not exist
 
 // Modal imports removed - app uses vanilla JS, not React
@@ -624,7 +633,7 @@ button, input, textarea, select { font: inherit; }
     if (document.getElementById('timeline-editor-styles')) return;
     const style = document.createElement('style');
     style.id = 'timeline-editor-styles';
-    style.textContent = styles;
+    style.textContent = styles + cineGenStyles;
     document.head.appendChild(style);
   }
 
@@ -671,7 +680,19 @@ button, input, textarea, select { font: inherit; }
       ],
       generateTypes: [['✍️', 'Text'], ['🖼️', 'Image'], ['🔄', 'Retake'], ['➡️', 'Extend'], ['🎞️', 'B-Roll']],
       quickCommands: ['⚡Generate','Retake','Extend','B-Roll'],
-      railActions: [['⚡', 'Generate', true], ['✂️', 'Split'], ['🎬', 'Scenes'], ['💬', 'Subtitle'], ['🎞️', 'B-Roll'], ['⏱️', 'Speed'], ['🪄', 'Stabilize'], ['📝', 'Text'], ['🔄', 'Transitions'], ['🎬', 'AI Video'], ['🎥', 'Recorder'], ['🎙️', 'Enhanced Recorder'], ['📋', 'Templates'], ['👀', 'Preview Template'], ['📱', 'Social'], ['📧', 'Email Campaign'], ['🔗', 'URL Video'], ['📸', 'Page Shot'], ['👥', 'Contacts'], ['🎨', 'Canvas'], ['🏷️', 'Token Editor'], ['📦', 'Batch Generator'], ['🔄', 'Workflow'], ['👤', 'Personalization'], ['✏️', 'Personalization Editor']],
+      railActions: [
+        // CineGen Features
+        ['🎭', 'Elements', false],
+        ['🤖', 'AI Chat', false],
+        ['🔗', 'Spaces', false],
+        ['🎯', 'SAM3', false],
+        ['🎬', 'Fill Gap', false],
+        ['📏', 'Extend', false],
+        ['🎼', 'Music', false],
+
+        // Existing features
+        ['⚡', 'Generate', true], ['✂️', 'Split'], ['🎬', 'Scenes'], ['💬', 'Subtitle'], ['🎞️', 'B-Roll'], ['⏱️', 'Speed'], ['🪄', 'Stabilize'], ['📝', 'Text'], ['🔄', 'Transitions'], ['🎬', 'AI Video'], ['🎥', 'Recorder'], ['🎙️', 'Enhanced Recorder'], ['📋', 'Templates'], ['👀', 'Preview Template'], ['📱', 'Social'], ['📧', 'Email Campaign'], ['🔗', 'URL Video'], ['📸', 'Page Shot'], ['👥', 'Contacts'], ['🎨', 'Canvas'], ['🏷️', 'Token Editor'], ['📦', 'Batch Generator'], ['🔄', 'Workflow'], ['👤', 'Personalization'], ['✏️', 'Personalization Editor']
+      ],
       chat: [
         { role: 'user', text: 'Generate a better opening shot' },
         { role: 'ai', text: 'Opening idea ready. Use Generate or Retake.' }
@@ -2089,6 +2110,196 @@ button, input, textarea, select { font: inherit; }
     }
 
     // Modal integration functions for timeline toolbar
+
+    // CineGen Modal Functions
+    function openElementsPanel(state, showToast) {
+      try {
+        // Open elements panel in sidebar or modal
+        const elementsPanel = document.querySelector('#elementsPanel');
+        if (elementsPanel) {
+          elementsPanel.style.display = 'block';
+          showToast('Elements panel opened');
+        } else {
+          // Create elements panel
+          const panel = document.createElement('div');
+          panel.id = 'elementsPanel';
+          panel.className = 'side-panel';
+          panel.innerHTML = `
+            <div class="panel-header">
+              <h3>🎭 Elements</h3>
+              <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+            </div>
+            <div class="panel-content">
+              <p>Elements system integration coming soon...</p>
+            </div>
+          `;
+          document.body.appendChild(panel);
+          panel.style.display = 'block';
+        }
+      } catch (error) {
+        showToast('Failed to open Elements panel', 'error');
+      }
+    }
+
+    function openLLMChatPanel(state, showToast) {
+      try {
+        const chatPanel = document.querySelector('#llmChatPanel');
+        if (chatPanel) {
+          chatPanel.style.display = 'block';
+          showToast('AI Chat opened');
+        } else {
+          // Create LLM chat panel
+          const panel = document.createElement('div');
+          panel.id = 'llmChatPanel';
+          panel.className = 'side-panel';
+          panel.innerHTML = `
+            <div class="panel-header">
+              <h3>🤖 AI Assistant</h3>
+              <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+            </div>
+            <div class="panel-content">
+              <p>LLM Chat integration coming soon...</p>
+            </div>
+          `;
+          document.body.appendChild(panel);
+          panel.style.display = 'block';
+        }
+      } catch (error) {
+        showToast('Failed to open AI Chat', 'error');
+      }
+    }
+
+    function openSpacesEditor(state, showToast) {
+      try {
+        const spacesPanel = document.querySelector('#spacesEditorPanel');
+        if (spacesPanel) {
+          spacesPanel.style.display = 'block';
+          showToast('Spaces Editor opened');
+        } else {
+          // Create Spaces editor panel
+          const panel = document.createElement('div');
+          panel.id = 'spacesEditorPanel';
+          panel.className = 'fullscreen-panel';
+          panel.innerHTML = `
+            <div class="panel-header">
+              <h3>🔗 Spaces - Node-Based Workflow Editor</h3>
+              <button class="close-btn" onclick="this.parentElement.style.display='none'">×</button>
+            </div>
+            <div class="panel-content">
+              <p>Node-based workflow editor integration coming soon...</p>
+            </div>
+          `;
+          document.body.appendChild(panel);
+          panel.style.display = 'block';
+        }
+      } catch (error) {
+        showToast('Failed to open Spaces Editor', 'error');
+      }
+    }
+
+    function openSAM3Segmentation(state, showToast) {
+      try {
+        // Open SAM3 segmentation modal
+        const selectedClips = state.clips.filter(c => c.selected);
+        if (selectedClips.length === 0) {
+          showToast('Please select a clip to apply SAM3 segmentation');
+          return;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+          <div class="modal-content sam3-modal">
+            <div class="modal-header">
+              <h3>🎯 SAM3 Segmentation</h3>
+              <button class="modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+              <p>SAM3 segmentation tool coming soon...</p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } catch (error) {
+        showToast('Failed to open SAM3 Segmentation', 'error');
+      }
+    }
+
+    function openFillGapModal(state, showToast) {
+      try {
+        const selectedClips = state.clips.filter(c => c.selected);
+        if (selectedClips.length < 2) {
+          showToast('Please select two adjacent clips to fill gap between them');
+          return;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+          <div class="modal-content fill-gap-modal">
+            <div class="modal-header">
+              <h3>🎬 Fill Gap with AI</h3>
+              <button class="modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+              <p>AI-powered gap filling tool coming soon...</p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } catch (error) {
+        showToast('Failed to open Fill Gap tool', 'error');
+      }
+    }
+
+    function openExtendModal(state, showToast) {
+      try {
+        const selectedClips = state.clips.filter(c => c.selected);
+        if (selectedClips.length === 0) {
+          showToast('Please select a clip to extend');
+          return;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+          <div class="modal-content extend-modal">
+            <div class="modal-header">
+              <h3>📏 Extend Clip with AI</h3>
+              <button class="modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+              <p>AI-powered clip extension tool coming soon...</p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } catch (error) {
+        showToast('Failed to open Extend tool', 'error');
+      }
+    }
+
+    function openMusicGenerationModal(state, showToast) {
+      try {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+          <div class="modal-content music-modal">
+            <div class="modal-header">
+              <h3>🎼 Generate Music</h3>
+              <button class="modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+              <p>AI music generation tool coming soon...</p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } catch (error) {
+        showToast('Failed to open Music Generation', 'error');
+      }
+    }
+
     function openAIVideoCreatorModal(state, showToast) {
       try {
         const modal = new AIVideoCreator({
@@ -2319,6 +2530,29 @@ button, input, textarea, select { font: inherit; }
         // Add specific functionality for each rail action
         button.addEventListener('click', async () => {
           switch (label) {
+            // CineGen Features
+            case 'Elements':
+              openElementsPanel(state, showToast);
+              break;
+            case 'AI Chat':
+              openLLMChatPanel(state, showToast);
+              break;
+            case 'Spaces':
+              openSpacesEditor(state, showToast);
+              break;
+            case 'SAM3':
+              openSAM3Segmentation(state, showToast);
+              break;
+            case 'Fill Gap':
+              openFillGapModal(state, showToast);
+              break;
+            case 'Extend':
+              openExtendModal(state, showToast);
+              break;
+            case 'Music':
+              openMusicGenerationModal(state, showToast);
+              break;
+
             case 'Generate':
               // Trigger generation with current prompt
               await generateClip();
@@ -3138,6 +3372,92 @@ button, input, textarea, select { font: inherit; }
       }
     };
   }
+
+  // CineGen Panel and Modal Styles
+  const cineGenStyles = `
+    /* Side Panels for CineGen Features */
+    .side-panel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 400px;
+      height: 100vh;
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+      z-index: 1000;
+      display: none;
+      overflow-y: auto;
+    }
+
+    .fullscreen-panel {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 1000;
+      display: none;
+      overflow: auto;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .close-btn:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .panel-content {
+      padding: 24px;
+    }
+
+    /* Modal Styles for CineGen Tools */
+    .sam3-modal .modal-content,
+    .fill-gap-modal .modal-content,
+    .extend-modal .modal-content,
+    .music-modal .modal-content {
+      max-width: 800px;
+    }
+
+    .sam3-modal .modal-body,
+    .fill-gap-modal .modal-body,
+    .extend-modal .modal-body,
+    .music-modal .modal-body {
+      padding: 24px;
+      text-align: center;
+    }
+
+    .sam3-modal p,
+    .fill-gap-modal p,
+    .extend-modal p,
+    .music-modal p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+  `;
 
   // Inject styles and initialize the timeline editor app
   injectStyles();
