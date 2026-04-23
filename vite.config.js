@@ -81,6 +81,11 @@ export default defineConfig({
                 target: "http://localhost:5173",
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/apps\/remix-go/, "")
+            },
+            "/apps/vfx-studio": {
+                target: "http://localhost:8083",
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/apps\/vfx-studio/, "")
             }
         }
     },

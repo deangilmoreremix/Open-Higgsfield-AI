@@ -140,6 +140,9 @@ export async function navigate(page, params = {}) {
       const templateId = page.replace('template/', '');
       const mod = await import('../components/TemplateStudio.js');
       element = mod.TemplateStudio(templateId);
+    } else if (page === 'vfx-studio') {
+      window.location.href = '/apps/vfx-studio';
+      return;
     } else if (pageLoaders[page]) {
       element = await pageLoaders[page]();
     } else {

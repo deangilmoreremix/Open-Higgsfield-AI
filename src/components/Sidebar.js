@@ -31,6 +31,7 @@ export function Sidebar(navigate) {
     { id: 'assist', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.09 3.26L16 6l-2.91.74L12 10l-1.09-3.26L8 6l2.91-.74L12 2z"/><path d="M5 15l.54 1.63L7 17.17l-1.46.37L5 19.17l-.54-1.63L3 17.17l1.46-.37L5 15z"/><path d="M19 11l.54 1.63L21 13.17l-1.46.37L19 15.17l-.54-1.63L17 13.17l1.46-.37L19 11z"/></svg>', label: 'Assist' },
     { id: 'commits', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="M8 3v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3"/><path d="M14 9h-4"/><path d="M14 12h-2"/><path d="M14 15h-4"/></svg>', label: 'Commits (0)' },
     { id: 'remix-go', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 9l5 3-5 3V9z"/><circle cx="16" cy="14" r="2"/></svg>', label: 'Remix Go' },
+    { id: 'vfx-studio', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2L3 6v12l6-4"/><path d="M15 2l6 4v12l-6-4"/><path d="M3 10l6 4 6-4"/><circle cx="9" cy="16" r="2"/><circle cx="15" cy="16" r="2"/></svg>', label: 'VFX Studio' },
   ];
 
   const bottomItems = [
