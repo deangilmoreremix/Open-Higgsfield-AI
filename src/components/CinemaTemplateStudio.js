@@ -33,7 +33,7 @@ export function CinemaTemplateStudio() {
   container.className = 'w-full h-full flex flex-col bg-black overflow-hidden';
 
   // State
-  let registry = getTemplateRegistry();
+  const registry = getTemplateRegistry();
   let currentTemplate = null;
   let currentMode = 'quick'; // 'quick' or 'advanced'
   let currentInputs = {};
@@ -67,23 +67,20 @@ export function CinemaTemplateStudio() {
   // BROWSE VIEW
   // ================================
   function renderBrowseView() {
+    // Clear container
+    container.innerHTML = '';
+
+    // Header
     const header = document.createElement('div');
     header.className = 'flex items-center justify-between p-4 border-b border-white/10 bg-black/50';
     header.innerHTML = `
-      <div class="flex items-center gap-4">
-        <button id="back-btn" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
-            <span class="text-xl">🎬</span>
-          </div>
-          <div>
-            <h1 class="text-xl font-black text-white">CINEMATIC TEMPLATES</h1>
-            <p class="text-xs text-secondary">${registry.getAll().length} Templates</p>
-          </div>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+          <span class="text-xl">🎬</span>
+        </div>
+        <div>
+          <h1 class="text-xl font-black text-white">CINEMATIC TEMPLATES</h1>
+          <p class="text-xs text-secondary">${registry.getAll().length} Templates Available</p>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -96,9 +93,71 @@ export function CinemaTemplateStudio() {
         <button id="custom-btn" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-secondary text-sm rounded-lg transition-colors flex items-center gap-2">
           <span>✨</span> My Templates
         </button>
+      </div>
+    `;
+    container.appendChild(header);
+
+    // Main content area
+    const content = document.createElement('div');
+    content.className = 'flex-1 overflow-auto p-6';
+
+    // Template grid
+    const grid = document.createElement('div');
+    grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+
+    // Get templates and render cards
+    const templates = registry.getAll();
+    for (let i = 0; i < templates.length; i++) {
+      const card = createTemplateCard(templates[i]);
+      grid.appendChild(card);
+    }
+
+    content.appendChild(grid);
+    container.appendChild(content);
+
+    // Event listeners
+    container.querySelector('#favorites-btn').onclick = () => {
+      showToast('Favorites feature coming soon!', 'info');
+    };
+
+    container.querySelector('#recent-btn').onclick = () => {
+      showToast('Recent templates feature coming soon!', 'info');
+    };
+
+    container.querySelector('#custom-btn').onclick = () => {
+      showToast('Custom templates feature coming soon!', 'info');
+    };
+  }
+
+  function createTemplateCard(template) {
+    const card = document.createElement('div');
+    card.className = 'bg-white/5 hover:bg-white/10 rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:scale-105 border border-transparent hover:border-white/20';
+
+    card.innerHTML = `
+      <div class="flex items-start gap-4 mb-4">
+        <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+          ${template.icon}
         </div>
-      `;
-      render();
+        <div class="flex-1 min-w-0">
+          <h3 class="text-lg font-bold text-white mb-1 truncate">${escapeHtml(template.name)}</h3>
+          <p class="text-sm text-secondary">${template.category}</p>
+        </div>
+      </div>
+
+      <p class="text-sm text-white/70 mb-4 line-clamp-2">${escapeHtml(template.description)}</p>
+
+      <div class="flex items-center justify-between">
+        <div class="flex flex-wrap gap-1">
+          ${template.tags ? template.tags.slice(0, 2).map(tag => '<span class="px-2 py-0.5 bg-white/10 text-xs text-secondary rounded-full">' + tag + '</span>').join('') : ''}
+        </div>
+        <div class="text-xs text-secondary">
+          ${template.duration?.default || 30}s
+        </div>
+      </div>
+    `;
+
+    // Click handler
+    card.onclick = () => {
       selectTemplate(template);
     };
 
@@ -829,8 +888,8 @@ export function CinemaTemplateStudio() {
               ${(handoff.prompts || []).map((p, i) => `
                 <div class="bg-black/30 rounded-xl p-4">
                   <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-primary uppercase">${p.sceneNumber ? `Scene ${p.sceneNumber}` : 'Main Prompt'}</span>
-                    ${p.duration ? `<span class="text-xs text-white/50">${p.duration}s</span>` : ''}
+                    <span class="text-xs font-bold text-primary uppercase">${p.sceneNumber ? 'Scene ' + p.sceneNumber : 'Main Prompt'}</span>
+                    ${p.duration ? '<span class="text-xs text-white/50">' + p.duration + 's</span>' : ''}
                   </div>
                   <p class="text-sm text-white/80 leading-relaxed">${escapeHtml(p.prompt)}</p>
                 </div>
@@ -847,7 +906,7 @@ export function CinemaTemplateStudio() {
                   <div class="bg-black/30 rounded-xl p-3">
                     <div class="text-xs font-bold text-primary mb-1">Scene ${s.number}</div>
                     <div class="text-sm text-white truncate mb-1">${escapeHtml(s.name)}</div>
-                    <div class="text-xs text-white/50">${s.shots?.length || 0} shots • ${s.duration?.toFixed(0) || 0}s</div>
+                    <div class="text-xs text-white/50">${(s.shots?.length || 0) + ' shots • ' + (s.duration?.toFixed(0) || 0) + 's'}</div>
                   </div>
                 `).join('')}
               </div>
@@ -911,6 +970,7 @@ export function CinemaTemplateStudio() {
       render();
     });
   }
+}
 
   return container;
 }

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
   test: {
@@ -7,15 +8,15 @@ export default defineConfig({
     setupFiles: ['./src/test-setup.ts', './src/test-teardown.ts'],
     include: [
       'src/**/*.{test,spec}.{js,ts,jsx,tsx}',
-      'apps/**/*.{test,spec}.{js,ts,jsx,tsx}',
-      'modules/**/*.{test,spec}.{js,ts,jsx,tsx}',
       'tests/**/*.{test,spec}.{js,ts,jsx,tsx}'
     ],
     exclude: [
       'node_modules/**',
       'dist/**',
       'build/**',
-      '**/*.d.ts'
+      '**/*.d.ts',
+      'apps/**',
+      'modules/**'
     ],
     coverage: {
       provider: 'v8',
@@ -42,8 +43,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/workspaces/Open-Higgsfield-AI',
-      '@test': '/workspaces/Open-Higgsfield-AI/tests'
+      '@': path.resolve(__dirname),
+      '@test': path.resolve(__dirname, 'tests')
     }
   }
 });

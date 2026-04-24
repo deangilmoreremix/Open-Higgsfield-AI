@@ -10,10 +10,10 @@
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "axios": "^1.10.0",
     "lucide-react": "^0.460.0",
-    "axios": "^1.10.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -22,7 +22,7 @@
     "autoprefixer": "^10.4.20",
     "jsdom": "^29.0.1",
     "tailwindcss": "^4.1.18",
-    "vite": "^5.4.8",
+    "vite": "^7.3.2",
     "vitest": "^1.0.0"
   }
 }

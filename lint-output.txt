@@ -1,0 +1,1094 @@
+
+> open-higgsfield-ai@1.0.0 lint
+> eslint src --ext .js,.ts
+
+
+/workspaces/fixes-worktree/src/components/AdvancedDubbingStudio.js
+   2:10  warning  'AuthModal' is defined but never used                     no-unused-vars
+  20:9   warning  'isTranslating' is assigned a value but never used        no-unused-vars
+  20:9   error    'isTranslating' is never reassigned. Use 'const' instead  prefer-const
+  21:9   warning  'isDubbing' is assigned a value but never used            no-unused-vars
+  21:9   error    'isDubbing' is never reassigned. Use 'const' instead      prefer-const
+  22:9   warning  'previewAudioUrl' is assigned a value but never used      no-unused-vars
+  23:9   warning  'currentJobId' is assigned a value but never used         no-unused-vars
+  23:9   error    'currentJobId' is never reassigned. Use 'const' instead   prefer-const
+
+/workspaces/fixes-worktree/src/components/AssistPage.js
+  55:42  warning  'category' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/AuthModal.js
+  20:11  warning  'modalContent' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/AvatarStudio.js
+  66:23  warning  'type' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/ChatStudio.js
+  12:9  warning  'messages' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/CinemaStudio.js
+  633:14  warning  'e' is defined but never used    no-unused-vars
+  633:17  warning  Empty block statement            no-empty
+  657:18  warning  'err' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/CinemaTemplateStudio.js
+  976:1  error  Parsing error: Unexpected token
+
+/workspaces/fixes-worktree/src/components/CinematicTemplateWizard.js
+   17:3   warning  'SCENE_STRUCTURES' is defined but never used    no-unused-vars
+   19:3   warning  'CAMERA_MOVEMENTS' is defined but never used    no-unused-vars
+   20:3   warning  'PACING_OPTIONS' is defined but never used      no-unused-vars
+   24:3   warning  'RenderHandoff' is defined but never used       no-unused-vars
+   39:7   warning  'pickerRef' is assigned a value but never used  no-unused-vars
+  502:28  warning  'i' is defined but never used                   no-unused-vars
+  605:14  warning  'e' is defined but never used                   no-unused-vars
+
+/workspaces/fixes-worktree/src/components/DirectorPage.js
+    7:10  warning  'Tooltip' is defined but never used                    no-unused-vars
+    7:19  warning  'addTooltip' is defined but never used                 no-unused-vars
+   63:11  warning  'storyboardFrames' is assigned a value but never used  no-unused-vars
+  692:19  warning  'jobId' is assigned a value but never used             no-unused-vars
+
+/workspaces/fixes-worktree/src/components/DirectorPageRenderThemeRedesign.js
+     6:10  warning  'navigate' is defined but never used        no-unused-vars
+   281:13  warning  'jobId' is assigned a value but never used  no-unused-vars
+   716:26  error    'FileReader' is not defined                 no-undef
+   866:54  warning  Empty block statement                       no-empty
+  1549:41  warning  'iconKey' is defined but never used         no-unused-vars
+  1564:42  error    'Icon' is not defined                       no-undef
+
+/workspaces/fixes-worktree/src/components/EditorPage.js
+     6:10  warning  'createMediaPreview' is defined but never used           no-unused-vars
+    45:7   warning  'AI_TAGS' is assigned a value but never used             no-unused-vars
+    83:9   warning  'selectedTool' is assigned a value but never used        no-unused-vars
+    88:9   warning  'aiTags' is assigned a value but never used              no-unused-vars
+    88:9   error    'aiTags' is never reassigned. Use 'const' instead        prefer-const
+    89:9   warning  'uploadedUrl' is assigned a value but never used         no-unused-vars
+    94:9   error    'undoStack' is never reassigned. Use 'const' instead     prefer-const
+  1005:9   error    'mediaLibrary' is never reassigned. Use 'const' instead  prefer-const
+  1198:21  error    'videoId' is constant                                    no-const-assign
+  1200:25  error    'videoUrl' is constant                                   no-const-assign
+  1289:26  warning  'parseError' is defined but never used                   no-unused-vars
+  1646:11  warning  'generateNegative' is assigned a value but never used    no-unused-vars
+  1648:11  warning  'generateAspect' is assigned a value but never used      no-unused-vars
+  1722:17  error    'videoId' is constant                                    no-const-assign
+  1725:21  error    'videoUrl' is constant                                   no-const-assign
+  1730:17  warning  'chatHistoryLoaded' is assigned a value but never used   no-unused-vars
+
+/workspaces/fixes-worktree/src/components/EffectsStudio.js
+  376:13  warning  'displayName' is assigned a value but never used  no-unused-vars
+  625:14  warning  'e' is defined but never used                     no-unused-vars
+
+/workspaces/fixes-worktree/src/components/ImageStudio.js
+  259:70  warning  'category' is defined but never used  no-unused-vars
+  950:18  warning  'err' is defined but never used       no-unused-vars
+  965:14  warning  'e' is defined but never used         no-unused-vars
+
+/workspaces/fixes-worktree/src/components/ImageToImagePage.js
+  113:35  warning  'i' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/ImageToVideoPage.js
+   46:7   warning  'selectedModel' is assigned a value but never used     no-unused-vars
+  121:35  warning  'i' is defined but never used                          no-unused-vars
+  278:7   error    'veoOptions' is never reassigned. Use 'const' instead  prefer-const
+
+/workspaces/fixes-worktree/src/components/LibraryPage.js
+   2:44  warning  'safeSetText' is defined but never used  no-unused-vars
+  71:94  warning  'e' is defined but never used            no-unused-vars
+  72:94  warning  'e' is defined but never used            no-unused-vars
+
+/workspaces/fixes-worktree/src/components/LipSyncStudio.js
+  2:65  warning  'getLipSyncModelById' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/ProjectIntegrationExample.js
+  261:12  warning  'markTimelineChanges' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/RenderPage.js
+     1:10  warning  'navigate' is defined but never used                                          no-unused-vars
+     2:21  warning  'createLoadingSpinner' is defined but never used                              no-unused-vars
+     2:43  warning  'createLoadingOverlay' is defined but never used                              no-unused-vars
+     7:10  warning  'Tooltip' is defined but never used                                           no-unused-vars
+     8:10  warning  'createVideoUpload' is defined but never used                                 no-unused-vars
+     8:29  warning  'addVideoErrorRecovery' is defined but never used                             no-unused-vars
+   100:9   warning  'CINEGEN_EXPORT_PRESETS' is assigned a value but never used                   no-unused-vars
+   109:9   warning  'CINEGEN_EDIT_AI_TOOLS' is assigned a value but never used                    no-unused-vars
+   431:7   error    'selectedPreset' is never reassigned. Use 'const' instead                     prefer-const
+   432:7   warning  'activeAction' is assigned a value but never used                             no-unused-vars
+   439:7   error    'exportSettings' is never reassigned. Use 'const' instead                     prefer-const
+   449:7   warning  'chatMessages' is assigned a value but never used                             no-unused-vars
+   449:7   error    'chatMessages' is never reassigned. Use 'const' instead                       prefer-const
+   454:7   error    'gpuStatus' is never reassigned. Use 'const' instead                          prefer-const
+   465:7   warning  'profilingInterval' is assigned a value but never used                        no-unused-vars
+   465:7   error    'profilingInterval' is never reassigned. Use 'const' instead                  prefer-const
+   468:7   error    'videoElement' is never reassigned. Use 'const' instead                       prefer-const
+   469:7   error    'videoMetadata' is never reassigned. Use 'const' instead                      prefer-const
+   476:7   warning  'isVideoLoading' is assigned a value but never used                           no-unused-vars
+   476:7   error    'isVideoLoading' is never reassigned. Use 'const' instead                     prefer-const
+   605:5   error    'loadVideo' is not defined                                                    no-undef
+   613:9   error    'loadVideo' is not defined                                                    no-undef
+   710:25  error    'selectPreset' is not defined                                                 no-undef
+  1166:7   error    'updateOutputsSection' is not defined                                         no-undef
+  1207:7   warning  There is no `cause` attached to the symptom error being thrown                preserve-caught-error
+  1211:35  warning  'options' is defined but never used                                           no-unused-vars
+  1229:26  error    'muapiClient' is not defined                                                  no-undef
+  1260:26  error    'muapiClient' is not defined                                                  no-undef
+  1279:40  warning  'options' is defined but never used                                           no-unused-vars
+  1292:26  error    'muapiClient' is not defined                                                  no-undef
+  1312:39  warning  'options' is defined but never used                                           no-unused-vars
+  1344:41  warning  'options' is defined but never used                                           no-unused-vars
+  1481:9   error    The value assigned to 'currentProgress' is not used in subsequent statements  no-useless-assignment
+  1514:9   error    'startPerformanceMonitoring' is not defined                                   no-undef
+  1517:9   error    'stopPerformanceMonitoring' is not defined                                    no-undef
+  1533:7   error    'updateCodecDisplay' is not defined                                           no-undef
+  1575:7   error    'addChatMessage' is not defined                                               no-undef
+  1579:7   error    'addChatMessage' is not defined                                               no-undef
+  1583:32  error    'getLLMResponse' is not defined                                               no-undef
+  1584:9   error    'removeTypingIndicator' is not defined                                        no-undef
+  1585:9   error    'addChatMessage' is not defined                                               no-undef
+  1587:9   error    'removeTypingIndicator' is not defined                                        no-undef
+  1588:9   error    'addChatMessage' is not defined                                               no-undef
+  1610:17  error    'loadGPUMmodels' is not defined                                               no-undef
+  1615:17  error    'unloadGPUMmodels' is not defined                                             no-undef
+  1734:32  error    'detectScenes' is not defined                                                 no-undef
+  1735:9   error    'displayDetectedScenes' is not defined                                        no-undef
+  1773:29  warning  Empty block statement                                                         no-empty
+  1838:7   error    'renderChatHistory' is never reassigned. Use 'const' instead                  prefer-const
+
+/workspaces/fixes-worktree/src/components/RunwayMotionStudio.js
+    2:10  warning  'createSafeVideo' is defined but never used                        no-unused-vars
+  355:9   error    The value assigned to 'path' is not used in subsequent statements  no-useless-assignment
+  444:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  451:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  456:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  465:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  472:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  473:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  478:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  479:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  480:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  481:11  error    Unexpected lexical declaration in case block                       no-case-declarations
+  574:13  warning  'result' is assigned a value but never used                        no-unused-vars
+
+/workspaces/fixes-worktree/src/components/SettingsModal.js
+  11:11  warning  'modalContent' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/StoryboardStudio.js
+  76:16  warning  'err' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/TemplateStudio.js
+   36:7   warning  'uploadedUrl' is assigned a value but never used  no-unused-vars
+  601:14  warning  'e' is defined but never used                     no-unused-vars
+
+/workspaces/fixes-worktree/src/components/TextToImagePage.js
+  113:35  warning  'i' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/TextToVideoPage.js
+  126:35  warning  'i' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/TikTokCarouselStudio.js
+    3:34  warning  'uploadCarouselMusic' is defined but never used        no-unused-vars
+    3:55  warning  'generateCarouselPreview' is defined but never used    no-unused-vars
+   29:7   warning  'previewUrl' is assigned a value but never used        no-unused-vars
+   29:7   error    'previewUrl' is never reassigned. Use 'const' instead  prefer-const
+  431:11  warning  'musicPanel' is assigned a value but never used        no-unused-vars
+
+/workspaces/fixes-worktree/src/components/TimelineEditorPage.js
+     3:115  warning  'renderLayerManagement' is defined but never used           no-unused-vars
+     3:138  warning  'renderPopcornElements' is defined but never used           no-unused-vars
+     3:161  warning  'showTimelineContextMenu' is defined but never used         no-unused-vars
+     4:10   warning  'initializeMediaLibraryDragDrop' is defined but never used  no-unused-vars
+     5:27   warning  'addMediaToTimeline' is defined but never used              no-unused-vars
+     7:32   warning  'GiphyIntegration' is defined but never used                no-unused-vars
+    12:8    warning  'TIMELINE_DESIGN_SYSTEM' is defined but never used          no-unused-vars
+    15:53   warning  'useSequence' is defined but never used                     no-unused-vars
+    15:66   warning  'useSeries' is defined but never used                       no-unused-vars
+  1092:27   error    'EndScreenModal' is not defined                             no-undef
+  1102:16   warning  'error' is defined but never used                           no-unused-vars
+  1109:27   error    'SaveProjectModal' is not defined                           no-undef
+  1118:16   warning  'error' is defined but never used                           no-unused-vars
+  1123:14   warning  'openSettingsModal' is defined but never used               no-unused-vars
+  1125:27   error    'SettingsModal' is not defined                              no-undef
+  1134:16   warning  'error' is defined but never used                           no-unused-vars
+  1141:27   error    'BillingModal' is not defined                               no-undef
+  1142:24   warning  'result' is defined but never used                          no-unused-vars
+  1148:16   warning  'error' is defined but never used                           no-unused-vars
+  1155:27   error    'ConnectModal' is not defined                               no-undef
+  1163:16   warning  'error' is defined but never used                           no-unused-vars
+  1170:27   error    'PreviewMediaModal' is not defined                          no-undef
+  1172:24   warning  'result' is defined but never used                          no-unused-vars
+  1178:16   warning  'error' is defined but never used                           no-unused-vars
+  1185:27   error    'VideoPlayerModal' is not defined                           no-undef
+  1187:24   warning  'result' is defined but never used                          no-unused-vars
+  1193:16   warning  'error' is defined but never used                           no-unused-vars
+  1260:15   error    'showColorCorrectionPanel' is not defined                   no-undef
+  1491:9    error    'track' is not defined                                      no-undef
+  1507:72   error    'track' is not defined                                      no-undef
+  1507:88   error    'track' is not defined                                      no-undef
+  1513:47   error    'track' is not defined                                      no-undef
+  1527:9    error    'row' is not defined                                        no-undef
+  1527:20   error    'meta' is not defined                                       no-undef
+  1528:35   error    'row' is not defined                                        no-undef
+  1712:9    error    'e' is not defined                                          no-undef
+  1716:9    error    'e' is not defined                                          no-undef
+  1727:93   warning  'params' is defined but never used                          no-unused-vars
+  1727:101  warning  'duration' is defined but never used                        no-unused-vars
+  1986:17   warning  'data' is assigned a value but never used                   no-unused-vars
+  2058:17   warning  'data' is assigned a value but never used                   no-unused-vars
+  2099:27   error    'AIVideoCreator' is not defined                             no-undef
+  2107:16   warning  'error' is defined but never used                           no-unused-vars
+  2114:27   error    'RecorderModal' is not defined                              no-undef
+  2122:16   warning  'error' is defined but never used                           no-unused-vars
+  2129:27   error    'EnhancedRecorderModal' is not defined                      no-undef
+  2137:16   warning  'error' is defined but never used                           no-unused-vars
+  2144:27   error    'TemplateGeneratorModal' is not defined                     no-undef
+  2153:16   warning  'error' is defined but never used                           no-unused-vars
+  2160:27   error    'TemplatePreviewModal' is not defined                       no-undef
+  2168:16   warning  'error' is defined but never used                           no-unused-vars
+  2175:27   error    'SocialPublisherModal' is not defined                       no-undef
+  2177:24   warning  'result' is defined but never used                          no-unused-vars
+  2183:16   warning  'error' is defined but never used                           no-unused-vars
+  2190:27   error    'EmailCampaignModal' is not defined                         no-undef
+  2192:24   warning  'result' is defined but never used                          no-unused-vars
+  2198:16   warning  'error' is defined but never used                           no-unused-vars
+  2205:27   error    'UrlVideoModal' is not defined                              no-undef
+  2213:16   warning  'error' is defined but never used                           no-unused-vars
+  2220:27   error    'PageShotModal' is not defined                              no-undef
+  2228:16   warning  'error' is defined but never used                           no-unused-vars
+  2235:27   error    'ContactImporterModal' is not defined                       no-undef
+  2244:16   warning  'error' is defined but never used                           no-unused-vars
+  2283:14   warning  'addAudioToTimeline' is defined but never used              no-unused-vars
+  2418:14   warning  'showClipEditor' is defined but never used                  no-unused-vars
+  2430:14   warning  'openAdvancedModal' is defined but never used               no-unused-vars
+  2436:14   warning  'closeModal' is defined but never used                      no-unused-vars
+  2646:14   warning  'renderLineDuration' is defined but never used              no-unused-vars
+  2891:11   warning  'animationId' is assigned a value but never used            no-unused-vars
+  2944:11   warning  'animationId' is assigned a value but never used            no-unused-vars
+  3002:11   warning  'animationId' is assigned a value but never used            no-unused-vars
+
+/workspaces/fixes-worktree/src/components/TimelineEditorPage.optimized.js
+  94:39  error  Parsing error: Unexpected token
+
+/workspaces/fixes-worktree/src/components/UploadPicker.js
+  102:19  warning  'itemsLabel' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/VideoAgentPage.js
+   1:10  warning  'navigate' is defined but never used              no-unused-vars
+   2:10  warning  'showToast' is defined but never used             no-unused-vars
+   3:10  warning  'createHeroSection' is defined but never used     no-unused-vars
+   4:10  warning  'getSupabaseUrl' is defined but never used        no-unused-vars
+   4:26  warning  'isSupabaseConfigured' is defined but never used  no-unused-vars
+   7:10  warning  'Tooltip' is defined but never used               no-unused-vars
+   8:10  warning  'VideoUpload' is defined but never used           no-unused-vars
+  10:7   warning  'AI_TOOLS' is assigned a value but never used     no-unused-vars
+  43:7   warning  'USE_CASES' is assigned a value but never used    no-unused-vars
+  63:10  warning  'escapeHtml' is defined but never used            no-unused-vars
+
+/workspaces/fixes-worktree/src/components/VideoStudio.js
+    22:9   warning  'lastGenerationModel' is assigned a value but never used  no-unused-vars
+   404:17  error    'showToast' is not defined                                no-undef
+  1030:18  warning  'err' is defined but never used                           no-unused-vars
+  1046:14  warning  'e' is defined but never used                             no-unused-vars
+
+/workspaces/fixes-worktree/src/components/VideoToVideoPage.js
+  91:35  warning  'i' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/common/Upload.js
+  19:5  warning  'type' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/components/modals/modal-integration-test.test.js
+  93:12  warning  Empty block statement  no-empty
+
+/workspaces/fixes-worktree/src/components/video-agent-workspace.js
+     5:19  warning  'addTooltip' is defined but never used                        no-unused-vars
+    17:7   warning  'isDragOver' is assigned a value but never used               no-unused-vars
+    17:7   error    'isDragOver' is never reassigned. Use 'const' instead         prefer-const
+    20:7   error    'processingResults' is never reassigned. Use 'const' instead  prefer-const
+    22:7   error    'generatedVideos' is never reassigned. Use 'const' instead    prefer-const
+   663:11  error    Unexpected lexical declaration in case block                  no-case-declarations
+   933:42  warning  'params' is defined but never used                            no-unused-vars
+  1485:39  warning  'index' is defined but never used                             no-unused-vars
+  1563:12  warning  'downloadCaptions' is defined but never used                  no-unused-vars
+  1797:9   warning  'previewStage' is assigned a value but never used             no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/accessibility/accessibilityUtils.js
+  181:20  warning  'event' is defined but never used  no-unused-vars
+  304:19  warning  'event' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/analytics.js
+  46:38  warning  Empty block statement  no-empty
+  73:34  warning  Empty block statement  no-empty
+  93:38  warning  Empty block statement  no-empty
+
+/workspaces/fixes-worktree/src/lib/apiClient.js
+  105:17  warning  'controller' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/auth-hardening.js
+  193:22  warning  'refreshToken' is defined but never used  no-unused-vars
+  203:14  warning  'error' is defined but never used         no-unused-vars
+  203:21  error    Unreachable code                          no-unreachable
+  209:33  warning  'type' is defined but never used          no-unused-vars
+  209:39  warning  'token' is defined but never used         no-unused-vars
+  218:14  warning  'error' is defined but never used         no-unused-vars
+  218:21  error    Unreachable code                          no-unreachable
+
+/workspaces/fixes-worktree/src/lib/bundle-analyzer.js
+  63:12  warning  Empty block statement  no-empty
+
+/workspaces/fixes-worktree/src/lib/caching/cacheManager.js
+  66:34  warning  'reject' is defined but never used  no-unused-vars
+  67:23  error    'indexedDB' is not defined          no-undef
+
+/workspaces/fixes-worktree/src/lib/cinematicTemplates.js
+  1934:34  warning  'actIndex' is defined but never used                   no-unused-vars
+  1937:32  warning  'beatIndex' is defined but never used                  no-unused-vars
+  2204:11  warning  'quickSections' is assigned a value but never used     no-unused-vars
+  2205:11  warning  'advancedSections' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/component-optimization.js
+  49:5  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/cutai-api.js
+   12:27  warning  'options' is assigned a value but never used  no-unused-vars
+   97:21  warning  'sceneId' is defined but never used           no-unused-vars
+   97:30  warning  'data' is defined but never used              no-unused-vars
+  102:20  warning  'shotId' is defined but never used            no-unused-vars
+  102:28  warning  'data' is defined but never used              no-unused-vars
+  112:19  warning  'projectId' is defined but never used         no-unused-vars
+  118:33  warning  'shots' is assigned a value but never used    no-unused-vars
+  221:20  warning  'parseError' is defined but never used        no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/designSystemEnforcer.js
+   85:9   warning  'size' is assigned a value but never used  no-unused-vars
+  256:29  error    'getComputedStyle' is not defined          no-undef
+  464:24  error    'MutationObserver' is not defined          no-undef
+  467:31  error    'Node' is not defined                      no-undef
+
+/workspaces/fixes-worktree/src/lib/directorAgentRuntime.js
+  495:9   warning  'muapiError' is assigned a value but never used                           no-unused-vars
+  845:13  warning  'frames' is assigned a value but never used                               no-unused-vars
+  879:34  warning  'preset' is defined but never used                                        no-unused-vars
+  879:42  warning  'knowledge' is defined but never used                                     no-unused-vars
+  915:9   error    The value assigned to 'agentPrompt' is not used in subsequent statements  no-useless-assignment
+
+/workspaces/fixes-worktree/src/lib/editor/__tests__/animationControls.test.js
+  144:5  error  'beforeEach' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/editor/aiTools.js
+  145:105  warning  'onGenerate' is defined but never used    no-unused-vars
+  145:117  warning  'onFileChange' is defined but never used  no-unused-vars
+  222:69   warning  'showToast' is defined but never used     no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/audioMixer.js
+    6:10  warning  'KeyframeSystem' is defined but never used        no-unused-vars
+    6:26  warning  'ANIMATION_PROPERTIES' is defined but never used  no-unused-vars
+  252:13  warning  'shouldMute' is assigned a value but never used   no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/chatSystem.js
+  55:50  warning  'showToast' is defined but never used  no-unused-vars
+  93:47  warning  'context' is defined but never used    no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/cutoutPro.js
+  6:10  warning  'imageEditorManager' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/dragDrop.js
+   159:23  warning  'config' is assigned a value but never used            no-unused-vars
+   195:9   warning  'uploadPromises' is assigned a value but never used    no-unused-vars
+   210:54  warning  'index' is defined but never used                      no-unused-vars
+   658:32  warning  'element' is defined but never used                    no-unused-vars
+  1136:30  warning  '_state' is defined but never used                     no-unused-vars
+  1136:38  warning  '_els' is defined but never used                       no-unused-vars
+  1141:33  warning  '_state' is defined but never used                     no-unused-vars
+  1141:41  warning  '_els' is defined but never used                       no-unused-vars
+  1403:22  warning  'e' is defined but never used                          no-unused-vars
+  1536:15  warning  'id' is assigned a value but never used                no-unused-vars
+  1551:7   warning  'lastUpdate' is assigned a value but never used        no-unused-vars
+  1551:7   error    'lastUpdate' is never reassigned. Use 'const' instead  prefer-const
+  1696:24  warning  'assetId' is defined but never used                    no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/exportPipeline.js
+  307:29  error  'Worker' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/editor/floatingRail.js
+   69:41  warning  'wasActive' is defined but never used  no-unused-vars
+  141:43  warning  'action' is defined but never used     no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/generatePanel.js
+  22:45  warning  'showToast' is defined but never used  no-unused-vars
+  73:37  warning  'state' is defined but never used      no-unused-vars
+  73:44  warning  'els' is defined but never used        no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/generationService.js
+  9:10  warning  'GenerationModes' is defined but never used       no-unused-vars
+  9:27  warning  'GenerationProviders' is defined but never used   no-unused-vars
+  9:48  warning  'createDefaultProject' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/imageEditors.js
+  134:36  warning  'options' is assigned a value but never used  no-unused-vars
+  139:52  warning  'options' is assigned a value but never used  no-unused-vars
+  144:34  warning  'options' is assigned a value but never used  no-unused-vars
+  149:30  warning  'options' is assigned a value but never used  no-unused-vars
+  154:32  warning  'options' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/index.js
+  58:4  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/editor/keyframeEditor.js
+  767:2  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/editor/mediaLibrary.js
+  447:27  warning  'options' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/motionGraphicsTools.js
+  774:2  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/editor/multiCamera.js
+   58:29  error    'showCameraAnglesPanel' is not defined        no-undef
+  102:11  warning  'angleId' is assigned a value but never used  no-unused-vars
+  273:10  warning  Empty block statement                         no-empty
+
+/workspaces/fixes-worktree/src/lib/editor/performanceManager.js
+  54:13  error  Parsing error: Unexpected token :
+
+/workspaces/fixes-worktree/src/lib/editor/timelineAnimationIntegration.js
+  787:2  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/editor/timelineEditorWithAnimation.js
+  237:4  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/editor/timelinePlayback.js
+   58:29  warning  'state' is defined but never used  no-unused-vars
+   58:36  warning  'els' is defined but never used    no-unused-vars
+  121:41  warning  'e' is defined but never used      no-unused-vars
+  161:44  warning  'e' is defined but never used      no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/timelineRenderer.js
+   12:41  error  'showToast' is not defined            no-undef
+   84:7   error  'updatePlaybackUI' is not defined     no-undef
+   89:9   error  'panState' is not defined             no-undef
+   89:39  error  'panState' is not defined             no-undef
+   90:9   error  'panState' is not defined             no-undef
+   91:36  error  'handlePanMove' is not defined        no-undef
+   92:34  error  'handlePanUp' is not defined          no-undef
+  118:51  error  'handleItemMouseDown' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/editor/timelineRendererEnhanced.js
+  11:10  warning  'renderMultiCameraToolbar' is defined but never used   no-unused-vars
+  11:36  warning  'renderPipControls' is defined but never used          no-unused-vars
+  11:55  warning  'renderSplitScreenControls' is defined but never used  no-unused-vars
+  27:10  warning  'AnimatableElement' is defined but never used          no-unused-vars
+  28:10  warning  'DefaultElement' is defined but never used             no-unused-vars
+  29:10  warning  'IconElement' is defined but never used                no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/timelineRendererOriginal.js
+   12:41  error  'showToast' is not defined            no-undef
+   84:7   error  'updatePlaybackUI' is not defined     no-undef
+   89:9   error  'panState' is not defined             no-undef
+   89:39  error  'panState' is not defined             no-undef
+   90:9   error  'panState' is not defined             no-undef
+   91:48  error  'handlePanMove' is not defined        no-undef
+   92:46  error  'handlePanUp' is not defined          no-undef
+  116:51  error  'handleItemMouseDown' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/editor/timelineTransitions.js
+  285:33  warning  'transitionData' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/editor/transitionsLibrary.js
+  454:13  warning  'softness' is assigned a value but never used  no-unused-vars
+  485:17  warning  '_' is defined but never used                  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/enhanced-performance-monitor.js
+  29:36  error  'PerformanceObserver' is not defined  no-undef
+  41:36  error  'PerformanceObserver' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/enhancedComponentAdapter.js
+  139:47  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/enhancedModalManager.js
+  364:33  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/error-boundary.js
+  90:1  error  'customElements' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/error-handling.js
+  38:18  error  'this.stack' is assigned to itself  no-self-assign
+
+/workspaces/fixes-worktree/src/lib/error-handling/inputValidator.js
+   64:16  warning  'error' is defined but never used  no-unused-vars
+  129:20  error    Unnecessary escape character: \"   no-useless-escape
+  144:20  error    Unnecessary escape character: \"   no-useless-escape
+
+/workspaces/fixes-worktree/src/lib/error-reporter.js
+  122:14  warning  'error' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/featureFlags.js
+  79:21  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+  89:21  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+
+/workspaces/fixes-worktree/src/lib/health-check.js
+  203:13  warning  'testResult' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/hybrid-integration-demo.js
+  23:9   warning  'loadedProject' is assigned a value but never used  no-unused-vars
+  27:19  warning  'projects' is assigned a value but never used       no-unused-vars
+  32:16  warning  Empty block statement                               no-empty
+  33:12  warning  Empty block statement                               no-empty
+  35:12  warning  'error' is defined but never used                   no-unused-vars
+  35:19  warning  Empty block statement                               no-empty
+  48:16  warning  Empty block statement                               no-empty
+  50:23  warning  Empty block statement                               no-empty
+  53:12  warning  'error' is defined but never used                   no-unused-vars
+  53:19  warning  Empty block statement                               no-empty
+  62:19  warning  'uploadData' is assigned a value but never used     no-unused-vars
+  66:22  warning  Empty block statement                               no-empty
+  67:12  warning  Empty block statement                               no-empty
+  71:19  warning  'urlData' is assigned a value but never used        no-unused-vars
+  76:12  warning  'error' is defined but never used                   no-unused-vars
+  76:19  warning  Empty block statement                               no-empty
+
+/workspaces/fixes-worktree/src/lib/hybrid-supabase.js
+   49:17  warning  'data' is assigned a value but never used     no-unused-vars
+   93:14  warning  'error' is defined but never used             no-unused-vars
+  111:14  warning  'error' is defined but never used             no-unused-vars
+  179:15  warning  'data' is assigned a value but never used     no-unused-vars
+  592:9   error    Unexpected lexical declaration in case block  no-case-declarations
+  854:11  warning  'data' is assigned a value but never used     no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/i18n/i18nService.js
+   35:14  warning  'error' is defined but never used  no-unused-vars
+   70:14  warning  'error' is defined but never used  no-unused-vars
+   90:18  warning  'error' is defined but never used  no-unused-vars
+  281:14  warning  'error' is defined but never used  no-unused-vars
+  296:14  warning  'error' is defined but never used  no-unused-vars
+  314:14  warning  'error' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/i18n/translationLoader.js
+  1:10  warning  'i18nService' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/instructions.js
+  258:12  warning  'e' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/local-ai.js
+   99:7  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  136:7  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  173:7  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  205:7  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+
+/workspaces/fixes-worktree/src/lib/logger.js
+  166:36  warning  'entry' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/media-loader.js
+   17:7   warning  'blur' is assigned a value but never used             no-unused-vars
+  202:23  warning  'scrollDirection' is assigned a value but never used  no-unused-vars
+  202:40  warning  'userIntent' is assigned a value but never used       no-unused-vars
+  259:17  warning  'key' is assigned a value but never used              no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/media-worker-manager.js
+  20:23  error    'Worker' is not defined                      no-undef
+  23:24  warning  'action' is assigned a value but never used  no-unused-vars
+  39:19  warning  'fileId' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/media-worker.js
+   4:1  error  'self' is not defined                         no-undef
+  10:9  error  Unexpected lexical declaration in case block  no-case-declarations
+  11:9  error  'self' is not defined                         no-undef
+  15:9  error  Unexpected lexical declaration in case block  no-case-declarations
+  16:9  error  'self' is not defined                         no-undef
+  20:9  error  'self' is not defined                         no-undef
+  23:5  error  'self' is not defined                         no-undef
+
+/workspaces/fixes-worktree/src/lib/mediaIngest.js
+   52:7   error  'showToast' is not defined  no-undef
+  113:11  error  'showToast' is not defined  no-undef
+  163:7   error  'showToast' is not defined  no-undef
+  224:7   error  'showToast' is not defined  no-undef
+  282:7   error  'showToast' is not defined  no-undef
+  325:9   error  'showToast' is not defined  no-undef
+  358:11  error  'showToast' is not defined  no-undef
+  405:7   error  'showToast' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/memory-leak-detector.js
+   83:11  warning  'baseline' is assigned a value but never used  no-unused-vars
+  130:12  warning  Empty block statement                          no-empty
+
+/workspaces/fixes-worktree/src/lib/monitoring/monitoringService.js
+   79:38  error  'PerformanceObserver' is not defined  no-undef
+   91:40  error  'PerformanceObserver' is not defined  no-undef
+  108:38  error  'PerformanceObserver' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/muapi.js
+     2:10  warning  'uploadFileToStorage' is defined but never used                 no-unused-vars
+   161:21  warning  'requestId' is assigned a value but never used                  no-unused-vars
+   168:28  warning  'expectedType' is defined but never used                        no-unused-vars
+   255:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   319:41  warning  Empty block statement                                           no-empty
+   324:21  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   368:21  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   421:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   478:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   535:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   600:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   643:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   686:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   724:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   765:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   799:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   841:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   882:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   926:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+   968:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1010:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1051:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1091:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1132:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1173:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1214:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1254:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1294:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1334:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1376:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1417:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1458:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1500:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1541:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1582:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  1623:17  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+
+/workspaces/fixes-worktree/src/lib/muapi/MuAPIAdvancedEffects.js
+  824:21  error  Parsing error: Unexpected token (
+
+/workspaces/fixes-worktree/src/lib/muapi/MuAPIBatchProcessor.js
+  420:52  warning  'parameters' is assigned a value but never used  no-unused-vars
+  510:17  warning  'options' is defined but never used              no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/muapi/MuAPICompleteIntegration.js
+  430:27  error  'MuAPIConnection' is not defined              no-undef
+  431:31  error  'MuAPIMediaProcessingManager' is not defined  no-undef
+  435:31  error  'MuAPIBatchProcessor' is not defined          no-undef
+
+/workspaces/fixes-worktree/src/lib/muapi/MuAPIMediaProcessingManager.js
+    8:8   warning  'MuAPIConnection' is defined but never used  no-unused-vars
+  399:16  warning  'e' is defined but never used                no-unused-vars
+  418:60  warning  'options' is defined but never used          no-unused-vars
+  455:42  warning  'effects' is defined but never used          no-unused-vars
+  489:44  warning  'options' is defined but never used          no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/muapiEnhanced.js
+  438:47  warning  'config' is defined but never used  no-unused-vars
+  443:21  error    Unreachable code                    no-unreachable
+
+/workspaces/fixes-worktree/src/lib/nicheTemplates.js
+  7:47  warning  'VISUAL_STYLES' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/offline-functions.js
+  109:43  warning  'body' is defined but never used  no-unused-vars
+  128:42  warning  'body' is defined but never used  no-unused-vars
+  141:44  warning  'body' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/offline-storage.js
+   29:23  error  'indexedDB' is not defined    no-undef
+  159:40  error  'IDBKeyRange' is not defined  no-undef
+  250:28  error  'IDBKeyRange' is not defined  no-undef
+  250:53  error  'IDBKeyRange' is not defined  no-undef
+  337:28  error  'IDBKeyRange' is not defined  no-undef
+  337:53  error  'IDBKeyRange' is not defined  no-undef
+  371:26  error  'FileReader' is not defined   no-undef
+
+/workspaces/fixes-worktree/src/lib/performance-budget.js
+  185:39  warning  'r' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/performance-hardening.js
+  122:13  error    'gc' is not defined                    no-undef
+  140:7   error    'gc' is not defined                    no-undef
+  183:14  warning  'error' is defined but never used      no-unused-vars
+  200:37  warning  'options' is defined but never used    no-unused-vars
+  315:27  error    'IntersectionObserver' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/lib/performance.js
+  349:34  warning  Empty block statement  no-empty
+  417:34  warning  Empty block statement  no-empty
+  444:34  warning  Empty block statement  no-empty
+
+/workspaces/fixes-worktree/src/lib/projects/projectService.js
+    3:10  warning  'inputValidator' is defined but never used       no-unused-vars
+    4:10  warning  'cacheManager' is defined but never used         no-unused-vars
+  604:49  warning  'isAutoSave' is assigned a value but never used  no-unused-vars
+  710:25  warning  'schema' is defined but never used               no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/promptEngine.js
+  167:56  warning  'storyBlueprint' is defined but never used  no-unused-vars
+  183:41  warning  'inputs' is defined but never used          no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/rate-limiter.js
+  52:5  error    Unnecessary try/catch wrapper                                   no-useless-catch
+  82:9  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+
+/workspaces/fixes-worktree/src/lib/request.js
+  25:13  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+
+/workspaces/fixes-worktree/src/lib/schemas.js
+  29:10  warning  'isBoolean' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/supabase-offline.js
+   11:34  warning  'options' is assigned a value but never used  no-unused-vars
+  178:27  warning  'body' is defined but never used              no-unused-vars
+  195:26  warning  'body' is defined but never used              no-unused-vars
+  207:28  warning  'body' is defined but never used              no-unused-vars
+  233:16  warning  'columns' is assigned a value but never used  no-unused-vars
+  253:27  warning  'options' is assigned a value but never used  no-unused-vars
+  255:29  warning  'start' is defined but never used             no-unused-vars
+  255:36  warning  'end' is defined but never used               no-unused-vars
+  279:25  warning  'options' is assigned a value but never used  no-unused-vars
+  362:21  error    Unexpected lexical declaration in case block  no-case-declarations
+
+/workspaces/fixes-worktree/src/lib/templateAdapter.js
+  10:3  warning  'OUTPUT_STYLES' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/templateMatrix.js
+  59:7  warning  'NICHE_LABELS' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/theming/themeService.js
+   34:14  warning  'error' is defined but never used  no-unused-vars
+  208:14  warning  'error' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/theming/whiteLabelManager.js
+  53:35  warning  Empty block statement  no-empty
+  54:14  warning  Empty block statement  no-empty
+
+/workspaces/fixes-worktree/src/lib/timelineIntegrationCoordinator.js
+  460:43  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/lib/uiIntegration.js
+  201:15  warning  'Component' is assigned a value but never used     no-unused-vars
+  201:26  warning  'adaptedProps' is assigned a value but never used  no-unused-vars
+  260:12  warning  'error' is defined but never used                  no-unused-vars
+  265:16  warning  'openVideoPersonalizer' is defined but never used  no-unused-vars
+  275:12  warning  'error' is defined but never used                  no-unused-vars
+  280:16  warning  'openImageEditor' is defined but never used        no-unused-vars
+  290:12  warning  'error' is defined but never used                  no-unused-vars
+  295:16  warning  'openTextToSpeech' is defined but never used       no-unused-vars
+  306:12  warning  'error' is defined but never used                  no-unused-vars
+  320:12  warning  'error' is defined but never used                  no-unused-vars
+  334:12  warning  'error' is defined but never used                  no-unused-vars
+  348:12  warning  'error' is defined but never used                  no-unused-vars
+  362:12  warning  'error' is defined but never used                  no-unused-vars
+  372:20  warning  'analytics' is defined but never used              no-unused-vars
+  376:12  warning  'error' is defined but never used                  no-unused-vars
+  392:12  warning  'error' is defined but never used                  no-unused-vars
+  407:12  warning  'error' is defined but never used                  no-unused-vars
+  422:12  warning  'error' is defined but never used                  no-unused-vars
+  437:12  warning  'error' is defined but never used                  no-unused-vars
+  447:20  warning  'analytics' is defined but never used              no-unused-vars
+  451:12  warning  'error' is defined but never used                  no-unused-vars
+  467:12  warning  'error' is defined but never used                  no-unused-vars
+  482:12  warning  'error' is defined but never used                  no-unused-vars
+  497:12  warning  'error' is defined but never used                  no-unused-vars
+  551:46  warning  'state' is defined but never used                  no-unused-vars
+  606:12  warning  'error' is defined but never used                  no-unused-vars
+  626:12  warning  'error' is defined but never used                  no-unused-vars
+
+/workspaces/fixes-worktree/src/lib/videoPlayer.js
+  167:30  error    'HTMLMediaElement' is not defined  no-undef
+  172:27  error    'HTMLMediaElement' is not defined  no-undef
+  189:36  warning  'e' is defined but never used      no-unused-vars
+  194:12  error    'MediaError' is not defined        no-undef
+  197:12  error    'MediaError' is not defined        no-undef
+  200:12  error    'MediaError' is not defined        no-undef
+  203:12  error    'MediaError' is not defined        no-undef
+  215:32  error    'HTMLMediaElement' is not defined  no-undef
+  286:30  error    'HTMLMediaElement' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/main.js
+   26:7  warning  'envConfig' is assigned a value but never used         no-unused-vars
+   29:7  warning  'authTools' is assigned a value but never used         no-unused-vars
+   33:7  warning  'performanceTools' is assigned a value but never used  no-unused-vars
+   34:7  warning  'securityStatus' is assigned a value but never used    no-unused-vars
+   39:7  warning  'envStatus' is assigned a value but never used         no-unused-vars
+  248:7  warning  'wrapNavigate' is assigned a value but never used      no-unused-vars
+
+/workspaces/fixes-worktree/src/test-setup.ts
+  33:43  error  Parsing error: Unexpected token :
+
+/workspaces/fixes-worktree/src/test/apiClient.test.js
+  10:5  error  'global' is not defined  no-undef
+  11:5  error  'global' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/audio-studio.test.js
+   62:5   error    'global' is not defined                         no-undef
+   62:27  error    'global' is not defined                         no-undef
+   64:5   error    'global' is not defined                         no-undef
+  251:13  warning  'container' is assigned a value but never used  no-unused-vars
+  263:13  warning  'container' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/test/comprehensive-feature-test-suite.test.js
+    2:10  warning  'render' is defined but never used                no-unused-vars
+    2:18  warning  'screen' is defined but never used                no-unused-vars
+    2:26  warning  'fireEvent' is defined but never used             no-unused-vars
+    2:37  warning  'waitFor' is defined but never used               no-unused-vars
+  173:5   error    'global' is not defined                           no-undef
+  182:5   error    'global' is not defined                           no-undef
+  182:27  error    'global' is not defined                           no-undef
+  226:13  warning  'container' is assigned a value but never used    no-unused-vars
+  285:13  warning  'container' is assigned a value but never used    no-unused-vars
+  341:13  warning  'container' is assigned a value but never used    no-unused-vars
+  607:13  warning  'videoStudio' is assigned a value but never used  no-unused-vars
+  608:13  warning  'imageStudio' is assigned a value but never used  no-unused-vars
+  609:13  warning  'audioStudio' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/test/comprehensive-integration-test.test.js
+    2:10  warning  'render' is defined but never used                       no-unused-vars
+    2:18  warning  'screen' is defined but never used                       no-unused-vars
+    2:26  warning  'fireEvent' is defined but never used                    no-unused-vars
+    2:37  warning  'waitFor' is defined but never used                      no-unused-vars
+   13:3   warning  'MultiCamera' is defined but never used                  no-unused-vars
+   18:10  warning  'VideoStudio' is defined but never used                  no-unused-vars
+   68:1   error    'global' is not defined                                  no-undef
+   69:1   error    'global' is not defined                                  no-undef
+   70:1   error    'global' is not defined                                  no-undef
+   99:7   warning  'performanceMonitor' is assigned a value but never used  no-unused-vars
+  103:5   error    'global' is not defined                                  no-undef
+  104:5   error    'global' is not defined                                  no-undef
+  110:5   error    'global' is not defined                                  no-undef
+  124:17  error    'global' is not defined                                  no-undef
+  132:5   error    'global' is not defined                                  no-undef
+  132:27  error    'global' is not defined                                  no-undef
+  221:13  warning  'animationSystem' is assigned a value but never used     no-unused-vars
+  269:13  warning  'animationSystem' is assigned a value but never used     no-unused-vars
+  528:13  warning  'animationSystem' is assigned a value but never used     no-unused-vars
+  551:13  warning  'startTime' is assigned a value but never used           no-unused-vars
+  563:13  warning  'endTime' is assigned a value but never used             no-unused-vars
+  623:7   error    'global' is not defined                                  no-undef
+  624:12  error    'global' is not defined                                  no-undef
+  774:32  error    'KeyboardEvent' is not defined                           no-undef
+  967:13  warning  'perfManager' is assigned a value but never used         no-unused-vars
+
+/workspaces/fixes-worktree/src/test/designSystemEnforcer.test.js
+    7:1   error  'describe' is not defined          no-undef
+    8:3   error  'beforeEach' is not defined        no-undef
+   17:3   error  'describe' is not defined          no-undef
+   18:5   error  'test' is not defined              no-undef
+   22:22  error  'getComputedStyle' is not defined  no-undef
+   24:7   error  'expect' is not defined            no-undef
+   25:7   error  'expect' is not defined            no-undef
+   26:7   error  'expect' is not defined            no-undef
+   27:7   error  'expect' is not defined            no-undef
+   31:3   error  'describe' is not defined          no-undef
+   32:5   error  'test' is not defined              no-undef
+   38:7   error  'expect' is not defined            no-undef
+   39:7   error  'expect' is not defined            no-undef
+   40:7   error  'expect' is not defined            no-undef
+   41:7   error  'expect' is not defined            no-undef
+   44:5   error  'test' is not defined              no-undef
+   61:7   error  'expect' is not defined            no-undef
+   66:7   error  'expect' is not defined            no-undef
+   70:3   error  'describe' is not defined          no-undef
+   71:5   error  'test' is not defined              no-undef
+   77:7   error  'expect' is not defined            no-undef
+   78:7   error  'expect' is not defined            no-undef
+   81:5   error  'test' is not defined              no-undef
+   85:7   error  'expect' is not defined            no-undef
+   90:7   error  'expect' is not defined            no-undef
+   94:3   error  'describe' is not defined          no-undef
+   95:5   error  'test' is not defined              no-undef
+  103:7   error  'expect' is not defined            no-undef
+  107:7   error  'expect' is not defined            no-undef
+  111:3   error  'describe' is not defined          no-undef
+  112:5   error  'test' is not defined              no-undef
+  118:7   error  'expect' is not defined            no-undef
+  119:7   error  'expect' is not defined            no-undef
+  120:7   error  'expect' is not defined            no-undef
+  124:3   error  'describe' is not defined          no-undef
+  125:5   error  'test' is not defined              no-undef
+  131:7   error  'expect' is not defined            no-undef
+  132:7   error  'expect' is not defined            no-undef
+  133:7   error  'expect' is not defined            no-undef
+  134:7   error  'expect' is not defined            no-undef
+  138:3   error  'describe' is not defined          no-undef
+  139:5   error  'test' is not defined              no-undef
+  146:7   error  'expect' is not defined            no-undef
+  147:7   error  'expect' is not defined            no-undef
+  150:5   error  'test' is not defined              no-undef
+  158:7   error  'expect' is not defined            no-undef
+  162:3   error  'describe' is not defined          no-undef
+  163:5   error  'test' is not defined              no-undef
+  167:7   error  'expect' is not defined            no-undef
+  168:7   error  'expect' is not defined            no-undef
+  171:5   error  'test' is not defined              no-undef
+  179:7   error  'expect' is not defined            no-undef
+
+/workspaces/fixes-worktree/src/test/errorBoundary.test.js
+    1:48  warning  'afterEach' is defined but never used  no-unused-vars
+   50:44  warning  'retry' is defined but never used      no-unused-vars
+  163:30  error    'ErrorEvent' is not defined            no-undef
+
+/workspaces/fixes-worktree/src/test/feature-test-verification.test.js
+   17:5   error    'global' is not defined                                         no-undef
+   26:5   error    'global' is not defined                                         no-undef
+   26:27  error    'global' is not defined                                         no-undef
+   29:5   error    'global' is not defined                                         no-undef
+   57:5   error    'global' is not defined                                         no-undef
+   88:11  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  105:11  warning  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  153:9   warning  'FEATURE_FLAGS' is assigned a value but never used              no-unused-vars
+
+/workspaces/fixes-worktree/src/test/image-studio.test.js
+   90:5   error    'global' is not defined                         no-undef
+   90:27  error    'global' is not defined                         no-undef
+   92:5   error    'global' is not defined                         no-undef
+  389:13  warning  'container' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/test/integration.test.js
+  16:5   error  'global' is not defined  no-undef
+  18:5   error  'global' is not defined  no-undef
+  32:5   error  'global' is not defined  no-undef
+  32:27  error  'global' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/library-page.test.js
+  22:7   warning  'mockLibraryData' is assigned a value but never used  no-unused-vars
+  61:5   error    'global' is not defined                               no-undef
+  61:27  error    'global' is not defined                               no-undef
+  63:5   error    'global' is not defined                               no-undef
+
+/workspaces/fixes-worktree/src/test/logger.test.js
+  17:5   error  'global' is not defined  no-undef
+  17:27  error  'global' is not defined  no-undef
+  26:5   error  'global' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/performance.test.js
+  154:7   error  'global' is not defined  no-undef
+  155:7   error  'global' is not defined  no-undef
+  162:14  error  'global' is not defined  no-undef
+  170:7   error  'global' is not defined  no-undef
+  171:7   error  'global' is not defined  no-undef
+  177:14  error  'global' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/setup.js
+  14:1   error  'global' is not defined  no-undef
+  14:16  error  'vi' is not defined      no-undef
+  15:1   error  'global' is not defined  no-undef
+  17:9   error  'vi' is not defined      no-undef
+  18:10  error  'vi' is not defined      no-undef
+  23:12  error  'vi' is not defined      no-undef
+  24:12  error  'vi' is not defined      no-undef
+  25:15  error  'vi' is not defined      no-undef
+  26:10  error  'vi' is not defined      no-undef
+  28:1   error  'global' is not defined  no-undef
+  32:12  error  'vi' is not defined      no-undef
+  33:12  error  'vi' is not defined      no-undef
+  34:15  error  'vi' is not defined      no-undef
+  35:10  error  'vi' is not defined      no-undef
+  37:1   error  'global' is not defined  no-undef
+  40:1   error  'global' is not defined  no-undef
+  40:31  error  'vi' is not defined      no-undef
+  41:12  error  'vi' is not defined      no-undef
+  42:14  error  'vi' is not defined      no-undef
+  43:15  error  'vi' is not defined      no-undef
+  47:1   error  'global' is not defined  no-undef
+  47:25  error  'vi' is not defined      no-undef
+  48:12  error  'vi' is not defined      no-undef
+  49:14  error  'vi' is not defined      no-undef
+  50:15  error  'vi' is not defined      no-undef
+  56:10  error  'vi' is not defined      no-undef
+  60:18  error  'vi' is not defined      no-undef
+  61:21  error  'vi' is not defined      no-undef
+  62:23  error  'vi' is not defined      no-undef
+  63:26  error  'vi' is not defined      no-undef
+  64:20  error  'vi' is not defined      no-undef
+  69:1   error  'global' is not defined  no-undef
+  69:30  error  'vi' is not defined      no-undef
+  70:1   error  'global' is not defined  no-undef
+  70:30  error  'vi' is not defined      no-undef
+  73:1   error  'global' is not defined  no-undef
+  73:27  error  'vi' is not defined      no-undef
+
+/workspaces/fixes-worktree/src/test/studio-integration-comprehensive.test.js
+   63:19  error    'require' is not defined                           no-undef
+   67:1   error    'global' is not defined                            no-undef
+   68:1   error    'global' is not defined                            no-undef
+   69:1   error    'global' is not defined                            no-undef
+   95:1   error    'global' is not defined                            no-undef
+  103:1   error    'global' is not defined                            no-undef
+  110:5   error    'global' is not defined                            no-undef
+  136:5   error    'global' is not defined                            no-undef
+  136:27  error    'global' is not defined                            no-undef
+  194:13  warning  'videoStudio' is assigned a value but never used   no-unused-vars
+  227:13  warning  'imageStudio' is assigned a value but never used   no-unused-vars
+  258:13  warning  'audioStudio' is assigned a value but never used   no-unused-vars
+  287:13  warning  'imageStudio1' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/test/templates-page.test.js
+  85:5   error  'global' is not defined  no-undef
+  85:27  error  'global' is not defined  no-undef
+  87:5   error  'global' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/timeline-component.test.js
+  317:4  error  Parsing error: Unexpected token <
+
+/workspaces/fixes-worktree/src/test/timeline-editor-core-integration.test.js
+   11:1   error  'global' is not defined            no-undef
+   12:1   error  'global' is not defined            no-undef
+   13:1   error  'global' is not defined            no-undef
+   39:5   error  'global' is not defined            no-undef
+   39:27  error  'global' is not defined            no-undef
+  110:23  error  'getComputedStyle' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/timeline-events.test.js
+  9:3  error  'beforeEach' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/timeline-renderer.test.js
+  5:7  warning  'mockContainer' is assigned a value but never used  no-unused-vars
+  7:3  error    'beforeEach' is not defined                         no-undef
+
+/workspaces/fixes-worktree/src/test/transitions-system.test.js
+   6:10  warning  'TransitionEditor' is defined but never used             no-unused-vars
+   7:10  warning  'TimelineTransitions' is defined but never used          no-unused-vars
+  13:7   warning  'dissolveTransition' is assigned a value but never used  no-unused-vars
+  16:7   warning  'fadeTransitions' is assigned a value but never used     no-unused-vars
+  19:7   warning  'cinematicPresets' is assigned a value but never used    no-unused-vars
+
+/workspaces/fixes-worktree/src/test/unified-timeline-editor-phase4-integration.test.js
+  6:5  error  'global' is not defined  no-undef
+  7:5  error  'global' is not defined  no-undef
+  8:5  error  'global' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/validator.test.js
+  1:32  warning  'vi' is defined but never used          no-unused-vars
+  1:36  warning  'beforeEach' is defined but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/test/video-effects.test.js
+  11:5   error  'global' is not defined   no-undef
+  13:5   error  'global' is not defined   no-undef
+  64:18  error  'require' is not defined  no-undef
+  71:18  error  'require' is not defined  no-undef
+  79:18  error  'require' is not defined  no-undef
+  87:18  error  'require' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/test/video-studio.test.js
+   91:5   error    'global' is not defined                         no-undef
+   91:27  error    'global' is not defined                         no-undef
+   94:5   error    'global' is not defined                         no-undef
+  315:13  warning  'container' is assigned a value but never used  no-unused-vars
+
+/workspaces/fixes-worktree/src/test/video/unit/videoPlayer.test.js
+   12:1   error  'global' is not defined            no-undef
+   20:1   error  'global' is not defined            no-undef
+   79:1   error  'global' is not defined            no-undef
+  337:28  error  'HTMLMediaElement' is not defined  no-undef
+  347:26  error  'HTMLMediaElement' is not defined  no-undef
+  376:17  error  'MediaError' is not defined        no-undef
+  377:17  error  'MediaError' is not defined        no-undef
+  378:17  error  'MediaError' is not defined        no-undef
+  379:17  error  'MediaError' is not defined        no-undef
+  394:28  error  'HTMLMediaElement' is not defined  no-undef
+  507:26  error  'HTMLMediaElement' is not defined  no-undef
+  508:28  error  'HTMLMediaElement' is not defined  no-undef
+
+/workspaces/fixes-worktree/src/utils/jsx.js
+  158:65  error  'DocumentFragment' is not defined  no-undef
+  160:33  error  'Component' is not defined         no-undef
+  164:54  error  'DocumentFragment' is not defined  no-undef
+  166:33  error  'Component' is not defined         no-undef
+  210:31  error  'Component' is not defined         no-undef
+  245:28  error  'Component' is not defined         no-undef
+
+✖ 794 problems (366 errors, 428 warnings)
+  21 errors and 0 warnings potentially fixable with the `--fix` option.
+
