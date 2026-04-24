@@ -46,6 +46,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **VFX Studio**: Standalone visual effects application with 80+ effects and 50+ camera moves
+  - Integrated MuAPI client for actual video effect generation
+  - Category filtering (Destruction, Digital, Combat, Vehicles, Impact, Magic, Weather, Time, Chemical)
+  - Parameter controls: intensity, duration, resolution
+  - Real-time preview and download capabilities
+  - Accessible via sidebar or `/apps/vfx-studio` (proxied to port 8083)
+
+- **Sendspark Workflow**: Workflow automation platform for video creation pipelines
+  - Three default workflows: Video Creation Pipeline, Batch Video Processing, Personalization Hub
+  - Custom workflow builder with step configuration
+  - Real-time execution tracking and progress monitoring
+  - MuAPI integration for AI-powered video processing steps
+  - External integrations: social media, email, analytics, cloud storage
+  - Accessible via sidebar or `/apps/sendspark-workflow` (proxied to port 8084)
+
+- **Standalone App Architecture**: Multi-application server setup
+  - Vite proxy configuration for `/apps/*` routes
+  - Individual dev scripts: `npm run dev:vfx-studio`, `npm run dev:sendspark-workflow`
+  - Build scripts for production bundling into `public/apps/`
+  - Shared MuAPI client library across all applications
+  - Unified authentication (localStorage API key)
+
+### Changed
+- **Router**: Added redirect handlers for standalone apps (`vfx-studio`, `sendspark-workflow`)
+- **Sidebar**: New icon entries for VFX Studio and Sendspark Workflow
+- **AppsHub**: Added both new apps to AI Apps section with badges
+- **Package.json**: Added workspace scripts for new applications
+- **Vite Config**: Extended proxy configuration to route standalone app requests
+
 ## [1.0.2] - 2026-04-17
 
 ### Added
