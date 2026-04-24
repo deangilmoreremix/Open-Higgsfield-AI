@@ -143,6 +143,9 @@ export async function navigate(page, params = {}) {
     } else if (page === 'vfx-studio') {
       window.location.href = '/apps/vfx-studio';
       return;
+    } else if (page === 'sendspark-workflow') {
+      window.location.href = '/apps/sendspark-workflow';
+      return;
     } else if (pageLoaders[page]) {
       element = await pageLoaders[page]();
     } else {

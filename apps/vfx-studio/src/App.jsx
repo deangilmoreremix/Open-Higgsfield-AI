@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Sparkles, Zap, Flame, Wind, Waves, Spark, Star, Crosshair, Target, Aperture, Camera, Film, Video, Music, Mic, Volume2, Eye, Monitor, Palette, Brush, Eraser, RotateCw, Move, ZoomIn, ZoomOut, Maximize2, Minimize2, Play, Pause, SkipForward, SkipBack, Rewind, FastForward, Plus, Minus, X, Check, Upload, Download, Share2, Heart, Bookmark, Copy, Edit3, Trash2, Folder, FolderPlus } from 'lucide-react';
+import { X, Loader2, Download } from 'lucide-react';
+
+// Import MuAPI client from the shared codebase
+import MuapiClient from '../../../src/lib/muapi.js';
+
+// Initialize MuAPI client
+const muapi = new MuapiClient();
 
 const VFX_EFFECTS = [
   { id: 'explosion', name: 'Explosion', category: 'Destruction', icon: '💥', description: 'Massive explosion effect with fire and debris' },
@@ -127,6 +133,9 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEffect, setSelectedEffect] = useState(null);
   const [activeTab, setActiveTab] = useState('effects');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [resultVideo, setResultVideo] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const filteredEffects = VFX_EFFECTS.filter(effect => {
     const matchesCategory = selectedCategory === 'All' || effect.category === selectedCategory;
@@ -135,9 +144,24 @@ function App() {
     return matchesCategory && matchesSearch;
   });
 
-  const handleApplyEffect = () => {
-    if (selectedEffect) {
-      alert(`Applied ${selectedEffect.name} effect! This would process through MuAPI integration.`);
+  const handleApplyEffect = async () => {
+    if (!selectedEffect) return;
+    setIsProcessing(true);
+    setErrorMsg(null);
+    setResultVideo(null);
+    try {
+      const result = await muapi.generateVideoEffect({
+        prompt: `${selectedEffect.name}: ${selectedEffect.description}`,
+        aspect_ratio: '16:9',
+        resolution: '1080p',
+        duration: 5
+      });
+      setResultVideo(result.url);
+    } catch (error) {
+      console.error('VFX generation failed:', error);
+      setErrorMsg(error.message || 'Failed to generate effect');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -277,17 +301,85 @@ function App() {
               </div>
               <div style={{ marginBottom: '12px' }}>
                 <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '6px' }}>
-                  Duration
+                  Duration (seconds)
                 </label>
-                <input type="range" className="param-slider" min="0" max="100" defaultValue="75" />
+                <input type="range" min="3" max="15" defaultValue="5" style={{ width: '100%' }} />
               </div>
               <div>
                 <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '6px' }}>
-                  Scale
+                  Output Resolution
                 </label>
-                <input type="range" className="param-slider" min="0" max="100" defaultValue="60" />
+                <select style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '6px',
+                  color: 'white'
+                }}>
+                  <option value="720p">720p HD</option>
+                  <option value="1080p" selected>1080p Full HD</option>
+                  <option value="4k">4K Ultra HD</option>
+                </select>
               </div>
             </div>
+
+            {isProcessing && (
+              <div style={{ textAlign: 'center', padding: '40px' }}>
+                <Loader2 size={48} style={{ animation: 'spin 1s linear infinite', margin: '0 auto 16px', display: 'block' }} className="text-primary" />
+                <div style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  Generating {selectedEffect.name} via MuAPI...
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '8px' }}>
+                  This may take a few moments
+                </div>
+              </div>
+            )}
+
+            {errorMsg && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                marginBottom: '16px',
+                color: '#f87171'
+              }}>
+                <strong>Error:</strong> {errorMsg}
+                {errorMsg.includes('API key') && (
+                  <div style={{ marginTop: '8px', fontSize: '13px' }}>
+                    Please set your MuAPI key in the application settings.
+                  </div>
+                )}
+              </div>
+            )}
+
+            {resultVideo && !isProcessing && (
+              <div style={{ marginBottom: '24px' }}>
+                <h3 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '12px', fontWeight: '600' }}>
+                  Generated Result
+                </h3>
+                <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#000' }}>
+                  <video
+                    src={resultVideo}
+                    controls
+                    autoPlay
+                    style={{ width: '100%', maxHeight: '400px', display: 'block' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                  <a
+                    href={resultVideo}
+                    download={`${selectedEffect.name.replace(/\s+/g, '_')}_effect.mp4`}
+                    className="btn btn-secondary"
+                    style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                  >
+                    <Download size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                    Download
+                  </a>
+                </div>
+              </div>
+            )}
 
             <div className="modal-section">
               <h3>Blend Mode</h3>

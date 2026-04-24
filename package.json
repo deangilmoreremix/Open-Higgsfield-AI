@@ -15,6 +15,8 @@
     "build": "vite build",
     "build:all": "pnpm run build:remix-go && pnpm run build",
     "build:remix-go": "pnpm --filter remix-go run build && mkdir -p public/apps/remix-go && cp -r apps/remix-go/dist/* public/apps/remix-go/",
+    "build:vfx-studio": "cd apps/vfx-studio && npm run build && mkdir -p ../../public/apps/vfx-studio && cp -r dist/* ../../public/apps/vfx-studio/",
+    "build:sendspark-workflow": "cd apps/sendspark-workflow && npm run build && mkdir -p ../../public/apps/sendspark-workflow && cp -r dist/* ../../public/apps/sendspark-workflow/",
     "build:analyze": "vite build --mode analyze",
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.ts",
@@ -48,7 +50,8 @@
     "dev:director": "cd apps/director && npm run dev",
     "dev:vimax": "cd apps/vimax && npm run dev",
     "dev:remix-go": "cd apps/remix-go && npm run dev",
-    "dev:vfx-studio": "cd apps/vfx-studio && npm run dev"
+    "dev:vfx-studio": "cd apps/vfx-studio && npm run dev",
+    "dev:sendspark-workflow": "cd apps/sendspark-workflow && npm run dev"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

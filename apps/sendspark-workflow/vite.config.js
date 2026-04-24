@@ -6,7 +6,7 @@ export default defineConfig({
   root: '.',
   envDir: '../../', // Load .env from repository root
   server: {
-    port: 8083,
+    port: 8084,
     host: '0.0.0.0'
   }
 });
