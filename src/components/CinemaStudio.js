@@ -44,7 +44,7 @@ export function CinemaStudio() {
     heroSection.className = 'flex flex-col items-center justify-center text-center px-4 animate-fade-in-up';
     heroSection.innerHTML = `
         <div class="mb-4 text-xs font-bold text-white/40 tracking-[0.2em] uppercase">Cinema Studio 2.0</div>
-        <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 tracking-tight leading-tight mb-2">
+        <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight mb-2">
             What would you shoot<br>with infinite budget?
         </h1>
     `;

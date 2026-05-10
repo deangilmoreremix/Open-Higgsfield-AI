@@ -45,9 +45,9 @@
 
 /* Profile Statistics */
 .profile-stat-card {
-  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-panel) 100%);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.2s var(--transition-normal);
 }
 
 .profile-stat-card:hover {

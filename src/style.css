@@ -146,12 +146,7 @@ button.bg-primary {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
 }
 
-/* Gradient text utility */
-.bg-clip-text.text-transparent {
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* Text utility - gradient text removed per design laws (use solid colors only) */
 
 /* Container */
 .container {

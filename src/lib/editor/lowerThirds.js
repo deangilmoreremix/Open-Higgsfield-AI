@@ -92,7 +92,7 @@ export const LOWER_THIRD_ANIMATIONS = [
   { id: 'slide-up', name: 'Slide Up', duration: 600 },
   { id: 'slide-down', name: 'Slide Down', duration: 600 },
   { id: 'scale-in', name: 'Scale In', duration: 400 },
-  { id: 'bounce-in', name: 'Bounce In', duration: 700 },
+  { id: 'slide-in-up', name: 'Slide In Up', duration: 500 },
   { id: 'rotate-in', name: 'Rotate In', duration: 500 }
 ];
 

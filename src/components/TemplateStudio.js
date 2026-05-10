@@ -133,7 +133,7 @@ export function TemplateStudio(templateId) {
 
   // Enhanced title with better typography
   const title = document.createElement('h1');
-  title.className = 'text-6xl font-bold tracking-tight bg-gradient-to-r from-white via-white to-zinc-300 bg-clip-text text-transparent mb-4';
+  title.className = 'text-6xl font-bold tracking-tight text-white mb-4';
   title.textContent = template.name;
   heroSection.appendChild(title);
 
