@@ -77,6 +77,22 @@ export function VideoStudio() {
     };
 
     // ==========================================
+    // 0. HEADER BANNER
+    // ==========================================
+    const headerBanner = document.createElement('div');
+    headerBanner.className = 'relative w-full h-64 md:h-80 lg:h-96 mb-6 overflow-hidden rounded-xl';
+    headerBanner.innerHTML = '<div class="thumb-skeleton absolute inset-0"></div>';
+    const bannerImg = document.createElement('img');
+    bannerImg.src = '/thumbnails/pages/placeholder.webp';
+    bannerImg.alt = 'Video Studio';
+    bannerImg.className = 'w-full h-full object-cover';
+    headerBanner.appendChild(bannerImg);
+    const bannerOverlay = document.createElement('div');
+    bannerOverlay.className = 'absolute inset-0 bg-gradient-to-t from-app-bg via-transparent to-transparent';
+    headerBanner.appendChild(bannerOverlay);
+    container.appendChild(headerBanner);
+
+    // ==========================================
     // 1. HERO SECTION
     // ==========================================
     const hero = document.createElement('div');

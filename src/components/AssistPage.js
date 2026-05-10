@@ -14,7 +14,7 @@ export function AssistPage() {
   const assistThumb = getPageThumbnail('assist');
   if (assistThumb) {
     const bannerWrapper = document.createElement('div');
-    bannerWrapper.className = 'relative w-full h-36 md:h-48 rounded-2xl overflow-hidden mb-6';
+    bannerWrapper.className = 'relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden mb-6';
     bannerWrapper.innerHTML = '<div class="thumb-skeleton absolute inset-0"></div>';
     const img = createThumbnailImg(assistThumb, 'Assist', 'w-full h-full object-cover');
     bannerWrapper.appendChild(img);

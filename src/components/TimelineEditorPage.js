@@ -496,6 +496,10 @@ button, input, textarea, select { font: inherit; }
     </div>
     <div class="top-actions" id="topActions"></div>
   </header>
+  <div class="relative w-full h-32 md:h-40 lg:h-48 overflow-hidden">
+    <img src="/thumbnails/pages/placeholder.webp" alt="Timeline Editor" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-t from-app-bg via-transparent to-transparent"></div>
+  </div>
   <div class="main-grid">
     <div class="left-col">
       <div class="left-top">

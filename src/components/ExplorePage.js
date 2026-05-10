@@ -25,9 +25,13 @@ export function ExplorePage() {
   inner.className = 'w-full px-4 md:px-8 py-8 md:py-12';
 
   inner.innerHTML = `
-    <div class="mb-10 animate-fade-in-up">
-      <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight mb-3">Explore</h1>
-      <p class="text-secondary text-sm md:text-base max-w-xl">Discover curated prompts, trending templates, and creative inspiration</p>
+    <div class="relative w-full h-64 md:h-80 lg:h-96 mb-10 overflow-hidden rounded-xl">
+      <img src="/thumbnails/pages/explore.webp" alt="Explore AI Creative Tools" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      <div class="absolute bottom-6 left-6 md:left-8 text-white animate-fade-in-up">
+        <h1 class="text-3xl md:text-5xl font-black tracking-tight mb-3">Explore</h1>
+        <p class="text-secondary text-sm md:text-base max-w-xl">Discover curated prompts, trending templates, and creative inspiration</p>
+      </div>
     </div>
   `;
 

@@ -12,7 +12,7 @@ export function CommunityPage() {
   const communityThumb = getPageThumbnail('community');
   if (communityThumb) {
     const bannerWrapper = document.createElement('div');
-    bannerWrapper.className = 'relative w-full h-40 md:h-56 rounded-2xl overflow-hidden mb-6';
+    bannerWrapper.className = 'relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden mb-6';
     bannerWrapper.innerHTML = '<div class="thumb-skeleton absolute inset-0"></div>';
     const img = createThumbnailImg(communityThumb, 'Community', 'w-full h-full object-cover');
     bannerWrapper.appendChild(img);
