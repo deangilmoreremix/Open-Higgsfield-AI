@@ -17,6 +17,7 @@
     "build:all": "pnpm run build:remix-go && pnpm run build:ai-vfx && pnpm run build",
     "build:remix-go": "pnpm --filter remix-go run build && mkdir -p public/apps/remix-go && cp -r apps/remix-go/dist/* public/apps/remix-go/",
     "build:ai-vfx": "pnpm --filter ai-vfx run build",
+    "dev:remix-go": "node run-remix-go-standalone.js",
     "build:analyze": "vite build --mode analyze",
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.ts",

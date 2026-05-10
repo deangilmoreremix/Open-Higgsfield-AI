@@ -93,8 +93,8 @@ const GettingStarted = observer(() => {
   const handleVideoSelected = async (mediaData, metadata = {}) => {
     try {
       // Determine if this is a video or image based on metadata
-      const isVideo = metadata.type === 'video' || metadata.files || mediaData.includes('.mp4') || mediaData.includes('.webm') || mediaData.includes('video');
-      const isImage = metadata.type === 'photo' || metadata.src || mediaData.includes('.jpg') || mediaData.includes('.png') || mediaData.includes('image');
+      let isVideo = metadata.type === 'video' || metadata.files || (typeof mediaData === 'string' && (mediaData.includes('.mp4') || mediaData.includes('.webm') || mediaData.includes('video')));
+      let isImage = metadata.type === 'photo' || metadata.src || (typeof mediaData === 'string' && (mediaData.includes('.jpg') || mediaData.includes('.png') || mediaData.includes('image')));
 
       let mediaUrl = mediaData;
       if (typeof mediaData === 'object') {
