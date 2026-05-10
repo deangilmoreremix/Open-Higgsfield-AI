@@ -5,202 +5,265 @@
     <meta name="viewport" content="width=1920, height=1080" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
-      html,
-      body {
-        margin: 0;
-        width: 1920px;
-        height: 1080px;
-        overflow: hidden;
-        background: #0a0a0a;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      .app-container {
+        width: 100%; height: 100%; position: relative;
       }
-      
-      #root {
-        width: 100%;
-        height: 100%;
-        position: relative;
-      }
-      
       .header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 80px;
-        background: #1a1a2e;
-        border-bottom: 2px solid #2a2a4e;
-        display: flex;
-        align-items: center;
-        padding: 0 40px;
+        position: absolute; top: 0; left: 0; right: 0; height: 80px;
+        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
+        display: flex; align-items: center; padding: 0 40px;
       }
-      
       .header-title {
-        color: #fff;
-        font-size: 32px;
-        font-weight: bold;
+        color: #fff; font-size: 32px; font-weight: bold;
       }
-      
-      .timeline-container {
-        position: absolute;
-        top: 80px;
-        left: 0;
-        right: 0;
-        bottom: 100px;
-        background: #0f0f1a;
+      .workflow-area {
+        position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
+        padding: 40px;
       }
-      
-      .track {
-        height: 120px;
-        border-bottom: 1px solid #1a1a2e;
-        position: relative;
-        background: #0a0a0a;
-        margin: 10px 0;
+      .step-indicator {
+        position: absolute; top: 20px; right: 40px;
+        background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 25px;
+        padding: 10px 20px; color: #4a90e2; font-size: 18px; font-weight: bold;
       }
-      
-      .track-label {
-        position: absolute;
-        left: 20px;
-        top: 10px;
-        color: #aaa;
-        font-size: 16px;
-        z-index: 10;
+      .progress-bar {
+        position: absolute; top: 70px; left: 40px; right: 40px; height: 6px;
+        background: #2a2a4e; border-radius: 3px; overflow: hidden;
       }
-      
-      .clip {
-        position: absolute;
-        top: 20px;
-        height: 80px;
-        background: #4a90e2;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
+      .progress-fill {
+        height: 100%; background: #4a90e2; width: 0%; transition: width 0.5s ease;
       }
-      
+      .workflow-step {
+        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
+        border-radius: 16px; padding: 30px; opacity: 0; transform: translateY(50px);
+        transition: all 0.5s ease;
+      }
+      .workflow-step.active {
+        opacity: 1; transform: translateY(0); border-color: #4a90e2;
+      }
+      .step-title {
+        color: #4a90e2; font-size: 28px; font-weight: bold; margin-bottom: 15px;
+      }
+      .step-description {
+        color: #ccc; font-size: 18px; line-height: 1.6; margin-bottom: 25px;
+      }
+      .action-button {
+        background: #4a90e2; border: none; color: #fff; padding: 15px 30px;
+        border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 15px;
+        transition: all 0.3s ease;
+      }
+      .action-button:hover { background: #357abd; transform: translateY(-2px); }
+      .demo-area {
+        position: absolute; top: 200px; left: 40px; right: 40px; bottom: 40px;
+        background: #15152a; border-radius: 12px; padding: 20px;
+        opacity: 0; transform: scale(0.95);
+      }
+      .timeline-preview {
+        width: 100%; height: 100%; background: #0f0f1a; border-radius: 8px;
+        position: relative; overflow: hidden;
+      }
+      .timeline-track {
+        position: absolute; left: 0; right: 0; height: 60px; background: #1a1a2e;
+        margin-bottom: 5px; border-radius: 4px;
+      }
+      .timeline-clip {
+        position: absolute; top: 10px; height: 40px; background: #4a90e2;
+        border-radius: 4px; opacity: 0; transform: scaleX(0);
+      }
       .playhead {
-        position: absolute;
-        top: 0;
-        width: 3px;
-        height: 100%;
-        background: #ff0000;
-        z-index: 50;
-        left: 200px;
+        position: absolute; top: 0; width: 3px; height: 100%; background: #ff0000;
+        left: 100px; opacity: 0;
       }
-      
-      .controls {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 100px;
-        background: #1a1a2e;
-        border-top: 2px solid #2a2a4e;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 30px;
+      .feature-highlight {
+        position: absolute; background: #15152a; border: 2px solid #4a90e2;
+        border-radius: 12px; padding: 20px; max-width: 300px; opacity: 0;
+        transform: translateY(20px);
       }
-      
-      .control-button {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        background: #2a2a4e;
-        color: #fff;
+      .highlight-title {
+        color: #4a90e2; font-size: 16px; font-weight: bold; margin-bottom: 8px;
       }
-      
-      .feature-label {
-        position: absolute;
-        color: #4a90e2;
-        font-size: 28px;
-        font-weight: bold;
-        opacity: 0;
+      .highlight-desc {
+        color: #ccc; font-size: 14px; line-height: 1.4;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="timeline"
-      data-start="0"
-      data-duration="30"
-      data-width="1920"
-      data-height="1080"
-    >
+    <div id="root" data-composition-id="timeline-workflow" data-start="0" data-duration="90" data-width="1920" data-height="1080">
       <!-- Header -->
-      <div class="clip" data-start="0" data-duration="30" data-track-index="0" style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">Timeline Editor</div>
+      <div class="header">
+        <div class="header-title">Timeline Editor - Complete Workflow</div>
       </div>
-      
-      <!-- Timeline -->
-      <div class="clip" data-start="0" data-duration="30" data-track-index="1" style="position: absolute; top: 80px; left: 0; right: 0; bottom: 100px; background: #0f0f1a; overflow-y: auto;">
-        <!-- Track 1 -->
-        <div class="clip" data-start="0" data-duration="30" data-track-index="2" style="height: 120px; border-bottom: 1px solid #1a1a2e; position: relative; background: #0a0a0a; margin: 10px 0;">
-          <div style="position: absolute; left: 20px; top: 10px; color: #aaa; font-size: 16px;">Video Track</div>
-          <div class="clip" data-start="2" data-duration="6" data-track-index="3" style="position: absolute; top: 20px; left: 200px; width: 240px; height: 80px; background: #4a90e2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: bold;">Intro</div>
-          <div class="clip" data-start="8" data-duration="8" data-track-index="4" style="position: absolute; top: 20px; left: 520px; width: 320px; height: 80px; background: #4a90e2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: bold;">Main Clip</div>
-          <div class="clip" data-start="16" data-duration="6" data-track-index="5" style="position: absolute; top: 20px; left: 920px; width: 240px; height: 80px; background: #4a90e2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: bold;">Outro</div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" id="step-indicator">Step 1 of 5</div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <!-- Workflow Steps -->
+      <div class="workflow-area">
+        <!-- Step 1: Import Media -->
+        <div class="workflow-step clip" data-start="3" data-duration="12" data-track-index="1" id="step1" style="top: 100px; left: 50px; width: 400px;">
+          <div class="step-title">1. Import Media</div>
+          <div class="step-description">Drag and drop media files or browse to select content for your project.</div>
+          <button class="action-button" onclick="nextStep(1)">Import Files</button>
+          <div style="font-size: 14px; color: #666; margin-top: 10px;">Supported: Video, Audio, Images</div>
         </div>
-        
-        <!-- Track 2 -->
-        <div class="clip" data-start="0" data-duration="30" data-track-index="6" style="height: 120px; border-bottom: 1px solid #1a1a2e; position: relative; background: #0a0a0a; margin: 10px 0;">
-          <div style="position: absolute; left: 20px; top: 10px; color: #aaa; font-size: 16px;">Audio Track</div>
-          <div class="clip" data-start="2" data-duration="25" data-track-index="7" style="position: absolute; top: 20px; left: 200px; width: 1000px; height: 80px; background: #50c878; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: bold;">Background Music</div>
+
+        <!-- Step 2: Arrange on Timeline -->
+        <div class="workflow-step clip" data-start="18" data-duration="15" data-track-index="2" id="step2" style="top: 100px; left: 500px; width: 400px;">
+          <div class="step-title">2. Arrange on Timeline</div>
+          <div class="step-description">Position clips on tracks, adjust timing, and organize your sequence.</div>
+          <button class="action-button" onclick="nextStep(2)">Arrange Clips</button>
+          <div style="font-size: 14px; color: #666; margin-top: 10px;">Multi-track support, snap-to-grid</div>
+        </div>
+
+        <!-- Step 3: Edit and Enhance -->
+        <div class="workflow-step clip" data-start="36" data-duration="18" data-track-index="3" id="step3" style="top: 100px; left: 950px; width: 400px;">
+          <div class="step-title">3. Edit and Enhance</div>
+          <div class="step-description">Trim clips, add transitions, apply effects, and refine your content.</div>
+          <button class="action-button" onclick="nextStep(3)">Edit Content</button>
+          <div style="font-size: 14px; color: #666; margin-top: 10px;">Transitions, Effects, Audio mixing</div>
+        </div>
+
+        <!-- Step 4: Review and Preview -->
+        <div class="workflow-step clip" data-start="57" data-duration="15" data-track-index="4" id="step4" style="top: 350px; left: 275px; width: 400px;">
+          <div class="step-title">4. Review and Preview</div>
+          <div class="step-description">Play back your timeline, make final adjustments, and ensure quality.</div>
+          <button class="action-button" onclick="nextStep(4)">Preview Timeline</button>
+          <div style="font-size: 14px; color: #666; margin-top: 10px;">Real-time playback, quality check</div>
+        </div>
+
+        <!-- Step 5: Export Project -->
+        <div class="workflow-step clip" data-start="75" data-duration="15" data-track-index="5" id="step5" style="top: 350px; left: 725px; width: 400px;">
+          <div class="step-title">5. Export Project</div>
+          <div class="step-description">Choose export settings and generate your final video file.</div>
+          <button class="action-button" onclick="completeWorkflow()">Export Video</button>
+          <div style="font-size: 14px; color: #666; margin-top: 10px;">Multiple formats, quality options</div>
+        </div>
+
+        <!-- Interactive Demo Area -->
+        <div class="demo-area clip" data-start="3" data-duration="87" data-track-index="6" id="demo-area">
+          <div class="timeline-preview">
+            <!-- Timeline Tracks -->
+            <div class="timeline-track clip" data-start="18" data-duration="72" data-track-index="7" style="top: 20px;"></div>
+            <div class="timeline-track clip" data-start="18" data-duration="72" data-track-index="8" style="top: 90px;"></div>
+            <div class="timeline-track clip" data-start="18" data-duration="72" data-track-index="9" style="top: 160px;"></div>
+
+            <!-- Video Clips -->
+            <div class="timeline-clip clip" data-start="22" data-duration="3" data-track-index="10" id="clip1" style="left: 120px; width: 80px; background: #4a90e2;"></div>
+            <div class="timeline-clip clip" data-start="26" data-duration="3" data-track-index="11" id="clip2" style="left: 220px; width: 120px; background: #4a90e2;"></div>
+            <div class="timeline-clip clip" data-start="30" data-duration="3" data-track-index="12" id="clip3" style="left: 360px; width: 100px; background: #4a90e2;"></div>
+
+            <!-- Audio Clip -->
+            <div class="timeline-clip clip" data-start="22" data-duration="3" data-track-index="13" id="audio-clip" style="top: 100px; left: 120px; width: 360px; background: #50c878;"></div>
+
+            <!-- Playhead -->
+            <div class="playhead clip" data-start="57" data-duration="25" data-track-index="14" id="playhead"></div>
+          </div>
         </div>
       </div>
-      
-      <!-- Playhead -->
-      <div class="clip" data-start="2" data-duration="20" data-track-index="8" id="playhead" style="position: absolute; top: 80px; width: 3px; height: 880px; background: #ff0000; z-index: 50; left: 200px;"></div>
-      
-      <!-- Controls -->
-      <div class="clip" data-start="0" data-duration="30" data-track-index="9" style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: #1a1a2e; border-top: 2px solid #2a2a4e; display: flex; align-items: center; justify-content: center; gap: 30px;">
-        <button class="clip" data-start="3" data-duration="2" data-track-index="10" style="width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; background: #4a90e2; color: #fff;">▶</button>
-        <button class="clip" data-start="5" data-duration="2" data-track-index="11" style="width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; background: #2a2a4e; color: #fff;">⏸</button>
-        <button class="clip" data-start="7" data-duration="2" data-track-index="12" style="width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; background: #2a2a4e; color: #fff;">⏹</button>
+
+      <!-- Feature Highlights -->
+      <div class="feature-highlight clip" data-start="22" data-duration="5" data-track-index="15" id="highlight1" style="top: 150px; left: 50px;">
+        <div class="highlight-title">Multi-Track Editing</div>
+        <div class="highlight-desc">Organize video, audio, and effects on separate tracks</div>
       </div>
-      
-      <!-- Feature Labels -->
-      <div class="feature-label clip" data-start="2" data-duration="2" data-track-index="11" id="label1" style="top: 300px; left: 100px;">Multi-Track Timeline</div>
-      <div class="feature-label clip" data-start="8" data-duration="2" data-track-index="11" id="label2" style="top: 300px; left: 100px;">Clip Management</div>
-      <div class="feature-label clip" data-start="14" data-duration="2" data-track-index="11" id="label3" style="top: 300px; left: 100px;">Playback Controls</div>
-      <div class="feature-label clip" data-start="20" data-duration="10" data-track-index="11" id="label4" style="top: 500px; left: 600px; font-size: 48px;">Timeline Editor - Demo Complete</div>
+
+      <div class="feature-highlight clip" data-start="36" data-duration="5" data-track-index="16" id="highlight2" style="bottom: 150px; left: 50px;">
+        <div class="highlight-title">Real-time Effects</div>
+        <div class="highlight-desc">Apply transitions, filters, and audio effects instantly</div>
+      </div>
+
+      <div class="feature-highlight clip" data-start="57" data-duration="5" data-track-index="17" id="highlight3" style="bottom: 150px; right: 50px;">
+        <div class="highlight-title">Professional Playback</div>
+        <div class="highlight-desc">Frame-accurate playback with transport controls</div>
+      </div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      
-      // Playhead animation
-      tl.to('#playhead', {
-        left: 1500,
-        duration: 20,
-        ease: 'none'
-      }, 2);
-      
-      // Feature labels fade in/out
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 2);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 4);
-      
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 8);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 10);
-      
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 14);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 16);
-      
-      tl.to('#label4', { opacity: 1, duration: 0.5 }, 20);
-      
-      window.__timelines["timeline"] = tl;
+
+      let currentStep = 1;
+      const totalSteps = 5;
+
+      // Initialize first step
+      tl.set('#step1', { className: 'workflow-step active' }, 0);
+
+      // Step transitions with progress updates
+      const stepTransitions = [
+        { step: 1, start: 3, nextStart: 15, progress: '20%' },
+        { step: 2, start: 18, nextStart: 33, progress: '40%' },
+        { step: 3, start: 36, nextStart: 54, progress: '60%' },
+        { step: 4, start: 57, nextStart: 72, progress: '80%' },
+        { step: 5, start: 75, nextStart: 90, progress: '100%' }
+      ];
+
+      stepTransitions.forEach(({ step, start, nextStart, progress }, index) => {
+        // Show demo area
+        if (step === 2) {
+          tl.to('#demo-area', { opacity: 1, scale: 1, duration: 0.5 }, start);
+        }
+
+        // Animate timeline clips for step 2
+        if (step === 2) {
+          tl.to('#clip1', { opacity: 1, scaleX: 1, duration: 0.5 }, start + 2);
+          tl.to('#clip2', { opacity: 1, scaleX: 1, duration: 0.5 }, start + 3);
+          tl.to('#clip3', { opacity: 1, scaleX: 1, duration: 0.5 }, start + 4);
+          tl.to('#audio-clip', { opacity: 1, scaleX: 1, duration: 0.5 }, start + 2);
+        }
+
+        // Show feature highlights
+        if (step === 2) {
+          tl.to('#highlight1', { opacity: 1, y: 0, duration: 0.5 }, start + 4);
+        }
+        if (step === 3) {
+          tl.to('#highlight2', { opacity: 1, y: 0, duration: 0.5 }, start + 4);
+        }
+        if (step === 4) {
+          tl.to('#highlight3', { opacity: 1, y: 0, duration: 0.5 }, start + 4);
+          tl.to('#playhead', { opacity: 1 }, start);
+          tl.to('#playhead', { left: '80%', duration: 20, ease: 'none' }, start);
+        }
+
+        // Update progress
+        tl.to('#progress-fill', { width: progress, duration: 0.5 }, start);
+
+        // Step transition
+        if (index < stepTransitions.length - 1) {
+          tl.to(`#step${step}`, { className: 'workflow-step' }, nextStart);
+          tl.to(`#step${step + 1}`, { className: 'workflow-step active' }, nextStart);
+          tl.call(() => {
+            document.getElementById('step-indicator').textContent = `Step ${step + 1} of 5`;
+          }, null, nextStart);
+        }
+      });
+
+      // Final completion
+      tl.to('#step5', { className: 'workflow-step' }, 90);
+      tl.call(() => {
+        document.getElementById('step-indicator').textContent = 'Workflow Complete!';
+        document.getElementById('step-indicator').style.borderColor = '#50c878';
+        document.getElementById('step-indicator').style.color = '#50c878';
+      }, null, 90);
+
+      window.__timelines["timeline-workflow"] = tl;
+
+      // Interactive functions
+      window.nextStep = function(step) {
+        console.log('Advancing to step', step + 1);
+      };
+
+      window.completeWorkflow = function() {
+        console.log('Timeline workflow completed');
+      };
     </script>
   </body>
 </html>

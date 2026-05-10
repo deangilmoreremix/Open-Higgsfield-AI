@@ -5,47 +5,284 @@
     <meta name="viewport" content="width=1920, height=1080" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
-      html,
-      body {
-        margin: 0;
-        width: 1920px;
-        height: 1080px;
-        overflow: hidden;
-        background: #000;
+      .app-container {
+        width: 100%; height: 100%; position: relative;
+      }
+      .header {
+        position: absolute; top: 0; left: 0; right: 0; height: 80px;
+        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
+        display: flex; align-items: center; padding: 0 40px;
+      }
+      .header-title {
+        color: #fff; font-size: 32px; font-weight: bold;
+      }
+      .step-indicator {
+        position: absolute; top: 20px; right: 40px;
+        background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 25px;
+        padding: 10px 20px; color: #4a90e2; font-size: 18px; font-weight: bold;
+      }
+      .progress-bar {
+        position: absolute; top: 70px; left: 40px; right: 40px; height: 6px;
+        background: #2a2a4e; border-radius: 3px; overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%; background: #4a90e2; width: 0%; transition: width 0.5s ease;
+      }
+      .workflow-area {
+        position: absolute; top: 100px; left: 0; right: 0; bottom: 0;
+        padding: 40px;
+      }
+      .workflow-step {
+        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
+        border-radius: 16px; padding: 25px; opacity: 0; transform: translateY(50px);
+        transition: all 0.5s ease;
+      }
+      .workflow-step.active {
+        opacity: 1; transform: translateY(0); border-color: #4a90e2;
+      }
+      .step-title {
+        color: #4a90e2; font-size: 24px; font-weight: bold; margin-bottom: 12px;
+      }
+      .step-description {
+        color: #ccc; font-size: 16px; line-height: 1.5; margin-bottom: 20px;
+      }
+      .action-button {
+        background: #4a90e2; border: none; color: #fff; padding: 12px 24px;
+        border-radius: 6px; font-size: 16px; cursor: pointer; margin-right: 12px;
+        transition: all 0.3s ease;
+      }
+      .action-button:hover { background: #357abd; transform: translateY(-2px); }
+      .demo-section {
+        position: absolute; top: 200px; left: 40px; right: 40px; bottom: 40px;
+        background: #15152a; border-radius: 12px; padding: 20px;
+        opacity: 0; transform: scale(0.95);
+      }
+      .library-grid {
+        display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-bottom: 20px;
+      }
+      .media-item {
+        aspect-ratio: 16/9; background: #1a1a2e; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 12px; opacity: 0; transform: scale(0.8);
+      }
+      .search-bar {
+        width: 100%; padding: 12px 16px; background: #0f0f1a;
+        border: 2px solid #2a2a4e; border-radius: 8px;
+        color: #fff; font-size: 16px; margin-bottom: 20px;
+      }
+      .filter-tabs {
+        display: flex; gap: 10px; margin-bottom: 20px;
+      }
+      .filter-tab {
+        padding: 8px 16px; background: #2a2a4e; color: #ccc;
+        border-radius: 6px; cursor: pointer; transition: all 0.3s ease;
+      }
+      .filter-tab.active {
+        background: #4a90e2; color: #fff;
+      }
+      .feature-highlight {
+        position: absolute; background: #15152a; border: 2px solid #4a90e2;
+        border-radius: 12px; padding: 15px; max-width: 280px; opacity: 0;
+        transform: translateY(20px);
+      }
+      .highlight-title {
+        color: #4a90e2; font-size: 14px; font-weight: bold; margin-bottom: 6px;
+      }
+      .highlight-desc {
+        color: #aaa; font-size: 12px; line-height: 1.4;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="main"
-      data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
-    >
-      
-      
+    <div id="root" data-composition-id="library-workflow" data-start="0" data-duration="75" data-width="1920" data-height="1080">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title">Media Library - Complete Workflow</div>
+      </div>
 
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
+      <!-- Step Indicator -->
+      <div class="step-indicator" id="step-indicator">Step 1 of 5</div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <!-- Workflow Steps -->
+      <div class="workflow-area">
+        <!-- Step 1: Organization Setup -->
+        <div class="workflow-step clip" data-start="3" data-duration="12" data-track-index="1" id="step1" style="top: 50px; left: 50px; width: 350px;">
+          <div class="step-title">1. Organization Setup</div>
+          <div class="step-description">Create folders, set metadata schemas, and organize your media collection.</div>
+          <button class="action-button" onclick="nextStep(1)">Setup Folders</button>
+          <div style="font-size: 12px; color: #666; margin-top: 8px;">Auto-tagging, custom fields</div>
         </div>
-      -->
+
+        <!-- Step 2: Search & Filter -->
+        <div class="workflow-step clip" data-start="18" data-duration="15" data-track-index="2" id="step2" style="top: 50px; left: 450px; width: 350px;">
+          <div class="step-title">2. Search & Filter</div>
+          <div class="step-description">Use advanced search queries and faceted filtering to find your content.</div>
+          <button class="action-button" onclick="nextStep(2)">Search Media</button>
+          <div style="font-size: 12px; color: #666; margin-top: 8px;">AI-powered search, smart suggestions</div>
+        </div>
+
+        <!-- Step 3: Preview & Selection -->
+        <div class="workflow-step clip" data-start="36" data-duration="12" data-track-index="3" id="step3" style="top: 50px; left: 850px; width: 350px;">
+          <div class="step-title">3. Preview & Selection</div>
+          <div class="step-description">Browse thumbnails, preview content, and select items for your project.</div>
+          <button class="action-button" onclick="nextStep(3)">Select Items</button>
+          <div style="font-size: 12px; color: #666; margin-top: 8px;">Quick preview, batch selection</div>
+        </div>
+
+        <!-- Step 4: Metadata Management -->
+        <div class="workflow-step clip" data-start="51" data-duration="12" data-track-index="4" id="step4" style="top: 300px; left: 250px; width: 350px;">
+          <div class="step-title">4. Metadata Management</div>
+          <div class="step-description">Edit metadata, apply AI tags, and manage content properties.</div>
+          <button class="action-button" onclick="nextStep(4)">Edit Metadata</button>
+          <div style="font-size: 12px; color: #666; margin-top: 8px;">Bulk editing, AI auto-tagging</div>
+        </div>
+
+        <!-- Step 5: Integration Workflow -->
+        <div class="workflow-step clip" data-start="66" data-duration="9" data-track-index="5" id="step5" style="top: 300px; left: 650px; width: 350px;">
+          <div class="step-title">5. Integration Workflow</div>
+          <div class="step-description">Import to timeline, sync with cloud, or export to other applications.</div>
+          <button class="action-button" onclick="completeWorkflow()">Integrate Media</button>
+          <div style="font-size: 12px; color: #666; margin-top: 8px;">Timeline import, cloud sync</div>
+        </div>
+
+        <!-- Interactive Demo Section -->
+        <div class="demo-section clip" data-start="3" data-duration="72" data-track-index="6" id="demo-section">
+          <!-- Search Bar -->
+          <div class="search-bar clip" data-start="18" data-duration="57" data-track-index="7" id="search-input">Search your media library...</div>
+
+          <!-- Filter Tabs -->
+          <div class="filter-tabs clip" data-start="18" data-duration="57" data-track-index="8">
+            <div class="filter-tab clip" data-start="18" data-duration="3" data-track-index="9" id="filter-all">All</div>
+            <div class="filter-tab clip" data-start="22" data-duration="3" data-track-index="10" id="filter-video">Video</div>
+            <div class="filter-tab clip" data-start="26" data-duration="3" data-track-index="11" id="filter-audio">Audio</div>
+            <div class="filter-tab clip" data-start="30" data-duration="3" data-track-index="12" id="filter-image">Images</div>
+          </div>
+
+          <!-- Media Grid -->
+          <div class="library-grid">
+            <!-- Videos -->
+            <div class="media-item clip" data-start="36" data-duration="3" data-track-index="13" style="background: linear-gradient(45deg, #4a90e2, #357abd);">Video 1</div>
+            <div class="media-item clip" data-start="37" data-duration="3" data-track-index="14" style="background: linear-gradient(45deg, #4a90e2, #357abd);">Video 2</div>
+            <div class="media-item clip" data-start="38" data-duration="3" data-track-index="15" style="background: linear-gradient(45deg, #4a90e2, #357abd);">Video 3</div>
+
+            <!-- Audio -->
+            <div class="media-item clip" data-start="40" data-duration="3" data-track-index="16" style="background: linear-gradient(45deg, #50c878, #3d9b63);">Audio 1</div>
+            <div class="media-item clip" data-start="41" data-duration="3" data-track-index="17" style="background: linear-gradient(45deg, #50c878, #3d9b63);">Audio 2</div>
+
+            <!-- Images -->
+            <div class="media-item clip" data-start="43" data-duration="3" data-track-index="18" style="background: linear-gradient(45deg, #ff6b6b, #cc5555);">Image 1</div>
+            <div class="media-item clip" data-start="44" data-duration="3" data-track-index="19" style="background: linear-gradient(45deg, #ff6b6b, #cc5555);">Image 2</div>
+            <div class="media-item clip" data-start="45" data-duration="3" data-track-index="20" style="background: linear-gradient(45deg, #ff6b6b, #cc5555);">Image 3</div>
+
+            <!-- Effects -->
+            <div class="media-item clip" data-start="47" data-duration="3" data-track-index="21" style="background: linear-gradient(45deg, #ffa500, #cc8400);">Effect 1</div>
+            <div class="media-item clip" data-start="48" data-duration="3" data-track-index="22" style="background: linear-gradient(45deg, #ffa500, #cc8400);">Effect 2</div>
+
+            <!-- Templates -->
+            <div class="media-item clip" data-start="50" data-duration="3" data-track-index="23" style="background: linear-gradient(45deg, #9c27b0, #7b1fa2);">Template</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Highlights -->
+      <div class="feature-highlight clip" data-start="18" data-duration="5" data-track-index="24" id="highlight1" style="top: 150px; left: 50px;">
+        <div class="highlight-title">Advanced Search</div>
+        <div class="highlight-desc">AI-powered search with natural language queries and smart filtering</div>
+      </div>
+
+      <div class="feature-highlight clip" data-start="36" data-duration="5" data-track-index="25" id="highlight2" style="bottom: 150px; left: 50px;">
+        <div class="highlight-title">Visual Preview</div>
+        <div class="highlight-desc">Quick thumbnail preview and metadata display for all media types</div>
+      </div>
+
+      <div class="feature-highlight clip" data-start="51" data-duration="5" data-track-index="26" id="highlight3" style="bottom: 150px; right: 50px;">
+        <div class="highlight-title">Bulk Operations</div>
+        <div class="highlight-desc">Select multiple items for batch editing, moving, or exporting</div>
+      </div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
-      window.__timelines["main"] = tl;
+
+      // Initialize first step
+      tl.set('#step1', { className: 'workflow-step active' }, 0);
+
+      // Step transitions
+      const steps = [
+        { id: 1, start: 3, progress: '20%', nextStart: 15 },
+        { id: 2, start: 18, progress: '40%', nextStart: 33 },
+        { id: 3, start: 36, progress: '60%', nextStart: 48 },
+        { id: 4, start: 51, progress: '80%', nextStart: 63 },
+        { id: 5, start: 66, progress: '100%', nextStart: 75 }
+      ];
+
+      steps.forEach(({ id, start, progress, nextStart }, index) => {
+        // Show demo section
+        if (id === 2) {
+          tl.to('#demo-section', { opacity: 1, scale: 1, duration: 0.5 }, start);
+        }
+
+        // Update progress
+        tl.to('#progress-fill', { width: progress, duration: 0.5 }, start);
+
+        // Step transition
+        if (index < steps.length - 1) {
+          tl.to(`#step${id}`, { className: 'workflow-step' }, nextStart);
+          tl.to(`#step${id + 1}`, { className: 'workflow-step active' }, nextStart);
+          tl.call(() => {
+            document.getElementById('step-indicator').textContent = `Step ${id + 1} of 5`;
+          }, null, nextStart);
+        }
+
+        // Show highlights
+        if (id === 2) {
+          tl.to('#highlight1', { opacity: 1, y: 0, duration: 0.5 }, start + 2);
+        }
+        if (id === 3) {
+          tl.to('#highlight2', { opacity: 1, y: 0, duration: 0.5 }, start + 2);
+        }
+        if (id === 4) {
+          tl.to('#highlight3', { opacity: 1, y: 0, duration: 0.5 }, start + 2);
+        }
+
+        // Activate filter tabs
+        if (id === 2) {
+          tl.to('#filter-all', { className: 'filter-tab active' }, start + 1);
+          tl.to('#filter-video', { className: 'filter-tab active' }, start + 3);
+          tl.to('#filter-audio', { className: 'filter-tab active' }, start + 5);
+          tl.to('#filter-image', { className: 'filter-tab active' }, start + 7);
+        }
+      });
+
+      // Final completion
+      tl.to('#step5', { className: 'workflow-step' }, 75);
+      tl.call(() => {
+        document.getElementById('step-indicator').textContent = 'Library Setup Complete!';
+        document.getElementById('step-indicator').style.borderColor = '#50c878';
+        document.getElementById('step-indicator').style.color = '#50c878';
+      }, null, 75);
+
+      window.__timelines["library-workflow"] = tl;
+
+      // Interactive functions
+      window.nextStep = function(step) {
+        console.log('Advancing library workflow to step', step + 1);
+      };
+
+      window.completeWorkflow = function() {
+        console.log('Library workflow completed');
+      };
     </script>
   </body>
 </html>
