@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .header {
+        position: absolute; top: 0; left: 0; right: 0; height: 80px;
+        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .title {
+        color: #fff; font-size: 36px; font-weight: bold;
+      }
+      .timeline-demo {
+        position: absolute; top: 120px; left: 40px; right: 40px; bottom: 40px;
+        background: #1a1a2e; border-radius: 12px; overflow: hidden;
+      }
+      .timeline-header {
+        height: 60px; background: #15152a; border-bottom: 1px solid #2a2a4e;
+        display: flex; align-items: center; padding: 0 20px;
+      }
+      .timeline-title {
+        color: #fff; font-size: 20px; font-weight: bold;
+      }
+      .timeline-content {
+        position: relative; height: calc(100% - 60px);
+      }
+      .time-ruler {
+        position: absolute; top: 0; left: 200px; right: 0; height: 40px;
+        background: #15152a; border-bottom: 1px solid #2a2a4e;
+      }
+      .time-marker {
+        position: absolute; top: 0; width: 1px; height: 100%; background: #2a2a4e;
+      }
+      .time-label {
+        position: absolute; top: 10px; color: #666; font-size: 12px;
+        transform: translateX(-50%);
+      }
+      .tracks-container {
+        position: absolute; top: 40px; left: 0; right: 0; bottom: 0; overflow-y: auto;
+      }
+      .track {
+        height: 120px; border-bottom: 1px solid #1a1a2e; position: relative;
+        background: #0f0f1a;
+      }
+      .track-label {
+        position: absolute; left: 20px; top: 20px; color: #4a90e2; font-size: 16px; font-weight: bold;
+      }
+      .clip {
+        position: absolute; top: 20px; height: 80px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 14px; font-weight: bold; cursor: pointer;
+        opacity: 0; transform: scale(0.8);
+      }
+      .clip.video { background: linear-gradient(45deg, #4a90e2, #357abd); }
+      .clip.audio { background: linear-gradient(45deg, #50c878, #3d9b63); }
+      .clip.effect { background: linear-gradient(45deg, #ffa500, #cc8400); }
+      .playhead {
+        position: absolute; top: 0; width: 3px; height: 100%;
+        background: #ff0000; z-index: 10; left: 200px;
+      }
+      .playhead::before {
+        content: ''; position: absolute; top: -8px; left: -6px;
+        width: 15px; height: 15px; background: #ff0000; border-radius: 50%;
+      }
+      .controls {
+        position: absolute; bottom: 20px; left: 200px; right: 20px;
+        height: 60px; background: #15152a; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center; gap: 20px;
+      }
+      .control-btn {
+        width: 50px; height: 50px; border-radius: 50%; border: none;
+        background: #2a2a4e; color: #fff; font-size: 20px; cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .control-btn:hover { background: #4a90e2; transform: scale(1.1); }
+      .feature-explanation {
+        position: absolute; background: #15152a; border: 2px solid #4a90e2;
+        border-radius: 12px; padding: 20px; max-width: 300px;
+        opacity: 0; transform: translateY(20px);
+      }
+      .feature-title {
+        color: #4a90e2; font-size: 16px; font-weight: bold; margin-bottom: 8px;
+      }
+      .feature-desc {
+        color: #ccc; font-size: 14px; line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="timeline-engine" data-start="0" data-duration="80" data-width="1920" data-height="1080">
+      <!-- Header -->
+      <div class="header">
+        <div class="title">Timeline Engine</div>
+      </div>
+
+      <!-- Timeline Demo -->
+      <div class="timeline-demo">
+        <!-- Timeline Header -->
+        <div class="timeline-header">
+          <div class="timeline-title">Project Timeline</div>
+        </div>
+
+        <!-- Timeline Content -->
+        <div class="timeline-content">
+          <!-- Time Ruler -->
+          <div class="time-ruler">
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 200px;"></div>
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 440px;"></div>
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 680px;"></div>
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 920px;"></div>
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 1160px;"></div>
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 1400px;"></div>
+            <div class="time-marker clip" data-start="0" data-duration="80" data-track-index="1" style="left: 1640px;"></div>
+
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 200px;">0:00</div>
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 440px;">0:05</div>
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 680px;">0:10</div>
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 920px;">0:15</div>
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 1160px;">0:20</div>
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 1400px;">0:25</div>
+            <div class="time-label clip" data-start="0" data-duration="80" data-track-index="2" style="left: 1640px;">0:30</div>
+          </div>
+
+          <!-- Tracks -->
+          <div class="tracks-container">
+            <!-- Video Track -->
+            <div class="track clip" data-start="0" data-duration="80" data-track-index="3">
+              <div class="track-label">Video Track</div>
+              <div class="clip video clip" data-start="5" data-duration="8" data-track-index="4" style="left: 200px; width: 160px;">Intro</div>
+              <div class="clip video clip" data-start="15" data-duration="12" data-track-index="5" style="left: 400px; width: 240px;">Main Content</div>
+              <div class="clip video clip" data-start="30" data-duration="8" data-track-index="6" style="left: 720px; width: 160px;">Transition</div>
+              <div class="clip video clip" data-start="40" data-duration="15" data-track-index="7" style="left: 920px; width: 300px;">Climax</div>
+              <div class="clip video clip" data-start="58" data-duration="10" data-track-index="8" style="left: 1280px; width: 200px;">Outro</div>
+            </div>
+
+            <!-- Audio Track -->
+            <div class="track clip" data-start="0" data-duration="80" data-track-index="9">
+              <div class="track-label">Audio Track</div>
+              <div class="clip audio clip" data-start="5" data-duration="75" data-track-index="10" style="left: 200px; width: 1500px;">Background Music</div>
+            </div>
+
+            <!-- Effects Track -->
+            <div class="track clip" data-start="0" data-duration="80" data-track-index="11">
+              <div class="track-label">Effects Track</div>
+              <div class="clip effect clip" data-start="15" data-duration="5" data-track-index="12" style="left: 400px; width: 100px;">Fade In</div>
+              <div class="clip effect clip" data-start="40" data-duration="8" data-track-index="13" style="left: 920px; width: 160px;">Color Grade</div>
+              <div class="clip effect clip" data-start="58" data-duration="5" data-track-index="14" style="left: 1280px; width: 100px;">Fade Out</div>
+            </div>
+          </div>
+
+          <!-- Playhead -->
+          <div class="playhead clip" data-start="5" data-duration="70" data-track-index="15"></div>
+
+          <!-- Controls -->
+          <div class="controls clip" data-start="0" data-duration="80" data-track-index="16">
+            <button class="control-btn clip" data-start="5" data-duration="3" data-track-index="17" id="play-btn">▶</button>
+            <button class="control-btn clip" data-start="70" data-duration="3" data-track-index="18" id="pause-btn">⏸</button>
+            <button class="control-btn clip" data-start="75" data-duration="3" data-track-index="19" id="stop-btn">⏹</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Explanations -->
+      <div class="feature-explanation clip" data-start="5" data-duration="8" data-track-index="20" style="top: 200px; left: 50px;">
+        <div class="feature-title">Track Rendering</div>
+        <div class="feature-desc">Multi-track timeline with visual track separation and organization</div>
+      </div>
+
+      <div class="feature-explanation clip" data-start="15" data-duration="8" data-track-index="21" style="top: 200px; right: 50px;">
+        <div class="feature-title">Clip Positioning</div>
+        <div class="feature-desc">Precise clip placement with drag-and-drop and snap-to-grid functionality</div>
+      </div>
+
+      <div class="feature-explanation clip" data-start="30" data-duration="8" data-track-index="22" style="bottom: 150px; left: 50px;">
+        <div class="feature-title">Playhead Control</div>
+        <div class="feature-desc">Real-time playhead movement with frame-accurate positioning</div>
+      </div>
+
+      <div class="feature-explanation clip" data-start="40" data-duration="8" data-track-index="23" style="bottom: 150px; right: 50px;">
+        <div class="feature-title">Playback Controls</div>
+        <div class="feature-desc">Professional transport controls for timeline navigation</div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Animate clips appearing
+      tl.to('.clip.video', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.2 }, 5);
+      tl.to('.clip.audio', { opacity: 1, scale: 1, duration: 0.5 }, 5);
+      tl.to('.clip.effect', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.3 }, 15);
+
+      // Playhead animation
+      tl.to('.playhead', {
+        left: 1720,
+        duration: 65,
+        ease: "none"
+      }, 5);
+
+      // Feature explanations
+      tl.to('.feature-explanation:nth-child(1)', { opacity: 1, y: 0 }, 5);
+      tl.to('.feature-explanation:nth-child(1)', { opacity: 0, y: -20 }, 13);
+
+      tl.to('.feature-explanation:nth-child(2)', { opacity: 1, y: 0 }, 15);
+      tl.to('.feature-explanation:nth-child(2)', { opacity: 0, y: -20 }, 23);
+
+      tl.to('.feature-explanation:nth-child(3)', { opacity: 1, y: 0 }, 30);
+      tl.to('.feature-explanation:nth-child(3)', { opacity: 0, y: -20 }, 38);
+
+      tl.to('.feature-explanation:nth-child(4)', { opacity: 1, y: 0 }, 40);
+      tl.to('.feature-explanation:nth-child(4)', { opacity: 0, y: -20 }, 48);
+
+      // Highlight play button
+      tl.to('#play-btn', { background: '#4a90e2', scale: 1.1 }, 5);
+      tl.to('#play-btn', { background: '#2a2a4e', scale: 1 }, 8);
+
+      // Highlight pause button
+      tl.to('#pause-btn', { background: '#4a90e2', scale: 1.1 }, 70);
+      tl.to('#pause-btn', { background: '#2a2a4e', scale: 1 }, 73);
+
+      // Highlight stop button
+      tl.to('#stop-btn', { background: '#4a90e2', scale: 1.1 }, 75);
+
+      window.__timelines["timeline-engine"] = tl;
+    </script>
+  </body>
+</html>

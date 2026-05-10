@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .browser-window {
+        position: absolute; top: 40px; left: 40px; right: 40px; bottom: 40px;
+        background: #1a1a2e; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      }
+      .browser-header {
+        height: 60px; background: #15152a; border-bottom: 1px solid #2a2a4e;
+        display: flex; align-items: center; padding: 0 20px;
+      }
+      .browser-controls {
+        display: flex; gap: 8px; margin-right: 20px;
+      }
+      .browser-control {
+        width: 12px; height: 12px; border-radius: 50%;
+        background: #ff5f57;
+      }
+      .browser-control:nth-child(2) { background: #ffbd2e; }
+      .browser-control:nth-child(3) { background: #28ca42; }
+      .address-bar {
+        flex: 1; height: 32px; background: #0f0f1a; border-radius: 6px;
+        display: flex; align-items: center; padding: 0 12px;
+        font-size: 14px; color: #4a90e2; font-family: monospace;
+      }
+      .browser-content {
+        position: relative; height: calc(100% - 60px); overflow: hidden;
+      }
+      .sidebar {
+        position: absolute; left: 0; top: 0; width: 280px; height: 100%;
+        background: #15152a; border-right: 1px solid #2a2a4e;
+      }
+      .nav-section {
+        padding: 20px 0;
+      }
+      .nav-title {
+        color: #666; font-size: 12px; text-transform: uppercase;
+        padding: 0 20px 10px; letter-spacing: 1px;
+      }
+      .nav-item {
+        padding: 12px 20px; color: #aaa; cursor: pointer;
+        transition: all 0.3s ease; position: relative;
+      }
+      .nav-item:hover { background: #1a1a2e; }
+      .nav-item.active {
+        color: #4a90e2; background: #1a1a2e;
+      }
+      .nav-item.active::before {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 4px; height: 100%; background: #4a90e2;
+      }
+      .main-content {
+        position: absolute; left: 280px; top: 0; right: 0; bottom: 0;
+        background: #0f0f1a; padding: 40px;
+      }
+      .page-content {
+        background: #1a1a2e; border-radius: 12px; padding: 40px;
+        opacity: 0; transform: translateX(50px);
+      }
+      .page-title {
+        color: #fff; font-size: 36px; font-weight: bold; margin-bottom: 20px;
+      }
+      .page-description {
+        color: #ccc; font-size: 18px; line-height: 1.6; margin-bottom: 30px;
+      }
+      .feature-highlight {
+        background: #15152a; border-left: 4px solid #4a90e2;
+        padding: 20px; margin-bottom: 20px; border-radius: 8px;
+      }
+      .highlight-title {
+        color: #4a90e2; font-size: 16px; font-weight: bold; margin-bottom: 8px;
+      }
+      .highlight-description {
+        color: #aaa; font-size: 14px;
+      }
+      .url-transition {
+        position: absolute; top: 80px; left: 320px;
+        background: #15152a; color: #4a90e2; padding: 8px 16px;
+        border-radius: 6px; font-family: monospace; font-size: 14px;
+        opacity: 0; transform: translateY(-10px);
+      }
+      .loading-spinner {
+        width: 24px; height: 24px; border: 2px solid #2a2a4e;
+        border-top: 2px solid #4a90e2; border-radius: 50%;
+        animation: spin 1s linear infinite; margin: 0 auto;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="route-navigation" data-start="0" data-duration="75" data-width="1920" data-height="1080">
+      <!-- Browser Window -->
+      <div class="browser-window">
+        <!-- Browser Header -->
+        <div class="browser-header">
+          <div class="browser-controls">
+            <div class="browser-control"></div>
+            <div class="browser-control"></div>
+            <div class="browser-control"></div>
+          </div>
+          <div class="address-bar" id="address-bar">https://app.open-higgsfield.ai/</div>
+        </div>
+
+        <!-- Browser Content -->
+        <div class="browser-content">
+          <!-- Sidebar Navigation -->
+          <div class="sidebar">
+            <div class="nav-section">
+              <div class="nav-title">Core Routes</div>
+              <div class="nav-item clip" data-start="5" data-duration="5" data-track-index="1" id="nav-timeline">📝 Timeline</div>
+              <div class="nav-item clip" data-start="12" data-duration="5" data-track-index="2" id="nav-library">📚 Library</div>
+              <div class="nav-item clip" data-start="19" data-duration="5" data-track-index="3" id="nav-settings">⚙️ Settings</div>
+              <div class="nav-item clip" data-start="26" data-duration="5" data-track-index="4" id="nav-explore">🔍 Explore</div>
+              <div class="nav-item clip" data-start="33" data-duration="5" data-track-index="5" id="nav-image">🖼️ Image</div>
+              <div class="nav-item clip" data-start="40" data-duration="5" data-track-index="6" id="nav-video">🎬 Video</div>
+              <div class="nav-item clip" data-start="47" data-duration="5" data-track-index="7" id="nav-storyboard">📋 Storyboard</div>
+              <div class="nav-item clip" data-start="54" data-duration="5" data-track-index="8" id="nav-edit">✏️ Edit</div>
+              <div class="nav-item clip" data-start="61" data-duration="5" data-track-index="9" id="nav-character">👤 Character</div>
+            </div>
+
+            <div class="nav-section">
+              <div class="nav-title">Extended Routes</div>
+              <div class="nav-item clip" data-start="68" data-duration="7" data-track-index="10" id="nav-effects">✨ Effects</div>
+            </div>
+          </div>
+
+          <!-- Main Content Area -->
+          <div class="main-content">
+            <!-- Timeline Page -->
+            <div class="page-content clip" data-start="5" data-duration="7" data-track-index="11" id="page-timeline">
+              <div class="page-title">Timeline Editor</div>
+              <div class="page-description">Multi-track video editing with professional tools and real-time collaboration.</div>
+              <div class="feature-highlight">
+                <div class="highlight-title">URL Parameter Handling</div>
+                <div class="highlight-description">Query parameters for project ID, timeline position, and collaboration session</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Browser History Integration</div>
+                <div class="highlight-description">Back/forward navigation maintains timeline state and undo history</div>
+              </div>
+            </div>
+
+            <!-- Library Page -->
+            <div class="page-content clip" data-start="12" data-duration="7" data-track-index="12" id="page-library">
+              <div class="page-title">Media Library</div>
+              <div class="page-description">Comprehensive asset management with advanced search and organization features.</div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Route State Preservation</div>
+                <div class="highlight-description">Search filters and view preferences maintained across navigation</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Deep Linking Support</div>
+                <div class="highlight-description">Direct links to specific assets and collections</div>
+              </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="page-content clip" data-start="19" data-duration="7" data-track-index="13" id="page-settings">
+              <div class="page-title">Application Settings</div>
+              <div class="page-description">Comprehensive configuration options for workspace customization and performance optimization.</div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Parameter Encoding</div>
+                <div class="highlight-description">Safe encoding of complex settings in URL parameters</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">State Synchronization</div>
+                <div class="highlight-description">Settings changes reflected in URL for bookmarking and sharing</div>
+              </div>
+            </div>
+
+            <!-- Template Routes Demo -->
+            <div class="page-content clip" data-start="47" data-duration="10" data-track-index="14" id="page-templates">
+              <div class="page-title">Template Routes</div>
+              <div class="page-description">AI-powered content generation across multiple creative domains.</div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Text-to-Image</div>
+                <div class="highlight-description">/text-to-image routes with prompt parameters and style options</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Image-to-Video</div>
+                <div class="highlight-description">/image-to-video routes with motion parameters and duration settings</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Video-to-Video</div>
+                <div class="highlight-description">/video-to-video routes with enhancement and transformation options</div>
+              </div>
+            </div>
+
+            <!-- Page Routes Demo -->
+            <div class="page-content clip" data-start="57" data-duration="10" data-track-index="15" id="page-routes">
+              <div class="page-title">Page Routes</div>
+              <div class="page-description">Dedicated pages for specific content types and user experiences.</div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Character Pages</div>
+                <div class="highlight-description">/character/[id] routes with deep linking to specific characters</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Effects Pages</div>
+                <div class="highlight-description">/effects/[category] routes for organized effect browsing</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Nested Route Handling</div>
+                <div class="highlight-description">Complex URL structures with multiple parameters and query strings</div>
+              </div>
+            </div>
+
+            <!-- Error Handling Demo -->
+            <div class="page-content clip" data-start="67" data-duration="8" data-track-index="16" id="page-error">
+              <div class="page-title">Navigation Error Handling</div>
+              <div class="page-description">Robust error handling for invalid routes and malformed URLs.</div>
+              <div class="feature-highlight">
+                <div class="highlight-title">404 Route Handling</div>
+                <div class="highlight-description">Graceful fallback for non-existent routes with helpful suggestions</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Parameter Validation</div>
+                <div class="highlight-description">URL parameter validation with user-friendly error messages</div>
+              </div>
+              <div class="feature-highlight">
+                <div class="highlight-title">Recovery Navigation</div>
+                <div class="highlight-description">Automatic recovery and redirection for edge cases</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- URL Transition Indicators -->
+      <div class="url-transition clip" data-start="5" data-duration="2" data-track-index="17" id="url1">/timeline</div>
+      <div class="url-transition clip" data-start="12" data-duration="2" data-track-index="18" id="url2">/library</div>
+      <div class="url-transition clip" data-start="19" data-duration="2" data-track-index="19" id="url3">/settings</div>
+      <div class="url-transition clip" data-start="47" data-duration="3" data-track-index="20" id="url4">/templates</div>
+      <div class="url-transition clip" data-start="57" data-duration="3" data-track-index="21" id="url5">/character/123</div>
+      <div class="url-transition clip" data-start="67" data-duration="3" data-track-index="22" id="url6">/invalid-route</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const pages = [
+        { nav: '#nav-timeline', page: '#page-timeline', url: '#url1', start: 5 },
+        { nav: '#nav-library', page: '#page-library', url: '#url2', start: 12 },
+        { nav: '#nav-settings', page: '#page-settings', url: '#url3', start: 19 },
+        { nav: '#nav-explore', page: '#page-timeline', url: '#url1', start: 26 },
+        { nav: '#nav-image', page: '#page-timeline', url: '#url1', start: 33 },
+        { nav: '#nav-video', page: '#page-timeline', url: '#url1', start: 40 },
+        { nav: '#nav-storyboard', page: '#page-templates', url: '#url4', start: 47 },
+        { nav: '#nav-edit', page: '#page-routes', url: '#url5', start: 54 },
+        { nav: '#nav-character', page: '#page-routes', url: '#url5', start: 61 },
+        { nav: '#nav-effects', page: '#page-error', url: '#url6', start: 68 }
+      ];
+
+      pages.forEach(({ nav, page, url, start }, index) => {
+        // Activate navigation item
+        tl.to(nav, { className: 'nav-item active' }, start);
+
+        // Update address bar
+        tl.to('#address-bar', {
+          textContent: `https://app.open-higgsfield.ai${nav === '#nav-timeline' ? '/timeline' :
+                        nav === '#nav-library' ? '/library' :
+                        nav === '#nav-settings' ? '/settings' :
+                        nav === '#nav-explore' ? '/explore' :
+                        nav === '#nav-image' ? '/image' :
+                        nav === '#nav-video' ? '/video' :
+                        nav === '#nav-storyboard' ? '/templates' :
+                        nav === '#nav-edit' ? '/character/123' :
+                        nav === '#nav-character' ? '/character/456' :
+                        '/invalid-route'}`
+        }, start);
+
+        // Show URL transition
+        tl.to(url, { opacity: 1, y: 0 }, start);
+
+        // Show page content
+        tl.to(page, { opacity: 1, x: 0 }, start + 0.5);
+
+        // Hide previous items (except for initial)
+        if (index > 0) {
+          const prev = pages[index - 1];
+          tl.to(prev.nav, { className: 'nav-item' }, start);
+          tl.to(prev.page, { opacity: 0, x: -50 }, start);
+          tl.to(prev.url, { opacity: 0, y: -10 }, start + 1);
+        }
+      });
+
+      window.__timelines["route-navigation"] = tl;
+    </script>
+  </body>
+</html>

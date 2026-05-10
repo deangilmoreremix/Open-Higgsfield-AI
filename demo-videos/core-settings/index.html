@@ -17,36 +17,57 @@
       }
       .content {
         position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
-        display: flex; padding: 40px; gap: 40px;
+        padding: 40px;
       }
-      .panel {
-        background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 12px;
-        padding: 30px; color: #fff; flex: 1;
+      .workflow-step {
+        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
+        border-radius: 12px; padding: 30px; color: #fff; opacity: 0;
+        transition: all 0.3s ease;
       }
-      .panel-title {
-        font-size: 24px; font-weight: bold; margin-bottom: 30px; color: #4a90e2;
+      .workflow-step.active {
+        border-color: #4a90e2;
+        box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
       }
-      .slider-group {
-        margin-bottom: 25px;
+      .step-title {
+        font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #4a90e2;
       }
-      .slider-label {
-        color: #aaa; font-size: 16px; margin-bottom: 10px;
+      .step-content {
+        font-size: 16px; line-height: 1.6; color: #ccc;
       }
-      .slider {
-        width: 100%; height: 8px; background: #2a2a4e; border-radius: 4px;
-        position: relative; margin-bottom: 10px;
+      .action-button {
+        background: #4a90e2; border: none; color: #fff; padding: 12px 24px;
+        border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 15px;
+        transition: all 0.3s ease;
       }
-      .slider-fill {
-        position: absolute; top: 0; left: 0; height: 100%; background: #4a90e2;
-        border-radius: 4px;
+      .action-button:hover {
+        background: #357abd;
+        transform: translateY(-2px);
       }
-      .slider-value {
-        color: #fff; font-size: 14px; text-align: right;
+      .progress-bar {
+        position: absolute; top: 20px; left: 40px; right: 40px; height: 4px;
+        background: #2a2a4e; border-radius: 2px; overflow: hidden;
       }
-      .preview-box {
-        background: #0f0f1a; border: 2px solid #2a2a4e; border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        color: #aaa; font-size: 18px; flex: 1;
+      .progress-fill {
+        height: 100%; background: #4a90e2; width: 0%; transition: width 0.5s ease;
+      }
+      .step-counter {
+        position: absolute; top: 30px; right: 40px; color: #4a90e2;
+        font-size: 18px; font-weight: bold;
+      }
+      .checkmark {
+        position: absolute; top: 10px; right: 10px; width: 24px; height: 24px;
+        background: #4a90e2; border-radius: 50%; display: flex; align-items: center;
+        justify-content: center; font-size: 16px; color: #fff; opacity: 0;
+      }
+      .setting-item {
+        margin-bottom: 20px; padding: 15px; background: #15152a;
+        border-radius: 8px; border-left: 4px solid #4a90e2;
+      }
+      .setting-label {
+        color: #fff; font-size: 16px; font-weight: bold; margin-bottom: 5px;
+      }
+      .setting-value {
+        color: #aaa; font-size: 14px;
       }
       .feature-label {
         position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
@@ -54,71 +75,188 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="settings" data-start="0" data-duration="15" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="settings" data-start="0" data-duration="60" data-width="1920" data-height="1080">
       <!-- Header -->
-      <div class="clip" data-start="0" data-duration="15" data-track-index="0" style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">Settings</div>
+      <div class="clip" data-start="0" data-duration="60" data-track-index="0"
+           style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
+        <div style="color: #fff; font-size: 32px; font-weight: bold;">Settings Configuration</div>
       </div>
-      
-      <!-- Content -->
-      <div class="clip" data-start="0" data-duration="15" data-track-index="1" style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; display: flex; padding: 40px; gap: 40px;">
-        <!-- Inspector Panel -->
-        <div class="clip" data-start="0" data-duration="15" data-track-index="2" style="background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 12px; padding: 30px; color: #fff; flex: 1;">
-          <div class="clip" data-start="1" data-duration="2" data-track-index="3" id="title-inspector" style="font-size: 24px; font-weight: bold; margin-bottom: 30px; color: #4a90e2; opacity: 0;">Inspector Panel</div>
-          
-          <div class="clip slider-group" data-start="3" data-duration="2" data-track-index="4" id="slider1" style="opacity: 0;">
-            <div class="slider-label">Brightness</div>
-            <div class="slider"><div class="slider-fill" style="width: 75%;"></div></div>
-            <div class="slider-value">75%</div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="step-counter" id="step-counter">Step 1 of 5</div>
+
+      <!-- Content Area -->
+      <div class="content">
+        <!-- Step 1: Workspace Configuration -->
+        <div class="workflow-step clip" data-start="3" data-duration="10" data-track-index="1" id="step1" style="top: 120px; left: 50px; width: 400px;">
+          <div class="checkmark" id="check1">✓</div>
+          <div class="step-title">1. Workspace Configuration</div>
+          <div class="step-content">
+            Configure your workspace environment:<br>
+            • Theme selection (Dark/Light)<br>
+            • Layout preferences<br>
+            • Keyboard shortcuts<br>
+            • Performance settings
           </div>
-          
-          <div class="clip slider-group" data-start="5" data-duration="2" data-track-index="5" id="slider2" style="opacity: 0;">
-            <div class="slider-label">Contrast</div>
-            <div class="slider"><div class="slider-fill" style="width: 60%;"></div></div>
-            <div class="slider-value">60%</div>
+          <button class="action-button" onclick="nextStep(1)">Configure Workspace</button>
+        </div>
+
+        <!-- Step 2: Project Defaults -->
+        <div class="workflow-step clip" data-start="15" data-duration="10" data-track-index="2" id="step2" style="top: 120px; left: 480px; width: 400px;">
+          <div class="checkmark" id="check2">✓</div>
+          <div class="step-title">2. Project Defaults</div>
+          <div class="step-content">
+            Set default project settings:<br>
+            • Video format preferences<br>
+            • Audio settings<br>
+            • Export presets<br>
+            • Quality defaults
           </div>
-          
-          <div class="clip slider-group" data-start="7" data-duration="2" data-track-index="6" id="slider3" style="opacity: 0;">
-            <div class="slider-label">Saturation</div>
-            <div class="slider"><div class="slider-fill" style="width: 85%;"></div></div>
-            <div class="slider-value">85%</div>
+          <button class="action-button" onclick="nextStep(2)">Set Defaults</button>
+        </div>
+
+        <!-- Step 3: Integration Setup -->
+        <div class="workflow-step clip" data-start="27" data-duration="10" data-track-index="3" id="step3" style="top: 120px; left: 910px; width: 400px;">
+          <div class="checkmark" id="check3">✓</div>
+          <div class="step-title">3. Integration Setup</div>
+          <div class="step-content">
+            Configure external integrations:<br>
+            • Cloud storage connections<br>
+            • API integrations<br>
+            • Plugin management<br>
+            • Security settings
+          </div>
+          <button class="action-button" onclick="nextStep(3)">Setup Integrations</button>
+        </div>
+
+        <!-- Step 4: User Preferences -->
+        <div class="workflow-step clip" data-start="39" data-duration="10" data-track-index="4" id="step4" style="top: 380px; left: 265px; width: 400px;">
+          <div class="checkmark" id="check4">✓</div>
+          <div class="step-title">4. User Preferences</div>
+          <div class="step-content">
+            Personalize your experience:<br>
+            • Language selection<br>
+            • Notification preferences<br>
+            • Auto-save settings<br>
+            • Collaboration options
+          </div>
+          <button class="action-button" onclick="nextStep(4)">Save Preferences</button>
+        </div>
+
+        <!-- Step 5: Verification & Testing -->
+        <div class="workflow-step clip" data-start="51" data-duration="9" data-track-index="5" id="step5" style="top: 380px; left: 695px; width: 400px;">
+          <div class="checkmark" id="check5">✓</div>
+          <div class="step-title">5. Verification & Testing</div>
+          <div class="step-content">
+            Test your configuration:<br>
+            • Settings preview<br>
+            • Test exports<br>
+            • Reset options<br>
+            • Backup configurations
+          </div>
+          <button class="action-button" onclick="completeSetup()">Verify Settings</button>
+        </div>
+
+        <!-- Current Settings Display -->
+        <div class="workflow-step clip" data-start="0" data-duration="60" data-track-index="6" id="current-settings" style="top: 120px; right: 50px; width: 350px; height: 500px;">
+          <div class="step-title">Current Settings</div>
+          <div id="settings-display">
+            <div class="setting-item" id="theme-setting">
+              <div class="setting-label">Theme</div>
+              <div class="setting-value" id="theme-value">Not configured</div>
+            </div>
+            <div class="setting-item" id="layout-setting">
+              <div class="setting-label">Layout</div>
+              <div class="setting-value" id="layout-value">Not configured</div>
+            </div>
+            <div class="setting-item" id="shortcuts-setting">
+              <div class="setting-label">Keyboard Shortcuts</div>
+              <div class="setting-value" id="shortcuts-value">Not configured</div>
+            </div>
+            <div class="setting-item" id="performance-setting">
+              <div class="setting-label">Performance</div>
+              <div class="setting-value" id="performance-value">Not configured</div>
+            </div>
+            <div class="setting-item" id="integrations-setting">
+              <div class="setting-label">Integrations</div>
+              <div class="setting-value" id="integrations-value">Not configured</div>
+            </div>
           </div>
         </div>
-        
-        <!-- Preview -->
-        <div class="clip preview-box" data-start="0" data-duration="15" data-track-index="7" style="background: #0f0f1a; border: 2px solid #2a2a4e; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 18px; flex: 1;">
-          <div class="clip" data-start="1" data-duration="2" data-track-index="8" id="preview-label" style="opacity: 0;">Real-time Preview</div>
-        </div>
       </div>
-      
-      <!-- Feature Labels -->
-      <div class="feature-label clip" data-start="1" data-duration="2" data-track-index="10" id="label1" style="top: 200px; left: 100px;">Inspector Panel</div>
-      <div class="feature-label clip" data-start="3" data-duration="2" data-track-index="11" id="label2" style="top: 200px; left: 100px;">Parameter Sliders</div>
-      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="12" id="label3" style="top: 200px; left: 100px;">Real-time Updates</div>
-      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="13" id="label4" style="top: 200px; left: 100px;">Settings Complete</div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      
-      tl.to('#title-inspector', { opacity: 1, duration: 0.5 }, 1);
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 1);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 2.5);
-      
-      tl.to('#slider1', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 4.5);
-      
-      tl.to('#slider2', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 6.5);
-      
-      tl.to('#slider3', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#preview-label', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label4', { opacity: 1, duration: 0.5 }, 7);
-      
+
+      let currentStep = 1;
+      const totalSteps = 5;
+
+      // Initialize first step
+      tl.set('#step1', { opacity: 1, className: 'workflow-step active' }, 0);
+      tl.set('#progress-fill', { width: '20%' }, 0);
+
+      // Step transitions
+      tl.to('#step1', { scale: 0.95, duration: 0.3 }, 3);
+      tl.to('#check1', { opacity: 1, scale: 1.2, duration: 0.5 }, 3);
+      tl.to('#step1', { className: 'workflow-step' }, 3.5);
+      tl.to('#progress-fill', { width: '40%' }, 3.5);
+      tl.to('#step-counter', { text: 'Step 2 of 5' }, 3.5);
+
+      tl.to('#step2', { opacity: 1, className: 'workflow-step active' }, 4);
+
+      tl.to('#step2', { scale: 0.95, duration: 0.3 }, 15);
+      tl.to('#check2', { opacity: 1, scale: 1.2, duration: 0.5 }, 15);
+      tl.to('#step2', { className: 'workflow-step' }, 15.5);
+      tl.to('#progress-fill', { width: '60%' }, 15.5);
+      tl.to('#step-counter', { text: 'Step 3 of 5' }, 15.5);
+
+      tl.to('#step3', { opacity: 1, className: 'workflow-step active' }, 16);
+
+      tl.to('#step3', { scale: 0.95, duration: 0.3 }, 27);
+      tl.to('#check3', { opacity: 1, scale: 1.2, duration: 0.5 }, 27);
+      tl.to('#step3', { className: 'workflow-step' }, 27.5);
+      tl.to('#progress-fill', { width: '80%' }, 27.5);
+      tl.to('#step-counter', { text: 'Step 4 of 5' }, 27.5);
+
+      tl.to('#step4', { opacity: 1, className: 'workflow-step active' }, 28);
+
+      tl.to('#step4', { scale: 0.95, duration: 0.3 }, 39);
+      tl.to('#check4', { opacity: 1, scale: 1.2, duration: 0.5 }, 39);
+      tl.to('#step4', { className: 'workflow-step' }, 39.5);
+      tl.to('#progress-fill', { width: '100%' }, 39.5);
+      tl.to('#step-counter', { text: 'Step 5 of 5' }, 39.5);
+
+      tl.to('#step5', { opacity: 1, className: 'workflow-step active' }, 40);
+
+      tl.to('#step5', { scale: 0.95, duration: 0.3 }, 51);
+      tl.to('#check5', { opacity: 1, scale: 1.2, duration: 0.5 }, 51);
+      tl.to('#step5', { className: 'workflow-step' }, 51.5);
+      tl.to('#step-counter', { text: 'Configuration Complete!' }, 51.5);
+
+      // Update settings display as steps complete
+      tl.call(() => document.getElementById('theme-value').textContent = 'Dark Mode', null, 3);
+      tl.call(() => document.getElementById('layout-value').textContent = 'Compact Layout', null, 15);
+      tl.call(() => document.getElementById('shortcuts-value').textContent = 'Custom Shortcuts', null, 27);
+      tl.call(() => document.getElementById('performance-value').textContent = 'Optimized', null, 39);
+      tl.call(() => document.getElementById('integrations-value').textContent = 'Connected', null, 51);
+
       window.__timelines["settings"] = tl;
+
+      // Interactive functions for demo
+      window.nextStep = function(step) {
+        // This would normally trigger the next step in a real application
+        console.log('Advancing to step', step + 1);
+      };
+
+      window.completeSetup = function() {
+        // This would normally save settings and complete setup
+        console.log('Settings configuration completed');
+      };
     </script>
   </body>
 </html>
