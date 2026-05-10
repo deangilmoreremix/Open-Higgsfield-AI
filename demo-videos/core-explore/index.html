@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .header {
+        position: absolute; top: 0; left: 0; right: 0; height: 80px;
+        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
+        display: flex; align-items: center; padding: 0 40px;
+      }
+      .content {
+        position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
+        padding: 40px; overflow-y: auto;
+      }
+      .search-bar {
+        width: 100%; padding: 15px 20px; background: #1a1a2e;
+        border: 2px solid #2a2a4e; border-radius: 8px;
+        color: #fff; font-size: 18px; margin-bottom: 30px;
+      }
+      .section-title {
+        color: #4a90e2; font-size: 24px; font-weight: bold;
+        margin-bottom: 20px; opacity: 0;
+      }
+      .card-grid {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+      }
+      .card {
+        aspect-ratio: 16/9; background: #1a1a2e; border: 2px solid #2a2a4e;
+        border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 18px; font-weight: bold; opacity: 0;
+      }
+      .trending-badge {
+        position: absolute; top: 20px; right: 20px;
+        background: #ff6b6b; color: #fff; padding: 5px 15px;
+        border-radius: 20px; font-size: 14px; font-weight: bold;
+      }
+      .feature-label {
+        position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="explore" data-start="0" data-duration="20" data-width="1920" data-height="1080">
+      <!-- Header -->
+      <div class="clip" data-start="0" data-duration="20" data-track-index="0"
+           style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
+        <div style="color: #fff; font-size: 32px; font-weight: bold;">Explore</div>
+      </div>
+
+      <!-- Content -->
+      <div class="clip" data-start="0" data-duration="20" data-track-index="1"
+           style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; padding: 40px; overflow-y: auto;">
+        <!-- Search Bar -->
+        <div class="clip search-bar" data-start="2" data-duration="3" data-track-index="2" id="search-bar"
+             style="width: 100%; padding: 15px 20px; background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 8px; color: #fff; font-size: 18px; margin-bottom: 30px; overflow: hidden;">
+          Search discoveries...
+        </div>
+
+        <!-- Trending Section -->
+        <div class="clip" data-start="5" data-duration="3" data-track-index="3" id="section-trending"
+             style="color: #4a90e2; font-size: 24px; font-weight: bold; margin-bottom: 20px; opacity: 0;">
+          Trending
+        </div>
+
+        <!-- Card Grid -->
+        <div class="clip" data-start="7" data-duration="8" data-track-index="4"
+             style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+          <div class="clip card" data-start="7" data-duration="2" data-track-index="5" style="opacity: 0;">Video 1</div>
+          <div class="clip card" data-start="8" data-duration="2" data-track-index="6" style="opacity: 0;">Video 2</div>
+          <div class="clip card" data-start="9" data-duration="2" data-track-index="7" style="opacity: 0;">Image 1</div>
+          <div class="clip card" data-start="10" data-duration="2" data-track-index="8" style="opacity: 0;">Audio 1</div>
+          <div class="clip card" data-start="11" data-duration="2" data-track-index="9" style="opacity: 0;">Template 1</div>
+          <div class="clip card" data-start="12" data-duration="2" data-track-index="10" style="opacity: 0;">Effect 1</div>
+          <div class="clip card" data-start="13" data-duration="2" data-track-index="11" style="opacity: 0;">Storyboard</div>
+          <div class="clip card" data-start="14" data-duration="2" data-track-index="12" style="opacity: 0;">More...</div>
+        </div>
+      </div>
+
+      <!-- Feature Labels -->
+      <div class="feature-label clip" data-start="2" data-duration="2" data-track-index="20" id="label1"
+           style="top: 200px; left: 100px;">Search & Discover</div>
+      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="21" id="label2"
+           style="top: 200px; left: 100px;">Trending Section</div>
+      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="22" id="label3"
+           style="top: 200px; left: 100px;">Browse Grid</div>
+      <div class="feature-label clip" data-start="15" data-duration="5" data-track-index="23" id="label4"
+           style="top: 600px; left: 700px; font-size: 48px;">Explore - Complete</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Feature labels
+      tl.to('#label1', { opacity: 1, duration: 0.5 }, 2);
+      tl.to('#label1', { opacity: 0, duration: 0.3 }, 4);
+
+      tl.to('#section-trending', { opacity: 1, duration: 0.5 }, 5);
+      tl.to('#label2', { opacity: 1, duration: 0.5 }, 5);
+      tl.to('#label2', { opacity: 0, duration: 0.3 }, 7);
+
+      tl.to('#label3', { opacity: 1, duration: 0.5 }, 7);
+      tl.to('[data-start="7"]', { opacity: 1, duration: 0.5 }, 7);
+      tl.to('#label3', { opacity: 0, duration: 0.3 }, 9);
+
+      tl.to('#label4', { opacity: 1, duration: 0.5 }, 15);
+
+      window.__timelines["explore"] = tl;
+    </script>
+  </body>
+</html>

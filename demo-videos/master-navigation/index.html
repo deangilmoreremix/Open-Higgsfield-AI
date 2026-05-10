@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0f0f1a;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      
+      #root {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+      
+      .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px;
+        height: 100%;
+        background: #1a1a2e;
+        border-right: 2px solid #2a2a4e;
+        padding: 20px 0;
+        overflow-y: auto;
+      }
+      
+      .sidebar-header {
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 20px 30px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #2a2a4e;
+      }
+      
+      .menu-section {
+        padding: 10px 0;
+      }
+      
+      .section-title {
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        padding: 10px 30px;
+        letter-spacing: 1px;
+      }
+      
+      .menu-item {
+        padding: 15px 30px;
+        color: #aaa;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .menu-item.active {
+        color: #4a90e2;
+        background: #2a2a4e;
+      }
+      
+      .menu-item.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: #4a90e2;
+      }
+      
+      .content-area {
+        position: absolute;
+        left: 300px;
+        top: 0;
+        width: 1620px;
+        height: 100%;
+        background: #0f0f1a;
+        padding: 60px;
+      }
+      
+      .page-title {
+        color: #fff;
+        font-size: 72px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        opacity: 0;
+      }
+      
+      .page-description {
+        color: #aaa;
+        font-size: 28px;
+        line-height: 1.6;
+        opacity: 0;
+        max-width: 800px;
+      }
+      
+      .page-icon {
+        font-size: 120px;
+        margin-bottom: 40px;
+        opacity: 0;
+      }
+      
+      .url-bar {
+        position: absolute;
+        top: 20px;
+        left: 320px;
+        background: #1a1a2e;
+        color: #4a90e2;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-family: monospace;
+        border: 1px solid #2a2a4e;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="60"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">Open-Higgsfield AI</div>
+        
+        <div class="menu-section">
+          <div class="section-title">Core</div>
+          <div class="menu-item clip" data-start="2" data-duration="3" data-track-index="1" id="item-timeline">📝 Timeline</div>
+          <div class="menu-item clip" data-start="5" data-duration="3" data-track-index="1" id="item-library">📚 Library</div>
+          <div class="menu-item clip" data-start="8" data-duration="3" data-track-index="1" id="item-settings">⚙️ Settings</div>
+          <div class="menu-item clip" data-start="11" data-duration="3" data-track-index="1" id="item-explore">🔍 Explore</div>
+          <div class="menu-item clip" data-start="14" data-duration="3" data-track-index="1" id="item-image">🖼️ Image</div>
+          <div class="menu-item clip" data-start="17" data-duration="3" data-track-index="1" id="item-video">🎬 Video</div>
+          <div class="menu-item clip" data-start="20" data-duration="3" data-track-index="1" id="item-storyboard">📋 Storyboard</div>
+          <div class="menu-item clip" data-start="23" data-duration="3" data-track-index="1" id="item-edit">✏️ Edit</div>
+          <div class="menu-item clip" data-start="26" data-duration="3" data-track-index="1" id="item-character">👤 Character</div>
+        </div>
+        
+        <div class="menu-section">
+          <div class="section-title">Extended</div>
+          <div class="menu-item clip" data-start="29" data-duration="3" data-track-index="1" id="item-effects">✨ Effects</div>
+          <div class="menu-item clip" data-start="32" data-duration="3" data-track-index="1" id="item-cinema">🎭 Cinema</div>
+          <div class="menu-item clip" data-start="35" data-duration="3" data-track-index="1" id="item-influencer">📱 Influencer</div>
+          <div class="menu-item clip" data-start="38" data-duration="3" data-track-index="1" id="item-apps">📦 Apps</div>
+          <div class="menu-item clip" data-start="41" data-duration="3" data-track-index="1" id="item-templates">📄 Templates</div>
+          <div class="menu-item clip" data-start="44" data-duration="3" data-track-index="1" id="item-assist">🤖 Assist</div>
+          <div class="menu-item clip" data-start="47" data-duration="3" data-track-index="1" id="item-community">👥 Community</div>
+          <div class="menu-item clip" data-start="50" data-duration="3" data-track-index="1" id="item-avatar">🎭 Avatar</div>
+          <div class="menu-item clip" data-start="53" data-duration="3" data-track-index="1" id="item-audio">🔊 Audio</div>
+        </div>
+      </div>
+      
+      <!-- Content Area -->
+      <div class="content-area">
+        <div class="url-bar clip" data-start="2" data-duration="58" data-track-index="0" id="url-bar">https://app.open-higgsfield.ai/</div>
+        
+        <div id="page-content">
+          <div class="page-icon clip" data-start="2.5" data-duration="2.5" data-track-index="2" id="icon-timeline">📝</div>
+          <div class="page-title clip" data-start="2.5" data-duration="2.5" data-track-index="3" id="title-timeline">Timeline Editor</div>
+          <div class="page-description clip" data-start="2.5" data-duration="2.5" data-track-index="4" id="desc-timeline">Multi-track timeline with clips, playback controls, and real-time editing</div>
+          
+          <div class="page-icon clip" data-start="5.5" data-duration="2.5" data-track-index="2" id="icon-library">📚</div>
+          <div class="page-title clip" data-start="5.5" data-duration="2.5" data-track-index="3" id="title-library">Library</div>
+          <div class="page-description clip" data-start="5.5" data-duration="2.5" data-track-index="4" id="desc-library">Browse and manage media assets with search and filtering</div>
+          
+          <div class="page-icon clip" data-start="8.5" data-duration="2.5" data-track-index="2" id="icon-settings">⚙️</div>
+          <div class="page-title clip" data-start="8.5" data-duration="2.5" data-track-index="3" id="title-settings">Settings</div>
+          <div class="page-description clip" data-start="8.5" data-duration="2.5" data-track-index="4" id="desc-settings">Configure application preferences and clip parameters</div>
+          
+          <div class="page-icon clip" data-start="11.5" data-duration="2.5" data-track-index="2" id="icon-explore">🔍</div>
+          <div class="page-title clip" data-start="11.5" data-duration="2.5" data-track-index="3" id="title-explore">Explore</div>
+          <div class="page-description clip" data-start="11.5" data-duration="2.5" data-track-index="4" id="desc-explore">Discover new templates, effects, and community content</div>
+          
+          <div class="page-icon clip" data-start="14.5" data-duration="2.5" data-track-index="2" id="icon-image">🖼️</div>
+          <div class="page-title clip" data-start="14.5" data-duration="2.5" data-track-index="3" id="title-image">Image Editor</div>
+          <div class="page-description clip" data-start="14.5" data-duration="2.5" data-track-index="4" id="desc-image">Advanced image editing with filters, crop, and adjustments</div>
+          
+          <div class="page-icon clip" data-start="17.5" data-duration="2.5" data-track-index="2" id="icon-video">🎬</div>
+          <div class="page-title clip" data-start="17.5" data-duration="2.5" data-track-index="3" id="title-video">Video Editor</div>
+          <div class="page-description clip" data-start="17.5" data-duration="2.5" data-track-index="4" id="desc-video">Professional video editing with timeline and effects</div>
+          
+          <div class="page-icon clip" data-start="20.5" data-duration="2.5" data-track-index="2" id="icon-storyboard">📋</div>
+          <div class="page-title clip" data-start="20.5" data-duration="2.5" data-track-index="3" id="title-storyboard">Storyboard</div>
+          <div class="page-description clip" data-start="20.5" data-duration="2.5" data-track-index="4" id="desc-storyboard">AI-powered storyboard generation and scene planning</div>
+          
+          <div class="page-icon clip" data-start="23.5" data-duration="2.5" data-track-index="2" id="icon-edit">✏️</div>
+          <div class="page-title clip" data-start="23.5" data-duration="2.5" data-track-index="3" id="title-edit">Edit Tools</div>
+          <div class="page-description clip" data-start="23.5" data-duration="2.5" data-track-index="4" id="desc-edit">Toolbar with select, move, zoom, and track management</div>
+          
+          <div class="page-icon clip" data-start="26.5" data-duration="2.5" data-track-index="2" id="icon-character">👤</div>
+          <div class="page-title clip" data-start="26.5" data-duration="2.5" data-track-index="3" id="title-character">Character</div>
+          <div class="page-description clip" data-start="26.5" data-duration="2.5" data-track-index="4" id="desc-character">Create and manage characters for your projects</div>
+          
+          <div class="page-icon clip" data-start="29.5" data-duration="2.5" data-track-index="2" id="icon-effects">✨</div>
+          <div class="page-title clip" data-start="29.5" data-duration="2.5" data-track-index="3" id="title-effects">Effects</div>
+          <div class="page-description clip" data-start="29.5" data-duration="2.5" data-track-index="4" id="desc-effects">Browse and apply visual effects to your media</div>
+          
+          <div class="page-icon clip" data-start="32.5" data-duration="2.5" data-track-index="2" id="icon-cinema">🎭</div>
+          <div class="page-title clip" data-start="32.5" data-duration="2.5" data-track-index="3" id="title-cinema">Cinema</div>
+          <div class="page-description clip" data-start="32.5" data-duration="2.5" data-track-index="4" id="desc-cinema">Cinematic editing with advanced movie tools</div>
+          
+          <div class="page-icon clip" data-start="35.5" data-duration="2.5" data-track-index="2" id="icon-influencer">📱</div>
+          <div class="page-title clip" data-start="35.5" data-duration="2.5" data-track-index="3" id="title-influencer">Influencer</div>
+          <div class="page-description clip" data-start="35.5" data-duration="2.5" data-track-index="4" id="desc-influencer">Tools for social media content creators</div>
+          
+          <div class="page-icon clip" data-start="38.5" data-duration="2.5" data-track-index="2" id="icon-apps">📦</div>
+          <div class="page-title clip" data-start="38.5" data-duration="2.5" data-track-index="3" id="title-apps">Apps</div>
+          <div class="page-description clip" data-start="38.5" data-duration="2.5" data-track-index="4" id="desc-apps">Additional applications and integrations</div>
+          
+          <div class="page-icon clip" data-start="41.5" data-duration="2.5" data-track-index="2" id="icon-templates">📄</div>
+          <div class="page-title clip" data-start="41.5" data-duration="2.5" data-track-index="3" id="title-templates">Templates</div>
+          <div class="page-description clip" data-start="41.5" data-duration="2.5" data-track-index="4" id="desc-templates">AI-powered templates: Text-to-Image, Image-to-Video, and more</div>
+          
+          <div class="page-icon clip" data-start="44.5" data-duration="2.5" data-track-index="2" id="icon-assist">🤖</div>
+          <div class="page-title clip" data-start="44.5" data-duration="2.5" data-track-index="3" id="title-assist">AI Assist</div>
+          <div class="page-description clip" data-start="44.5" data-duration="2.5" data-track-index="4" id="desc-assist">AI-powered assistance for content creation</div>
+          
+          <div class="page-icon clip" data-start="47.5" data-duration="2.5" data-track-index="2" id="icon-community">👥</div>
+          <div class="page-title clip" data-start="47.5" data-duration="2.5" data-track-index="3" id="title-community">Community</div>
+          <div class="page-description clip" data-start="47.5" data-duration="2.5" data-track-index="4" id="desc-community">Connect with creators and share your work</div>
+          
+          <div class="page-icon clip" data-start="50.5" data-duration="2.5" data-track-index="2" id="icon-avatar">🎭</div>
+          <div class="page-title clip" data-start="50.5" data-duration="2.5" data-track-index="3" id="title-avatar">Avatar</div>
+          <div class="page-description clip" data-start="50.5" data-duration="2.5" data-track-index="4" id="desc-avatar">Create and customize avatars for your projects</div>
+          
+          <div class="page-icon clip" data-start="53.5" data-duration="2.5" data-track-index="2" id="icon-audio">🔊</div>
+          <div class="page-title clip" data-start="53.5" data-duration="2.5" data-track-index="3" id="title-audio">Audio Mixing</div>
+          <div class="page-description clip" data-start="53.5" data-duration="2.5" data-track-index="4" id="desc-audio">Professional audio mixing with effects and level control</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      
+      // Menu items animations - highlight each item
+      const menuItems = [
+        'timeline', 'library', 'settings', 'explore', 'image', 'video', 
+        'storyboard', 'edit', 'character', 'effects', 'cinema', 'influencer',
+        'apps', 'templates', 'assist', 'community', 'avatar', 'audio'
+      ];
+      
+      menuItems.forEach((item, index) => {
+        const startTime = 2 + index * 3;
+        const itemId = `item-${item}`;
+        const titleId = `title-${item}`;
+        const descId = `desc-${item}`;
+        const iconId = `icon-${item}`;
+        const urlBar = document.getElementById('url-bar');
+        
+        // Activate menu item
+        tl.to(`#${itemId}`, {
+          className: 'menu-item active',
+          duration: 0.3
+        }, startTime);
+        
+        // Update URL bar
+        tl.to('#url-bar', {
+          text: `https://app.open-higgsfield.ai/${item}`,
+          duration: 0.5
+        }, startTime);
+        
+        // Show page content
+        tl.to(`#${iconId}`, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5
+        }, startTime + 0.5);
+        
+        tl.to(`#${titleId}`, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5
+        }, startTime + 0.5);
+        
+        tl.to(`#${descId}`, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5
+        }, startTime + 0.5);
+        
+        // Deactivate menu item and hide content
+        const nextStartTime = startTime + 2.5;
+        tl.to(`#${itemId}`, {
+          className: 'menu-item',
+          duration: 0.3
+        }, nextStartTime);
+        
+        tl.to([`#${iconId}`, `#${titleId}`, `#${descId}`], {
+          opacity: 0,
+          y: -20,
+          duration: 0.3
+        }, nextStartTime);
+      });
+      
+      // Final message
+      tl.to('#url-bar', {
+        text: 'https://app.open-higgsfield.ai/ - All applications demonstrated',
+        duration: 1
+      }, 56);
+      
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
