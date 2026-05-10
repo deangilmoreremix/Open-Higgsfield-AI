@@ -55,13 +55,14 @@
     "demo:view": "open demo-viewer.html",
     "demo:full": "npm run demo:create && npm run demo:view"
   },
-  "devDependencies": {
+    "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@vitest/coverage-v8": "1.6.1",
     "@vitest/ui": "^1.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.24",
     "canvas": "^3.2.3",
     "eslint": "^10.1.0",
