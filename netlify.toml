@@ -49,6 +49,12 @@
   status = 200
   force = false
 
+[[redirects]]
+  from = "/apps/ai-outbound-outreach/*"
+  to = "/apps/ai-outbound-outreach/index.html"
+  status = 200
+  force = false
+
 # Security Headers
 [[headers]]
   for = "/*"
