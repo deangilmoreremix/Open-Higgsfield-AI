@@ -5,6 +5,7 @@
 @import './styles/studio.css';
 @import './styles/drag-drop.css';
 @import './styles/delight.css';
+@import './styles/performance.css';
 
 #app {
   display: flex;

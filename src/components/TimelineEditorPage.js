@@ -537,12 +537,10 @@ button, input, textarea, select { font: inherit; }
         <div class="timeline-top">
           <div class="toolbar-left">
             <div class="tool-group" id="toolGroup"></div>
-            <button class="mini-btn" data-action="zoom-out" aria-label="Zoom out on the timeline">🔍-</button>
-            <button class="mini-btn" data-action="zoom-in" aria-label="Zoom in on the timeline">🔍+</button>
-            <button class="mini-btn" data-add-track="Video" aria-label="Add a new video track">+Video</button>
-            <button class="mini-btn" data-add-track="Audio" aria-label="Add a new audio track">+Audio</button>
-            <button class="mini-btn" data-add-track="Text" aria-label="Add a new text track">+Text</button>
-            <button class="mini-btn" data-add-track="B-Roll" aria-label="Add a new B-roll track">+B-Roll</button>
+            <button class="mini-btn" data-action="zoom-out" aria-label="Zoom out">🔍-</button>
+            <button class="mini-btn" data-action="zoom-in" aria-label="Zoom in">🔍+</button>
+            <button class="mini-btn" data-action="add-track" aria-label="Add track">+Track</button>
+            <button class="mini-btn" data-action="more" aria-label="More options">⋯</button>
           </div>
           <div class="pill-row" id="pillRow"></div>
         </div>

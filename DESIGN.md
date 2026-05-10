@@ -1,10 +1,10 @@
 ---
 colors:
-  primary: "oklch(30% 20% 270deg)"
-  primary_hover: "oklch(35% 22% 270deg)"
-  secondary: "oklch(35% 18% 300deg)"
-  accent: "oklch(35% 18% 300deg)"
-  accent_hover: "oklch(40% 20% 300deg)"
+  primary: "oklch(30% 25% 270deg)"
+  primary_hover: "oklch(35% 27% 270deg)"
+  secondary: "oklch(35% 23% 300deg)"
+  accent: "oklch(35% 23% 300deg)"
+  accent_hover: "oklch(40% 25% 300deg)"
   danger: "#ef4444"
 backgrounds:
   app: "#020205"
@@ -44,7 +44,7 @@ typography:
 
 # Overview
 
-The design system provides a dark, cinematic aesthetic optimized for video editing and creative content production. It features a layered background system, cyan and emerald accent colors, and consistent component styling across 30+ specialized studios and tools. The system emphasizes functionality, visual hierarchy, and performance for professional creative workflows.
+The design system provides a dark, cinematic aesthetic optimized for video editing and creative content production. It features a layered background system, bold indigo and purple accent colors (oklch), and consistent component styling across 30+ specialized studios and tools. The system emphasizes functionality, visual hierarchy, and performance for professional creative workflows. The bolder color strategy creates distinctive visual impact while maintaining professionalism.
 
 # Colors
 
