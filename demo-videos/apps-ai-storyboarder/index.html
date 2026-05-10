@@ -1,75 +1,97 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body {
-        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
-        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
-      .header {
-        position: absolute; top: 0; left: 0; right: 0; height: 80px;
-        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
-        display: flex; align-items: center; padding: 0 40px;
-      }
-      .content {
-        position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
-        padding: 40px; overflow-y: auto;
-      }
-      .feature-box {
-        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
-        border-radius: 12px; padding: 30px; color: #fff;
-        font-size: 18px; font-weight: bold; opacity: 0;
-      }
-      .feature-label {
-        position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root" data-composition-id="ai-storyboarder" data-start="0" data-duration="15" data-width="1920" data-height="1080">
-      <div class="clip" data-start="0" data-duration="15" data-track-index="0"
-           style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">AI Storyboarder</div>
-      </div>
-      
-      <div class="clip" data-start="0" data-duration="15" data-track-index="1"
-           style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; padding: 40px; overflow-y: auto;">
-        <div class="feature-box clip" data-start="3" data-duration="3" data-track-index="2"
-             style="top: 100px; left: 100px; width: 300px;">Scene Creation</div>
-        <div class="feature-box clip" data-start="5" data-duration="3" data-track-index="3"
-             style="top: 100px; left: 500px; width: 300px;">AI Generation</div>
-        <div class="feature-box clip" data-start="7" data-duration="3" data-track-index="4"
-             style="top: 100px; left: 900px; width: 300px;">Timeline</div>
-        
-        <div class="clip" data-start="10" data-duration="5" data-track-index="5"
-             style="position: absolute; top: 500px; left: 800px; color: #4a90e2; font-size: 36px; font-weight: bold; opacity: 0;">
-          AI Storyboarder - Complete
-        </div>
-      </div>
-      
-      <div class="feature-label clip" data-start="3" data-duration="2" data-track-index="10" id="label1" style="top: 200px; left: 100px;">Scene Creation</div>
-      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="11" id="label2" style="top: 200px; left: 100px;">AI Generation</div>
-      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="12" id="label3" style="top: 200px; left: 100px;">Timeline</div>
-    </div>
-
-    <script>
-      window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      tl.to('[data-start="3"]', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 4.5);
-      tl.to('[data-start="5"]', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 6.5);
-      tl.to('[data-start="7"]', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 8.5);
-      tl.to('[data-start="10"]', { opacity: 1, duration: 0.5 }, 10);
-      window.__timelines["ai-storyboarder"] = tl;
-    </script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { margin:0; width:1920px; height:1080px; overflow:hidden; background:#0a0a0a; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+.header { position:absolute; top:0; left:0; right:0; height:80px; background:#1a1a2e; border-bottom:2px solid #2a2a4e; display:flex; align-items:center; padding:0 40px; }
+.workflow-area { position:absolute; top:80px; left:0; right:0; bottom:0; padding:40px; }
+.step-indicator { position:absolute; top:20px; right:40px; background:#1a1a2e; border:2px solid #4a90e2; border-radius:25px; padding:10px 20px; color:#4a90e2; font-size:18px; font-weight:bold; }
+.progress-bar { position:absolute; top:70px; left:40px; right:40px; height:6px; background:#2a2a4e; border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:#4a90e2; width:0%; }
+.workflow-step { position:absolute; background:#1a1a2e; border:2px solid #2a2a4e; border-radius:16px; padding:30px; opacity:0; transform:translateY(50px); }
+.workflow-step.active { opacity:1; transform:translateY(0); border-color:#4a90e2; }
+.step-title { color:#4a90e2; font-size:28px; font-weight:bold; margin-bottom:15px; }
+.step-content { color:#ccc; font-size:18px; line-height:1.6; }
+.feature-list { margin-top:15px; padding-left:20px; color:#aaa; font-size:16px; }
+.feature-list li { margin-bottom:8px; }
+.demo-area { position:absolute; right:40px; width:700px; height:500px; background:#15152a; border-radius:12px; border:2px solid #2a2a4e; padding:30px; }
+.story-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-top:20px; }
+.story-card { aspect-ratio:16/9; background:#1a1a2e; border:2px solid #2a2a4e; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="ai-storyboarder" data-start="0" data-duration="95" data-width="1920" data-height="1080">
+<div class="clip" data-start="0" data-duration="95" data-track-index="0" style="position:absolute;top:0;left:0;right:0;height:80px;background:#1a1a2e;border-bottom:2px solid #2a2a4e;display:flex;align-items:center;padding:0 40px;"><div style="color:#fff;font-size:32px;font-weight:bold;">AI Storyboarder - Workflow Tutorial</div></div>
+<div class="clip" data-start="0" data-duration="95" data-track-index="1" style="position:absolute;top:20px;right:40px;background:#1a1a2e;border:2px solid #4a90e2;border-radius:25px;padding:10px 20px;color:#4a90e2;font-size:18px;font-weight:bold;"><span id="step-text">Step 1 of 5</span></div>
+<div class="clip" data-start="0" data-duration="95" data-track-index="2" style="position:absolute;top:70px;left:40px;right:40px;height:6px;background:#2a2a4e;border-radius:3px;overflow:hidden;"><div id="progress-fill" style="height:100%;background:#4a90e2;width:0%;"></div></div>
+<div class="workflow-area">
+<div class="clip workflow-step" data-start="0" data-duration="15" data-track-index="3" id="step1" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">1. Script Analysis</div>
+<div class="step-content">Analyze your script with AI.</div>
+<ul class="feature-list"><li>Upload scripts</li><li>Scene detection</li><li>Character identification</li><li>Key moment extraction</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Script Analysis</div><div style="display:flex;gap:15px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Upload Script</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Analyze</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="15" data-duration="20" data-track-index="4" id="step2" style="top:120px;left:40px;width:1000px;height:500px;">
+<div class="step-title">2. Storyboard Planning</div>
+<div class="step-content">Plan your storyboard scenes.</div>
+<ul class="feature-list"><li>Shot list creation</li><li>Camera angle selection</li><li>Composition planning</li><li>Reference gathering</li></ul>
+<div class="story-grid" style="position:relative;width:100%;margin-top:20px;"><div class="story-card" style="border-color:#4a90e2;">Scene 1</div><div class="story-card">Scene 2</div><div class="story-card">Scene 3</div></div>
+</div>
+<div class="clip workflow-step" data-start="35" data-duration="25" data-track-index="5" id="step3" style="top:120px;left:40px;width:1000px;height:500px;">
+<div class="step-title">3. AI Generation</div>
+<div class="step-content">Generate storyboards with AI.</div>
+<ul class="feature-list"><li>Prompt engineering</li><li>Style selection</li><li>Batch processing</li><li>Iterative refinement</li></ul>
+<div style="position:relative;width:100%;height:200px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;text-align:center;"><div style="color:#4a90e2;font-size:20px;margin-bottom:15px;">AI Generation</div><div style="display:flex;gap:15px;justify-content:center;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Generate</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Refine</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="60" data-duration="15" data-track-index="6" id="step4" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">4. Review & Feedback</div>
+<div class="step-content">Collaborate on storyboard reviews.</div>
+<ul class="feature-list"><li>Team collaboration</li><li>Version comparison</li><li>Client feedback</li><li>Approval workflows</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Review</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #4a90e2;border-radius:6px;color:#4a90e2;">Comments</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Version A</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="75" data-duration="20" data-track-index="7" id="step5" style="top:120px;left:40px;width:1000px;height:500px;">
+<div class="step-title">5. Production Integration</div>
+<div class="step-content">Integrate with production workflow.</div>
+<ul class="feature-list"><li>Timeline export</li><li>Shooting schedules</li><li>Continuity checking</li><li>Post-production handoff</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Export</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Export</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Schedule</div></div></div>
+</div>
+</div>
+<div class="clip" data-start="93" data-duration="2" data-track-index="10" style="position:absolute;top:500px;left:50%;transform:translateX(-50%);color:#4a90e2;font-size:48px;font-weight:bold;opacity:0;">AI Storyboarder Complete!</div>
+</div>
+<script>
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+tl.set('#step1',{opacity:1,y:0,className:'clip workflow-step active'},0);
+tl.set('#progress-fill',{width:'20%'},0);
+tl.set('#step-text',{textContent:'Step 1 of 5'},0);
+tl.to('#step1',{opacity:0,y:-50,duration:0.5},14.5);
+tl.set('#step1',{opacity:0},15);
+tl.set('#step2',{opacity:1,y:0,className:'clip workflow-step active'},15);
+tl.set('#progress-fill',{width:'40%'},15);
+tl.set('#step-text',{textContent:'Step 2 of 5'},15);
+tl.to('#step2',{opacity:0,y:-50,duration:0.5},34.5);
+tl.set('#step2',{opacity:0},35);
+tl.set('#step3',{opacity:1,y:0,className:'clip workflow-step active'},35);
+tl.set('#progress-fill',{width:'60%'},35);
+tl.set('#step-text',{textContent:'Step 3 of 5'},35);
+tl.to('#step3',{opacity:0,y:-50,duration:0.5},59.5);
+tl.set('#step3',{opacity:0},60);
+tl.set('#step4',{opacity:1,y:0,className:'clip workflow-step active'},60);
+tl.set('#progress-fill',{width:'80%'},60);
+tl.set('#step-text',{textContent:'Step 4 of 5'},60);
+tl.to('#step4',{opacity:0,y:-50,duration:0.5},74.5);
+tl.set('#step4',{opacity:0},75);
+tl.set('#step5',{opacity:1,y:0,className:'clip workflow-step active'},75);
+tl.set('#progress-fill',{width:'100%'},75);
+tl.set('#step-text',{textContent:'Step 5 of 5'},75);
+tl.to('#step5',{opacity:0,duration:0.5},92.5);
+tl.set('#step5',{opacity:0},93);
+tl.to('[data-start="93"]',{opacity:1,duration:0.5},93);
+window.__timelines["ai-storyboarder"]=tl;
+</script>
+</body>
 </html>

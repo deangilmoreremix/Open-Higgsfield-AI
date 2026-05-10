@@ -15,83 +15,243 @@
         background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
         display: flex; align-items: center; padding: 0 40px;
       }
-      .content {
+      .workflow-area {
         position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
-        display: flex; padding: 40px; gap: 40px;
+        padding: 40px;
       }
-      .panel {
-        background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 12px;
-        padding: 30px; color: #fff; flex: 1;
+      .step-indicator {
+        position: absolute; top: 20px; right: 40px;
+        background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 25px;
+        padding: 10px 20px; color: #4a90e2; font-size: 18px; font-weight: bold;
       }
-      .panel-title {
-        font-size: 24px; font-weight: bold; margin-bottom: 30px; color: #4a90e2;
+      .progress-bar {
+        position: absolute; top: 70px; left: 40px; right: 40px; height: 6px;
+        background: #2a2a4e; border-radius: 3px; overflow: hidden;
       }
-      .feature-box {
-        background: #0f0f1a; border: 2px solid #2a2a4e; border-radius: 8px;
-        padding: 20px; margin-bottom: 20px; color: #fff; opacity: 0;
+      .progress-fill {
+        height: 100%; background: #4a90e2; width: 0%;
+      }
+      .workflow-step {
+        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
+        border-radius: 16px; padding: 30px; opacity: 0; transform: translateY(50px);
+      }
+      .workflow-step.active {
+        opacity: 1; transform: translateY(0); border-color: #4a90e2;
+      }
+      .step-title {
+        color: #4a90e2; font-size: 28px; font-weight: bold; margin-bottom: 15px;
+      }
+      .step-content {
+        color: #ccc; font-size: 18px; line-height: 1.6;
+      }
+      .feature-list {
+        margin-top: 15px; padding-left: 20px; color: #aaa; font-size: 16px;
+      }
+      .feature-list li {
+        margin-bottom: 8px;
+      }
+      .demo-area {
+        position: absolute; right: 40px; width: 700px; height: 500px;
+        background: #15152a; border-radius: 12px; border: 2px solid #2a2a4e;
+        padding: 30px;
+      }
+      .slider {
+        width: 100%; height: 30px; background: #0f0f1a; border-radius: 15px;
+        position: relative; margin: 15px 0;
+      }
+      .slider-fill {
+        height: 100%; background: #4a90e2; border-radius: 15px;
       }
       .preview-box {
-        background: #0f0f1a; border: 2px solid #2a2a4e; border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        color: #aaa; font-size: 18px; flex: 1;
+        width: 100%; height: 250px; background: #0f0f1a; border-radius: 8px;
+        border: 2px solid #2a2a4e; display: flex; align-items: center;
+        justify-content: center; color: #aaa; font-size: 18px; margin-top: 20px;
       }
-      .feature-label {
-        position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
+      .tool-grid {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;
+      }
+      .tool-item {
+        padding: 10px; background: #0f0f1a; border: 2px solid #2a2a4e;
+        border-radius: 8px; text-align: center; color: #fff; font-size: 14px;
       }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="image" data-start="0" data-duration="15" data-width="1920" data-height="1080">
-      <div class="clip" data-start="0" data-duration="15" data-track-index="0"
+    <div id="root" data-composition-id="image" data-start="0" data-duration="90" data-width="1920" data-height="1080">
+      <!-- Header -->
+      <div class="clip" data-start="0" data-duration="90" data-track-index="0"
            style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">Image Editor</div>
+        <div style="color: #fff; font-size: 32px; font-weight: bold;">Image Editor - Workflow Tutorial</div>
       </div>
-      
-      <div class="clip" data-start="0" data-duration="15" data-track-index="1"
-           style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; display: flex; padding: 40px; gap: 40px;">
-        <div class="clip panel" data-start="0" data-duration="15" data-track-index="2">
-          <div class="clip" data-start="1" data-duration="2" data-track-index="3" id="title-filters"
-               style="font-size: 24px; font-weight: bold; margin-bottom: 30px; color: #4a90e2; opacity: 0;">
-            Filter Editor
+
+      <!-- Step Indicator -->
+      <div class="clip" data-start="0" data-duration="90" data-track-index="1"
+           style="position: absolute; top: 20px; right: 40px; background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 25px; padding: 10px 20px; color: #4a90e2; font-size: 18px; font-weight: bold;">
+        <span id="step-text">Step 1 of 5</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="clip" data-start="0" data-duration="90" data-track-index="2"
+           style="position: absolute; top: 70px; left: 40px; right: 40px; height: 6px; background: #2a2a4e; border-radius: 3px; overflow: hidden;">
+        <div id="progress-fill" style="height: 100%; background: #4a90e2; width: 0%;"></div>
+      </div>
+
+      <!-- Workflow Steps -->
+      <div class="workflow-area">
+        <!-- Step 1: Import & Setup (0-15s) -->
+        <div class="clip workflow-step" data-start="0" data-duration="15" data-track-index="3" id="step1"
+             style="top: 120px; left: 40px; width: 1000px; height: 450px;">
+          <div class="step-title">1. Import & Setup</div>
+          <div class="step-content">Import your image and configure the workspace.</div>
+          <ul class="feature-list">
+            <li>Multiple format support (JPG, PNG, WebP, TIFF)</li>
+            <li>Canvas sizing and resolution</li>
+            <li>DPI settings configuration</li>
+            <li>Color space selection (RGB, CMYK)</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 15px;">Import Dialog</div>
+            <div style="display: flex; gap: 15px;">
+              <div style="padding: 12px 24px; background: #4a90e2; border-radius: 6px; color: #fff;">Choose File</div>
+              <div style="padding: 12px 24px; background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 6px; color: #fff;">Drop Image Here</div>
+            </div>
           </div>
-          <div class="clip feature-box" data-start="3" data-duration="2" data-track-index="4" id="filter1">Brightness Filter</div>
-          <div class="clip feature-box" data-start="5" data-duration="2" data-track-index="5" id="filter2">Contrast Filter</div>
-          <div class="clip feature-box" data-start="7" data-duration="2" data-track-index="6" id="filter3">Saturation Filter</div>
         </div>
-        
-        <div class="clip preview-box" data-start="0" data-duration="15" data-track-index="7">
-          <div class="clip" data-start="1" data-duration="2" data-track-index="8" id="preview-label" style="opacity: 0;">
-            Image Preview
+
+        <!-- Step 2: Basic Adjustments (15-35s) -->
+        <div class="clip workflow-step" data-start="15" data-duration="20" data-track-index="4" id="step2"
+             style="top: 120px; left: 40px; width: 1000px; height: 500px;">
+          <div class="step-title">2. Basic Adjustments</div>
+          <div class="step-content">Fine-tune your image with essential adjustments.</div>
+          <ul class="feature-list">
+            <li>Exposure and contrast controls</li>
+            <li>Color balance and temperature</li>
+            <li>Curves and levels adjustment</li>
+            <li>Sharpening and noise reduction</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 250px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 15px;">Adjustment Panel</div>
+            <div class="slider"><div class="slider-fill" style="width: 65%;"></div></div>
+            <div style="color: #aaa; font-size: 14px; margin-top: 5px;">Brightness: 65%</div>
+            <div class="slider"><div class="slider-fill" style="width: 45%;"></div></div>
+            <div style="color: #aaa; font-size: 14px; margin-top: 5px;">Contrast: 45%</div>
+          </div>
+        </div>
+
+        <!-- Step 3: Creative Tools (35-60s) -->
+        <div class="clip workflow-step" data-start="35" data-duration="25" data-track-index="5" id="step3"
+             style="top: 120px; left: 40px; width: 1000px; height: 520px;">
+          <div class="step-title">3. Creative Tools</div>
+          <div class="step-content">Use advanced tools for creative editing.</div>
+          <ul class="feature-list">
+            <li>Layer system with blend modes</li>
+            <li>Masking and selective editing</li>
+            <li>Clone stamp and healing brush</li>
+            <li>Content-aware fill</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 250px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 15px;">Tool Panel</div>
+            <div class="tool-grid">
+              <div class="tool-item" style="border-color: #4a90e2;">Clone</div>
+              <div class="tool-item">Heal</div>
+              <div class="tool-item">Mask</div>
+              <div class="tool-item">Crop</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Effects & Filters (60-75s) -->
+        <div class="clip workflow-step" data-start="60" data-duration="15" data-track-index="6" id="step4"
+             style="top: 120px; left: 40px; width: 1000px; height: 470px;">
+          <div class="step-title">4. Effects & Filters</div>
+          <div class="step-content">Apply AI-powered effects and custom filters.</div>
+          <ul class="feature-list">
+            <li>AI-powered filter library</li>
+            <li>Custom effect creation</li>
+            <li>Real-time preview</li>
+            <li>Effect stacking and blending</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 15px;">Effects Gallery</div>
+            <div class="tool-grid">
+              <div class="tool-item">Vintage</div>
+              <div class="tool-item" style="border-color: #4a90e2;">Cinematic</div>
+              <div class="tool-item">B&W</div>
+              <div class="tool-item">Vibrant</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Export & Optimization (75-90s) -->
+        <div class="clip workflow-step" data-start="75" data-duration="15" data-track-index="7" id="step5"
+             style="top: 120px; left: 40px; width: 1000px; height: 470px;">
+          <div class="step-title">5. Export & Optimization</div>
+          <div class="step-content">Export your edited image in the perfect format.</div>
+          <ul class="feature-list">
+            <li>Format optimization (JPG, PNG, WebP)</li>
+            <li>Quality and compression settings</li>
+            <li>Batch processing</li>
+            <li>Web optimization</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 15px;">Export Settings</div>
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+              <div style="padding: 12px 24px; background: #4a90e2; border-radius: 6px; color: #fff;">Export</div>
+              <div style="padding: 12px 24px; background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 6px; color: #fff;">Batch Process</div>
+            </div>
           </div>
         </div>
       </div>
-      
-      <div class="feature-label clip" data-start="1" data-duration="2" data-track-index="10" id="label1" style="top: 200px; left: 100px;">Filter Editor</div>
-      <div class="feature-label clip" data-start="3" data-duration="2" data-track-index="11" id="label2" style="top: 200px; left: 100px;">Apply Filters</div>
-      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="12" id="label3" style="top: 200px; left: 100px;">Preview Changes</div>
-      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="13" id="label4" style="top: 200px; left: 100px;">Image Editor Complete</div>
+
+      <!-- Completion Message -->
+      <div class="clip" data-start="88" data-duration="2" data-track-index="10"
+           style="position: absolute; top: 500px; left: 50%; transform: translateX(-50%); color: #4a90e2; font-size: 48px; font-weight: bold; opacity: 0;">
+        Image Editing Complete!
+      </div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      
-      tl.to('#title-filters', { opacity: 1, duration: 0.5 }, 1);
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 1);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 2.5);
-      
-      tl.to('#filter1', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 4.5);
-      
-      tl.to('#filter2', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 6.5);
-      
-      tl.to('#filter3', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#preview-label', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label4', { opacity: 1, duration: 0.5 }, 7);
-      
+
+      // Step 1: Import & Setup
+      tl.set('#step1', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 0);
+      tl.set('#progress-fill', { width: '20%' }, 0);
+      tl.set('#step-text', { text: 'Step 1 of 5' }, 0);
+
+      // Transition to Step 2
+      tl.to('#step1', { opacity: 0, y: -50, duration: 0.5 }, 14.5);
+      tl.set('#step1', { opacity: 0 }, 15);
+      tl.set('#step2', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 15);
+      tl.set('#progress-fill', { width: '40%' }, 15);
+      tl.set('#step-text', { text: 'Step 2 of 5' }, 15);
+
+      // Transition to Step 3
+      tl.to('#step2', { opacity: 0, y: -50, duration: 0.5 }, 34.5);
+      tl.set('#step2', { opacity: 0 }, 35);
+      tl.set('#step3', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 35);
+      tl.set('#progress-fill', { width: '60%' }, 35);
+      tl.set('#step-text', { text: 'Step 3 of 5' }, 35);
+
+      // Transition to Step 4
+      tl.to('#step3', { opacity: 0, y: -50, duration: 0.5 }, 59.5);
+      tl.set('#step3', { opacity: 0 }, 60);
+      tl.set('#step4', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 60);
+      tl.set('#progress-fill', { width: '80%' }, 60);
+      tl.set('#step-text', { text: 'Step 4 of 5' }, 60);
+
+      // Transition to Step 5
+      tl.to('#step4', { opacity: 0, y: -50, duration: 0.5 }, 74.5);
+      tl.set('#step4', { opacity: 0 }, 75);
+      tl.set('#step5', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 75);
+      tl.set('#progress-fill', { width: '100%' }, 75);
+      tl.set('#step-text', { text: 'Step 5 of 5' }, 75);
+
+      // Completion
+      tl.to('#step5', { opacity: 0, duration: 0.5 }, 87.5);
+      tl.set('#step5', { opacity: 0 }, 88);
+      tl.to('[data-start="88"]', { opacity: 1, duration: 0.5 }, 88);
+
       window.__timelines["image"] = tl;
     </script>
   </body>

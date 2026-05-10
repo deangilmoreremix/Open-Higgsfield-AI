@@ -15,102 +15,246 @@
         background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
         display: flex; align-items: center; padding: 0 40px;
       }
-      .content {
+      .workflow-area {
         position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
-        padding: 40px; overflow-y: auto;
+        padding: 40px;
+      }
+      .step-indicator {
+        position: absolute; top: 20px; right: 40px;
+        background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 25px;
+        padding: 10px 20px; color: #4a90e2; font-size: 18px; font-weight: bold;
+      }
+      .progress-bar {
+        position: absolute; top: 70px; left: 40px; right: 40px; height: 6px;
+        background: #2a2a4e; border-radius: 3px; overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%; background: #4a90e2; width: 0%;
+      }
+      .workflow-step {
+        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
+        border-radius: 16px; padding: 30px; opacity: 0; transform: translateY(50px);
+      }
+      .workflow-step.active {
+        opacity: 1; transform: translateY(0); border-color: #4a90e2;
+      }
+      .step-title {
+        color: #4a90e2; font-size: 28px; font-weight: bold; margin-bottom: 15px;
+      }
+      .step-content {
+        color: #ccc; font-size: 18px; line-height: 1.6;
+      }
+      .feature-list {
+        margin-top: 15px; padding-left: 20px; color: #aaa; font-size: 16px;
+      }
+      .feature-list li {
+        margin-bottom: 8px;
+      }
+      .demo-area {
+        position: absolute; right: 40px; width: 800px; height: 600px;
+        background: #15152a; border-radius: 12px; border: 2px solid #2a2a4e;
+        padding: 30px; overflow: hidden;
       }
       .search-bar {
         width: 100%; padding: 15px 20px; background: #1a1a2e;
-        border: 2px solid #2a2a4e; border-radius: 8px;
-        color: #fff; font-size: 18px; margin-bottom: 30px;
-      }
-      .section-title {
-        color: #4a90e2; font-size: 24px; font-weight: bold;
-        margin-bottom: 20px; opacity: 0;
+        border: 2px solid #4a90e2; border-radius: 8px;
+        color: #fff; font-size: 18px; margin-bottom: 20px;
       }
       .card-grid {
-        display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
       }
       .card {
         aspect-ratio: 16/9; background: #1a1a2e; border: 2px solid #2a2a4e;
         border-radius: 8px; display: flex; align-items: center; justify-content: center;
-        color: #fff; font-size: 18px; font-weight: bold; opacity: 0;
+        color: #fff; font-size: 16px; font-weight: bold;
       }
       .trending-badge {
-        position: absolute; top: 20px; right: 20px;
+        position: absolute; top: 10px; right: 10px;
         background: #ff6b6b; color: #fff; padding: 5px 15px;
         border-radius: 20px; font-size: 14px; font-weight: bold;
-      }
-      .feature-label {
-        position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
       }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="explore" data-start="0" data-duration="20" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="explore" data-start="0" data-duration="75" data-width="1920" data-height="1080">
       <!-- Header -->
-      <div class="clip" data-start="0" data-duration="20" data-track-index="0"
+      <div class="clip" data-start="0" data-duration="75" data-track-index="0"
            style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">Explore</div>
+        <div style="color: #fff; font-size: 32px; font-weight: bold;">Explore - Content Discovery</div>
       </div>
 
-      <!-- Content -->
-      <div class="clip" data-start="0" data-duration="20" data-track-index="1"
-           style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; padding: 40px; overflow-y: auto;">
-        <!-- Search Bar -->
-        <div class="clip search-bar" data-start="2" data-duration="3" data-track-index="2" id="search-bar"
-             style="width: 100%; padding: 15px 20px; background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 8px; color: #fff; font-size: 18px; margin-bottom: 30px; overflow: hidden;">
-          Search discoveries...
+      <!-- Step Indicator -->
+      <div class="clip" data-start="0" data-duration="75" data-track-index="1" style="position: absolute; top: 20px; right: 40px; background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 25px; padding: 10px 20px; color: #4a90e2; font-size: 18px; font-weight: bold;">
+        <span id="step-text">Step 1 of 5</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="clip" data-start="0" data-duration="75" data-track-index="2" style="position: absolute; top: 70px; left: 40px; right: 40px; height: 6px; background: #2a2a4e; border-radius: 3px; overflow: hidden;">
+        <div id="progress-fill" style="height: 100%; background: #4a90e2; width: 0%;"></div>
+      </div>
+
+      <!-- Workflow Steps -->
+      <div class="workflow-area">
+        <!-- Step 1: Discovery Interface (0-15s) -->
+        <div class="clip workflow-step" data-start="0" data-duration="15" data-track-index="3" id="step1"
+             style="top: 120px; left: 40px; width: 900px; height: 400px;">
+          <div class="step-title">1. Discovery Interface</div>
+          <div class="step-content">
+            Browse and discover new content with intelligent recommendations.
+          </div>
+          <ul class="feature-list">
+            <li>Trending content analysis</li>
+            <li>Curated collections</li>
+            <li>Featured creators spotlight</li>
+            <li>Category browsing</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 10px;">Trending Now</div>
+            <div class="card-grid">
+              <div class="card" style="border-color: #4a90e2;">Video Tutorial</div>
+              <div class="card">Template Pack</div>
+              <div class="card" style="position: relative;"><span class="trending-badge">HOT</span>Effect Pack</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Trending Section -->
-        <div class="clip" data-start="5" data-duration="3" data-track-index="3" id="section-trending"
-             style="color: #4a90e2; font-size: 24px; font-weight: bold; margin-bottom: 20px; opacity: 0;">
-          Trending
+        <!-- Step 2: Search Experience (15-30s) -->
+        <div class="clip workflow-step" data-start="15" data-duration="15" data-track-index="4" id="step2"
+             style="top: 120px; left: 40px; width: 900px; height: 400px;">
+          <div class="step-title">2. Search Experience</div>
+          <div class="step-content">
+            Find exactly what you need with AI-powered search.
+          </div>
+          <ul class="feature-list">
+            <li>AI-powered search queries</li>
+            <li>Visual search capability</li>
+            <li>Related content suggestions</li>
+            <li>Discovery algorithms</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px;">
+            <div class="search-bar">Search: "video transitions"</div>
+            <div class="card-grid">
+              <div class="card">Transition Pack 1</div>
+              <div class="card" style="border-color: #4a90e2;">Smooth Fade</div>
+              <div class="card">Wipe Effects</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Card Grid -->
-        <div class="clip" data-start="7" data-duration="8" data-track-index="4"
-             style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-          <div class="clip card" data-start="7" data-duration="2" data-track-index="5" style="opacity: 0;">Video 1</div>
-          <div class="clip card" data-start="8" data-duration="2" data-track-index="6" style="opacity: 0;">Video 2</div>
-          <div class="clip card" data-start="9" data-duration="2" data-track-index="7" style="opacity: 0;">Image 1</div>
-          <div class="clip card" data-start="10" data-duration="2" data-track-index="8" style="opacity: 0;">Audio 1</div>
-          <div class="clip card" data-start="11" data-duration="2" data-track-index="9" style="opacity: 0;">Template 1</div>
-          <div class="clip card" data-start="12" data-duration="2" data-track-index="10" style="opacity: 0;">Effect 1</div>
-          <div class="clip card" data-start="13" data-duration="2" data-track-index="11" style="opacity: 0;">Storyboard</div>
-          <div class="clip card" data-start="14" data-duration="2" data-track-index="12" style="opacity: 0;">More...</div>
+        <!-- Step 3: Content Preview (30-45s) -->
+        <div class="clip workflow-step" data-start="30" data-duration="15" data-track-index="5" id="step3"
+             style="top: 120px; left: 40px; width: 900px; height: 400px;">
+          <div class="step-title">3. Content Preview</div>
+          <div class="step-content">
+            Preview content before adding to your project.
+          </div>
+          <ul class="feature-list">
+            <li>Interactive demos</li>
+            <li>Before/after examples</li>
+            <li>Tutorial integration</li>
+            <li>Live preview player</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px; text-align: center;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 20px;">Preview Player</div>
+            <div style="width: 100%; height: 150px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <div style="color: #fff; font-size: 48px;">▶</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Save & Organize (45-60s) -->
+        <div class="clip workflow-step" data-start="45" data-duration="15" data-track-index="6" id="step4"
+             style="top: 120px; left: 40px; width: 900px; height: 400px;">
+          <div class="step-title">4. Save & Organize</div>
+          <div class="step-content">
+            Organize your discoveries for quick access.
+          </div>
+          <ul class="feature-list">
+            <li>Bookmark system</li>
+            <li>Custom collections</li>
+            <li>Tag management</li>
+            <li>Personal recommendations</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px;">
+            <div style="color: #4a90e2; font-size: 20px; margin-bottom: 10px;">My Collection</div>
+            <div style="display: flex; gap: 10px;">
+              <div style="padding: 10px 20px; background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 8px; color: #fff;">★ Favorites</div>
+              <div style="padding: 10px 20px; background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 8px; color: #fff;">Recent</div>
+              <div style="padding: 10px 20px; background: #1a1a2e; border: 2px solid #2a2a4e; border-radius: 8px; color: #fff;">Templates</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Integration Flow (60-75s) -->
+        <div class="clip workflow-step" data-start="60" data-duration="15" data-track-index="7" id="step5"
+             style="top: 120px; left: 40px; width: 900px; height: 400px;">
+          <div class="step-title">5. Integration Flow</div>
+          <div class="step-content">
+            Seamlessly integrate discovered content into your workflow.
+          </div>
+          <ul class="feature-list">
+            <li>One-click import to timeline</li>
+            <li>Project template application</li>
+            <li>Collaboration invites</li>
+            <li>Social sharing options</li>
+          </ul>
+          <div class="demo-area" style="position: relative; width: 100%; height: 200px; margin-top: 20px; text-align: center;">
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 60px;">
+              <div style="padding: 12px 24px; background: #4a90e2; border-radius: 6px; color: #fff; font-size: 16px;">Import to Timeline</div>
+              <div style="padding: 12px 24px; background: #1a1a2e; border: 2px solid #4a90e2; border-radius: 6px; color: #4a90e2; font-size: 16px;">Share</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Feature Labels -->
-      <div class="feature-label clip" data-start="2" data-duration="2" data-track-index="20" id="label1"
-           style="top: 200px; left: 100px;">Search & Discover</div>
-      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="21" id="label2"
-           style="top: 200px; left: 100px;">Trending Section</div>
-      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="22" id="label3"
-           style="top: 200px; left: 100px;">Browse Grid</div>
-      <div class="feature-label clip" data-start="15" data-duration="5" data-track-index="23" id="label4"
-           style="top: 600px; left: 700px; font-size: 48px;">Explore - Complete</div>
+      <!-- Completion Message -->
+      <div class="clip" data-start="73" data-duration="2" data-track-index="10"
+           style="position: absolute; top: 500px; left: 50%; transform: translateX(-50%); color: #4a90e2; font-size: 48px; font-weight: bold; opacity: 0;">
+        Explore Workflow Complete!
+      </div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      // Feature labels
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 2);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 4);
+      // Step 1: Discovery Interface
+      tl.set('#step1', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 0);
+      tl.set('#progress-fill', { width: '20%' }, 0);
+      tl.set('#step-text', { text: 'Step 1 of 5' }, 0);
 
-      tl.to('#section-trending', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 7);
+      // Transition to Step 2
+      tl.to('#step1', { opacity: 0, y: -50, duration: 0.5 }, 14.5);
+      tl.set('#step1', { opacity: 0 }, 15);
+      tl.set('#step2', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 15);
+      tl.set('#progress-fill', { width: '40%' }, 15);
+      tl.set('#step-text', { text: 'Step 2 of 5' }, 15);
 
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('[data-start="7"]', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 9);
+      // Transition to Step 3
+      tl.to('#step2', { opacity: 0, y: -50, duration: 0.5 }, 29.5);
+      tl.set('#step2', { opacity: 0 }, 30);
+      tl.set('#step3', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 30);
+      tl.set('#progress-fill', { width: '60%' }, 30);
+      tl.set('#step-text', { text: 'Step 3 of 5' }, 30);
 
-      tl.to('#label4', { opacity: 1, duration: 0.5 }, 15);
+      // Transition to Step 4
+      tl.to('#step3', { opacity: 0, y: -50, duration: 0.5 }, 44.5);
+      tl.set('#step3', { opacity: 0 }, 45);
+      tl.set('#step4', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 45);
+      tl.set('#progress-fill', { width: '80%' }, 45);
+      tl.set('#step-text', { text: 'Step 4 of 5' }, 45);
+
+      // Transition to Step 5
+      tl.to('#step4', { opacity: 0, y: -50, duration: 0.5 }, 59.5);
+      tl.set('#step4', { opacity: 0 }, 60);
+      tl.set('#step5', { opacity: 1, y: 0, className: 'clip workflow-step active' }, 60);
+      tl.set('#progress-fill', { width: '100%' }, 60);
+      tl.set('#step-text', { text: 'Step 5 of 5' }, 60);
+
+      // Completion
+      tl.to('#step5', { opacity: 0, duration: 0.5 }, 72.5);
+      tl.set('#step5', { opacity: 0 }, 73);
+      tl.to('[data-start="73"]', { opacity: 1, duration: 0.5 }, 73);
 
       window.__timelines["explore"] = tl;
     </script>

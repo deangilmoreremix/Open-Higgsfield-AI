@@ -1,75 +1,97 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body {
-        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
-        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
-      .header {
-        position: absolute; top: 0; left: 0; right: 0; height: 80px;
-        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
-        display: flex; align-items: center; padding: 0 40px;
-      }
-      .content {
-        position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
-        padding: 40px; overflow-y: auto;
-      }
-      .feature-box {
-        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
-        border-radius: 12px; padding: 30px; color: #fff;
-        font-size: 18px; font-weight: bold; opacity: 0;
-      }
-      .feature-label {
-        position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root" data-composition-id="community" data-start="0" data-duration="15" data-width="1920" data-height="1080">
-      <div class="clip" data-start="0" data-duration="15" data-track-index="0"
-           style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">Community</div>
-      </div>
-      
-      <div class="clip" data-start="0" data-duration="15" data-track-index="1"
-           style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; padding: 40px; overflow-y: auto;">
-        <div class="feature-box clip" data-start="3" data-duration="3" data-track-index="2"
-             style="top: 100px; left: 100px; width: 300px;">Share</div>
-        <div class="feature-box clip" data-start="5" data-duration="3" data-track-index="3"
-             style="top: 100px; left: 500px; width: 300px;">Collaborate</div>
-        <div class="feature-box clip" data-start="7" data-duration="3" data-track-index="4"
-             style="top: 100px; left: 900px; width: 300px;">Learn</div>
-        
-        <div class="clip" data-start="10" data-duration="5" data-track-index="5"
-             style="position: absolute; top: 500px; left: 800px; color: #4a90e2; font-size: 36px; font-weight: bold; opacity: 0;">
-          Community - Complete
-        </div>
-      </div>
-      
-      <div class="feature-label clip" data-start="3" data-duration="2" data-track-index="10" id="label1" style="top: 200px; left: 100px;">Share</div>
-      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="11" id="label2" style="top: 200px; left: 100px;">Collaborate</div>
-      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="12" id="label3" style="top: 200px; left: 100px;">Learn</div>
-    </div>
-
-    <script>
-      window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      tl.to('[data-start="3"]', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 4.5);
-      tl.to('[data-start="5"]', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 6.5);
-      tl.to('[data-start="7"]', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 8.5);
-      tl.to('[data-start="10"]', { opacity: 1, duration: 0.5 }, 10);
-      window.__timelines["community"] = tl;
-    </script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { margin:0; width:1920px; height:1080px; overflow:hidden; background:#0a0a0a; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+.header { position:absolute; top:0; left:0; right:0; height:80px; background:#1a1a2e; border-bottom:2px solid #2a2a4e; display:flex; align-items:center; padding:0 40px; }
+.workflow-area { position:absolute; top:80px; left:0; right:0; bottom:0; padding:40px; }
+.step-indicator { position:absolute; top:20px; right:40px; background:#1a1a2e; border:2px solid #4a90e2; border-radius:25px; padding:10px 20px; color:#4a90e2; font-size:18px; font-weight:bold; }
+.progress-bar { position:absolute; top:70px; left:40px; right:40px; height:6px; background:#2a2a4e; border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:#4a90e2; width:0%; }
+.workflow-step { position:absolute; background:#1a1a2e; border:2px solid #2a2a4e; border-radius:16px; padding:30px; opacity:0; transform:translateY(50px); }
+.workflow-step.active { opacity:1; transform:translateY(0); border-color:#4a90e2; }
+.step-title { color:#4a90e2; font-size:28px; font-weight:bold; margin-bottom:15px; }
+.step-content { color:#ccc; font-size:18px; line-height:1.6; }
+.feature-list { margin-top:15px; padding-left:20px; color:#aaa; font-size:16px; }
+.feature-list li { margin-bottom:8px; }
+.demo-area { position:absolute; right:40px; width:700px; height:500px; background:#15152a; border-radius:12px; border:2px solid #2a2a4e; padding:30px; }
+.community-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-top:20px; }
+.community-card { aspect-ratio:16/9; background:#1a1a2e; border:2px solid #2a2a4e; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="community" data-start="0" data-duration="75" data-width="1920" data-height="1080">
+<div class="clip" data-start="0" data-duration="75" data-track-index="0" style="position:absolute;top:0;left:0;right:0;height:80px;background:#1a1a2e;border-bottom:2px solid #2a2a4e;display:flex;align-items:center;padding:0 40px;"><div style="color:#fff;font-size:32px;font-weight:bold;">Community - Workflow Tutorial</div></div>
+<div class="clip" data-start="0" data-duration="75" data-track-index="1" style="position:absolute;top:20px;right:40px;background:#1a1a2e;border:2px solid #4a90e2;border-radius:25px;padding:10px 20px;color:#4a90e2;font-size:18px;font-weight:bold;"><span id="step-text">Step 1 of 5</span></div>
+<div class="clip" data-start="0" data-duration="75" data-track-index="2" style="position:absolute;top:70px;left:40px;right:40px;height:6px;background:#2a2a4e;border-radius:3px;overflow:hidden;"><div id="progress-fill" style="height:100%;background:#4a90e2;width:0%;"></div></div>
+<div class="workflow-area">
+<div class="clip workflow-step" data-start="0" data-duration="10" data-track-index="3" id="step1" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">1. Profile Setup</div>
+<div class="step-content">Set up your community presence.</div>
+<ul class="feature-list"><li>Portfolio creation</li><li>Skills showcase</li><li>Availability settings</li><li>Collaboration preferences</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Profile</div><div style="display:flex;gap:15px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Create Profile</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Portfolio</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="10" data-duration="15" data-track-index="4" id="step2" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">2. Content Sharing</div>
+<div class="step-content">Share your work with the community.</div>
+<ul class="feature-list"><li>Project uploads</li><li>Creative commons</li><li>Private sharing</li><li>Public galleries</li></ul>
+<div class="community-grid" style="position:relative;width:100%;margin-top:20px;"><div class="community-card" style="border-color:#4a90e2;">My Project</div><div class="community-card">Gallery</div><div class="community-card">Shared</div></div>
+</div>
+<div class="clip workflow-step" data-start="25" data-duration="15" data-track-index="5" id="step3" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">3. Collaboration Discovery</div>
+<div class="step-content">Find collaborators for your projects.</div>
+<ul class="feature-list"><li>Project browsing</li><li>Skill matching</li><li>Team formation</li><li>Communication channels</li></ul>
+<div class="community-grid" style="position:relative;width:100%;margin-top:20px;"><div class="community-card">Browse</div><div class="community-card" style="border-color:#4a90e2;">Match</div><div class="community-card">Team</div></div>
+</div>
+<div class="clip workflow-step" data-start="40" data-duration="20" data-track-index="6" id="step4" style="top:120px;left:40px;width:1000px;height:500px;">
+<div class="step-title">4. Project Management</div>
+<div class="step-content">Manage your collaborative projects.</div>
+<ul class="feature-list"><li>Task assignment</li><li>Progress tracking</li><li>File sharing</li><li>Version control</li><li>Deadline management</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Project Mgmt</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #4a90e2;border-radius:6px;color:#4a90e2;">Tasks</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Files</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="60" data-duration="15" data-track-index="7" id="step5" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">5. Community Engagement</div>
+<div class="step-content">Engage with the community.</div>
+<ul class="feature-list"><li>Discussion forums</li><li>Feedback systems</li><li>Learning resources</li><li>Event participation</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Engage</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Forum</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Events</div></div></div>
+</div>
+</div>
+<div class="clip" data-start="73" data-duration="2" data-track-index="10" style="position:absolute;top:500px;left:50%;transform:translateX(-50%);color:#4a90e2;font-size:48px;font-weight:bold;opacity:0;">Community Complete!</div>
+</div>
+<script>
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+tl.set('#step1',{opacity:1,y:0,className:'clip workflow-step active'},0);
+tl.set('#progress-fill',{width:'20%'},0);
+tl.set('#step-text',{textContent:'Step 1 of 5'},0);
+tl.to('#step1',{opacity:0,y:-50,duration:0.5},9.5);
+tl.set('#step1',{opacity:0},10);
+tl.set('#step2',{opacity:1,y:0,className:'clip workflow-step active'},10);
+tl.set('#progress-fill',{width:'40%'},10);
+tl.set('#step-text',{textContent:'Step 2 of 5'},10);
+tl.to('#step2',{opacity:0,y:-50,duration:0.5},24.5);
+tl.set('#step2',{opacity:0},25);
+tl.set('#step3',{opacity:1,y:0,className:'clip workflow-step active'},25);
+tl.set('#progress-fill',{width:'60%'},25);
+tl.set('#step-text',{textContent:'Step 3 of 5'},25);
+tl.to('#step3',{opacity:0,y:-50,duration:0.5},39.5);
+tl.set('#step3',{opacity:0},40);
+tl.set('#step4',{opacity:1,y:0,className:'clip workflow-step active'},40);
+tl.set('#progress-fill',{width:'80%'},40);
+tl.set('#step-text',{textContent:'Step 4 of 5'},40);
+tl.to('#step4',{opacity:0,y:-50,duration:0.5},59.5);
+tl.set('#step4',{opacity:0},60);
+tl.set('#step5',{opacity:1,y:0,className:'clip workflow-step active'},60);
+tl.set('#progress-fill',{width:'100%'},60);
+tl.set('#step-text',{textContent:'Step 5 of 5'},60);
+tl.to('#step5',{opacity:0,duration:0.5},72.5);
+tl.set('#step5',{opacity:0},73);
+tl.to('[data-start="73"]',{opacity:1,duration:0.5},73);
+window.__timelines["community"]=tl;
+</script>
+</body>
 </html>

@@ -1,75 +1,97 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body {
-        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
-        background: #0a0a0a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
-      .header {
-        position: absolute; top: 0; left: 0; right: 0; height: 80px;
-        background: #1a1a2e; border-bottom: 2px solid #2a2a4e;
-        display: flex; align-items: center; padding: 0 40px;
-      }
-      .content {
-        position: absolute; top: 80px; left: 0; right: 0; bottom: 0;
-        padding: 40px; overflow-y: auto;
-      }
-      .feature-box {
-        position: absolute; background: #1a1a2e; border: 2px solid #2a2a4e;
-        border-radius: 12px; padding: 30px; color: #fff;
-        font-size: 18px; font-weight: bold; opacity: 0;
-      }
-      .feature-label {
-        position: absolute; color: #4a90e2; font-size: 28px; font-weight: bold; opacity: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root" data-composition-id="remix-go" data-start="0" data-duration="15" data-width="1920" data-height="1080">
-      <div class="clip" data-start="0" data-duration="15" data-track-index="0"
-           style="position: absolute; top: 0; left: 0; right: 0; height: 80px; background: #1a1a2e; border-bottom: 2px solid #2a2a4e; display: flex; align-items: center; padding: 0 40px;">
-        <div style="color: #fff; font-size: 32px; font-weight: bold;">Remix-Go</div>
-      </div>
-      
-      <div class="clip" data-start="0" data-duration="15" data-track-index="1"
-           style="position: absolute; top: 80px; left: 0; right: 0; bottom: 0; padding: 40px; overflow-y: auto;">
-        <div class="feature-box clip" data-start="3" data-duration="3" data-track-index="2"
-             style="top: 100px; left: 100px; width: 300px;">Music Sync</div>
-        <div class="feature-box clip" data-start="5" data-duration="3" data-track-index="3"
-             style="top: 100px; left: 500px; width: 300px;">Beat Detection</div>
-        <div class="feature-box clip" data-start="7" data-duration="3" data-track-index="4"
-             style="top: 100px; left: 900px; width: 300px;">Export</div>
-        
-        <div class="clip" data-start="10" data-duration="5" data-track-index="5"
-             style="position: absolute; top: 500px; left: 800px; color: #4a90e2; font-size: 36px; font-weight: bold; opacity: 0;">
-          Remix-Go - Complete
-        </div>
-      </div>
-      
-      <div class="feature-label clip" data-start="3" data-duration="2" data-track-index="10" id="label1" style="top: 200px; left: 100px;">Music Sync</div>
-      <div class="feature-label clip" data-start="5" data-duration="2" data-track-index="11" id="label2" style="top: 200px; left: 100px;">Beat Detection</div>
-      <div class="feature-label clip" data-start="7" data-duration="2" data-track-index="12" id="label3" style="top: 200px; left: 100px;">Export</div>
-    </div>
-
-    <script>
-      window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      tl.to('[data-start="3"]', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label1', { opacity: 1, duration: 0.5 }, 3);
-      tl.to('#label1', { opacity: 0, duration: 0.3 }, 4.5);
-      tl.to('[data-start="5"]', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 1, duration: 0.5 }, 5);
-      tl.to('#label2', { opacity: 0, duration: 0.3 }, 6.5);
-      tl.to('[data-start="7"]', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 1, duration: 0.5 }, 7);
-      tl.to('#label3', { opacity: 0, duration: 0.3 }, 8.5);
-      tl.to('[data-start="10"]', { opacity: 1, duration: 0.5 }, 10);
-      window.__timelines["remix-go"] = tl;
-    </script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { margin:0; width:1920px; height:1080px; overflow:hidden; background:#0a0a0a; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+.header { position:absolute; top:0; left:0; right:0; height:80px; background:#1a1a2e; border-bottom:2px solid #2a2a4e; display:flex; align-items:center; padding:0 40px; }
+.workflow-area { position:absolute; top:80px; left:0; right:0; bottom:0; padding:40px; }
+.step-indicator { position:absolute; top:20px; right:40px; background:#1a1a2e; border:2px solid #4a90e2; border-radius:25px; padding:10px 20px; color:#4a90e2; font-size:18px; font-weight:bold; }
+.progress-bar { position:absolute; top:70px; left:40px; right:40px; height:6px; background:#2a2a4e; border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:#4a90e2; width:0%; }
+.workflow-step { position:absolute; background:#1a1a2e; border:2px solid #2a2a4e; border-radius:16px; padding:30px; opacity:0; transform:translateY(50px); }
+.workflow-step.active { opacity:1; transform:translateY(0); border-color:#4a90e2; }
+.step-title { color:#4a90e2; font-size:28px; font-weight:bold; margin-bottom:15px; }
+.step-content { color:#ccc; font-size:18px; line-height:1.6; }
+.feature-list { margin-top:15px; padding-left:20px; color:#aaa; font-size:16px; }
+.feature-list li { margin-bottom:8px; }
+.demo-area { position:absolute; right:40px; width:700px; height:500px; background:#15152a; border-radius:12px; border:2px solid #2a2a4e; padding:30px; }
+.remix-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-top:20px; }
+.remix-card { aspect-ratio:16/9; background:#1a1a2e; border:2px solid #2a2a4e; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="remix-go" data-start="0" data-duration="80" data-width="1920" data-height="1080">
+<div class="clip" data-start="0" data-duration="80" data-track-index="0" style="position:absolute;top:0;left:0;right:0;height:80px;background:#1a1a2e;border-bottom:2px solid #2a2a4e;display:flex;align-items:center;padding:0 40px;"><div style="color:#fff;font-size:32px;font-weight:bold;">Remix-Go - Workflow Tutorial</div></div>
+<div class="clip" data-start="0" data-duration="80" data-track-index="1" style="position:absolute;top:20px;right:40px;background:#1a1a2e;border:2px solid #4a90e2;border-radius:25px;padding:10px 20px;color:#4a90e2;font-size:18px;font-weight:bold;"><span id="step-text">Step 1 of 5</span></div>
+<div class="clip" data-start="0" data-duration="80" data-track-index="2" style="position:absolute;top:70px;left:40px;right:40px;height:6px;background:#2a2a4e;border-radius:3px;overflow:hidden;"><div id="progress-fill" style="height:100%;background:#4a90e2;width:0%;"></div></div>
+<div class="workflow-area">
+<div class="clip workflow-step" data-start="0" data-duration="15" data-track-index="3" id="step1" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">1. Audio Analysis</div>
+<div class="step-content">Analyze your audio track.</div>
+<ul class="feature-list"><li>Track upload</li><li>BPM detection</li><li>Key identification</li><li>Structure analysis</li><li>Stem separation</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Audio Analysis</div><div style="display:flex;gap:15px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Upload Track</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Analyze</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="15" data-duration="20" data-track-index="4" id="step2" style="top:120px;left:40px;width:1000px;height:500px;">
+<div class="step-title">2. Remix Planning</div>
+<div class="step-content">Plan your remix strategy.</div>
+<ul class="feature-list"><li>Section selection</li><li>Transition planning</li><li>Effect choices</li><li>Creative direction setting</li></ul>
+<div class="remix-grid" style="position:relative;width:100%;margin-top:20px;"><div class="remix-card" style="border-color:#4a90e2;">Section A</div><div class="remix-card">Section B</div><div class="remix-card">Transition</div></div>
+</div>
+<div class="clip workflow-step" data-start="35" data-duration="25" data-track-index="5" id="step3" style="top:120px;left:40px;width:1000px;height:500px;">
+<div class="step-title">3. Remixing Process</div>
+<div class="step-content">Create your remix.</div>
+<ul class="feature-list"><li>Beat matching</li><li>Harmonic mixing</li><li>Effect application</li><li>Creative manipulation</li><li>Real-time preview</li></ul>
+<div style="position:relative;width:100%;height:200px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Remix</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Mix</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Effects</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="60" data-duration="10" data-track-index="6" id="step4" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">4. Quality Enhancement</div>
+<div class="step-content">Master and optimize your remix.</div>
+<ul class="feature-list"><li>Mastering</li><li>Loudness optimization</li><li>Stereo enhancement</li><li>Format optimization</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Mastering</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #4a90e2;border-radius:6px;color:#4a90e2;">Mastered</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Loudness</div></div></div>
+</div>
+<div class="clip workflow-step" data-start="70" data-duration="10" data-track-index="7" id="step5" style="top:120px;left:40px;width:1000px;height:450px;">
+<div class="step-title">5. Publishing & Distribution</div>
+<div class="step-content">Publish and track your remix.</div>
+<ul class="feature-list"><li>Platform export</li><li>Metadata management</li><li>Social sharing</li><li>Analytics tracking</li></ul>
+<div style="position:relative;width:100%;height:150px;margin-top:20px;background:#15152a;border-radius:12px;border:2px solid #2a2a4e;padding:20px;"><div style="color:#4a90e2;font-size:20px;margin-bottom:10px;">Publish</div><div style="display:flex;gap:15px;margin-top:20px;"><div style="padding:12px 24px;background:#4a90e2;border-radius:6px;color:#fff;">Export</div><div style="padding:12px 24px;background:#1a1a2e;border:2px solid #2a2a4e;border-radius:6px;color:#fff;">Share</div></div></div>
+</div>
+</div>
+<div class="clip" data-start="78" data-duration="2" data-track-index="10" style="position:absolute;top:500px;left:50%;transform:translateX(-50%);color:#4a90e2;font-size:48px;font-weight:bold;opacity:0;">Remix-Go Complete!</div>
+</div>
+<script>
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+tl.set('#step1',{opacity:1,y:0,className:'clip workflow-step active'},0);
+tl.set('#progress-fill',{width:'20%'},0);
+tl.set('#step-text',{textContent:'Step 1 of 5'},0);
+tl.to('#step1',{opacity:0,y:-50,duration:0.5},14.5);
+tl.set('#step1',{opacity:0},15);
+tl.set('#step2',{opacity:1,y:0,className:'clip workflow-step active'},15);
+tl.set('#progress-fill',{width:'40%'},15);
+tl.set('#step-text',{textContent:'Step 2 of 5'},15);
+tl.to('#step2',{opacity:0,y:-50,duration:0.5},34.5);
+tl.set('#step2',{opacity:0},35);
+tl.set('#step3',{opacity:1,y:0,className:'clip workflow-step active'},35);
+tl.set('#progress-fill',{width:'60%'},35);
+tl.set('#step-text',{textContent:'Step 3 of 5'},35);
+tl.to('#step3',{opacity:0,y:-50,duration:0.5},59.5);
+tl.set('#step3',{opacity:0},60);
+tl.set('#step4',{opacity:1,y:0,className:'clip workflow-step active'},60);
+tl.set('#progress-fill',{width:'80%'},60);
+tl.set('#step-text',{textContent:'Step 4 of 5'},60);
+tl.to('#step4',{opacity:0,y:-50,duration:0.5},69.5);
+tl.set('#step4',{opacity:0},70);
+tl.set('#step5',{opacity:1,y:0,className:'clip workflow-step active'},70);
+tl.set('#progress-fill',{width:'100%'},70);
+tl.set('#step-text',{textContent:'Step 5 of 5'},70);
+tl.to('#step5',{opacity:0,duration:0.5},77.5);
+tl.set('#step5',{opacity:0},78);
+tl.to('[data-start="78"]',{opacity:1,duration:0.5},78);
+window.__timelines["remix-go"]=tl;
+</script>
+</body>
 </html>
