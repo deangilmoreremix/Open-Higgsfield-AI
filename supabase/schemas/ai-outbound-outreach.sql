@@ -184,3 +184,16 @@ CREATE POLICY "Workspace members can view video events" ON public.video_events F
 CREATE POLICY "Public can insert leads" ON public.leads FOR INSERT WITH CHECK (true);
 CREATE POLICY "Workspace members can access leads" ON public.leads FOR ALL USING (EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = leads.workspace_id AND user_id = auth.uid()));
 CREATE POLICY "Authenticated users can view active MuAPI workflows" ON public.muapi_workflows FOR SELECT USING (is_active = true AND auth.role() = 'authenticated');
+
+-- Storage buckets
+INSERT INTO storage.buckets (id, name, public) VALUES ('clones', 'clones', false);
+INSERT INTO storage.buckets (id, name, public) VALUES ('videos', 'videos', true);
+INSERT INTO storage.buckets (id, name, public) VALUES ('thumbnails', 'thumbnails', true);
+
+-- Storage policies
+CREATE POLICY "Authenticated users can upload to clones bucket" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'clones' AND auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can view clones" ON storage.objects FOR SELECT USING (bucket_id = 'clones' AND auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can upload videos" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'videos' AND auth.role() = 'authenticated');
+CREATE POLICY "Public can view videos" ON storage.objects FOR SELECT USING (bucket_id = 'videos');
+CREATE POLICY "Authenticated users can upload thumbnails" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "Public can view thumbnails" ON storage.objects FOR SELECT USING (bucket_id = 'thumbnails');
