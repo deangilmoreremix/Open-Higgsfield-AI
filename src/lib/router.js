@@ -185,16 +185,21 @@ export async function navigate(page, params = {}) {
     
     contentArea.innerHTML = '';
     contentArea.appendChild(element);
-  } catch (err) {
-    console.error(`[Router] Failed to load page: ${page}`, err);
-    // Clean up before showing error
-    cleanupContentArea();
-    
-    contentArea.innerHTML = '';
-    const errEl = document.createElement('div');
-    errEl.className = 'w-full h-full flex items-center justify-center text-red-400 text-sm';
-    errEl.textContent = `Failed to load ${page}: ${err.message}`;
-    contentArea.appendChild(errEl);
+    } catch (err) {
+      console.error(`[Router] Failed to load page: ${page}`, err);
+      // Clean up before showing error
+      cleanupContentArea();
+      
+      contentArea.innerHTML = '';
+      const errEl = document.createElement('div');
+      errEl.className = 'w-full h-full flex flex-col items-center justify-center text-white text-center p-8';
+      errEl.innerHTML = `
+        <div class="text-4xl mb-4">😅</div>
+        <h3 class="text-lg font-bold text-red-400 mb-2">Something went sideways</h3>
+        <p class="text-secondary text-sm mb-4">We couldn't load the ${page} page. Want to try again?</p>
+        <button class="px-4 py-2 bg-primary text-black rounded-lg font-bold hover:bg-primary-hover transition-colors" onclick="location.reload()">Retry</button>
+      `;
+      contentArea.appendChild(errEl);
   } finally {
     isNavigating = false;
   }

@@ -1,0 +1,125 @@
+/* Delight Styles - Micro-interactions and Personality */
+
+/* Button Micro-interactions */
+button, .btn, .primary-btn, .icon-btn, .circle-btn, .mini-btn {
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+button:active, .btn:active, .primary-btn:active, .icon-btn:active, .circle-btn:active, .mini-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+button:hover, .btn:hover, .primary-btn:hover, .icon-btn:hover, .circle-btn:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Success Animations */
+@keyframes checkmark {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-animation {
+  animation: checkmark 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Confetti burst for major achievements */
+@keyframes confetti-burst {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1) rotate(720deg); opacity: 0; }
+}
+
+/* Loading Delight - Pulse */
+@keyframes delightful-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading-delight {
+  animation: delightful-pulse 1s infinite;
+}
+
+/* Hover Glow Effects */
+.primary-btn:hover, .circle-btn:hover {
+  box-shadow: 0 0 20px oklch(30% 20% 270deg / 0.4);
+}
+
+/* Satisfying Drag Effects */
+[draggable=true]:active {
+  transform: scale(1.05);
+  transition: transform 0.1s;
+}
+
+/* Easter Egg - Logo Hover */
+.brand-mark:hover {
+  animation: spin 0.5s ease-out;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Encouraging Empty States */
+.empty-state-delight {
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-state-delight h3 {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-delight p {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Playful Error Messages */
+.error-delight {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  position: relative;
+}
+
+.error-delight::before {
+  content: "😅";
+  position: absolute;
+  left: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Smooth Page Transitions */
+.page-transition {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Delightful Scrollbar */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary) !important;
+  transition: background 0.2s;
+}
+
+/* Tooltip Delight */
+[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem;
+  animation: fadeIn 0.2s ease-out;
+}
