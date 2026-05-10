@@ -1,13 +1,13 @@
 :root {
-  /* Brand Colors - Open Generative AI */
-  --color-primary: #22d3ee;
-  /* Editorial Cyan */
-  --color-primary-hover: #06b6d4;
-  --color-secondary: #34d399;
-  /* Creative Emerald */
-  --color-accent: #34d399;
-  /* Creative Emerald */
-  --color-accent-hover: #22c55e;
+  /* Brand Colors - Cinematic Creative */
+  --color-primary: oklch(30% 20% 270deg);
+  /* Deep Indigo */
+  --color-primary-hover: oklch(35% 22% 270deg);
+  --color-secondary: oklch(35% 18% 300deg);
+  /* Complementary Purple */
+  --color-accent: oklch(35% 18% 300deg);
+  /* Complementary Purple */
+  --color-accent-hover: oklch(40% 20% 300deg);
   --color-danger: #ef4444;
 
   /* Backgrounds - Layered Dark Surfaces */
@@ -46,8 +46,8 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 20px rgba(176, 251, 93, 0.4);
-  --shadow-glow-accent: 0 0 20px rgba(168, 85, 247, 0.4);
+  --shadow-glow: 0 0 20px oklch(30% 20% 270deg / 0.4);
+  --shadow-glow-accent: 0 0 20px oklch(35% 18% 300deg / 0.4);
   --backdrop-blur: blur(20px);
 
   /* Transitions */
