@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-After systematically searching the entire codebase, I found **critical inconsistencies** in how the muapi.ai API key is stored and transmitted. The main issue is that **sub-applications (sendspark, ai-vfx) are using the WRONG authentication header** (`Authorization: Bearer` instead of `x-api-key`).
+After systematically searching the entire codebase, I found **critical inconsistencies** in how the muapi.ai API key is stored and transmitted. The main issue is that **sub-applications (ai-outbound-outreach, ai-vfx) are using the WRONG authentication header** (`Authorization: Bearer` instead of `x-api-key`).
 
 ---
 
@@ -38,7 +38,7 @@ After systematically searching the entire codebase, I found **critical inconsist
 
 | File | Line(s) | Impact |
 |------|---------|--------|
-| `apps/sendspark/src/lib/muapi.js` | 80, 124, 224 | **WILL FAIL** - muapi.ai expects `x-api-key` |
+| `apps/ai-outbound-outreach/src/lib/muapi.js` | 80, 124, 224 | **WILL FAIL** - muapi.ai expects `x-api-key` |
 | `apps/ai-vfx/src/lib/muapi.js` | 80, 124, 224 | **WILL FAIL** - muapi.ai expects `x-api-key` |
 
 **These sub-apps will NOT work with muapi.ai because they send the API key using the wrong header!**
@@ -57,7 +57,7 @@ After systematically searching the entire codebase, I found **critical inconsist
 
 | App | Path | muapi.js | Storage | Header | Status |
 |-----|------|----------|---------|--------|--------|
-| sendspark | `apps/sendspark/src/lib/muapi.js` | Yes | `muapi_key` | ❌ `Bearer` | **BROKEN** |
+| ai-outbound-outreach | `apps/ai-outbound-outreach/src/lib/muapi.js` | Yes | `muapi_key` | ❌ `Bearer` | **BROKEN** |
 | ai-vfx | `apps/ai-vfx/src/lib/muapi.js` | Yes | `muapi_key` | ❌ `Bearer` | **BROKEN** |
 
 ---
@@ -68,7 +68,7 @@ All implementations correctly use `https://api.muapi.ai` as the base URL:
 
 - `src/lib/muapi.js` - via proxy or direct
 - `packages/studio/src/muapi.js` - `https://api.muapi.ai`
-- `apps/sendspark/src/lib/muapi.js` - `https://api.muapi.ai/api/v1`
+- `apps/ai-outbound-outreach/src/lib/muapi.js` - `https://api.muapi.ai/api/v1`
 - `apps/ai-vfx/src/lib/muapi.js` - `https://api.muapi.ai/api/v1`
 - `src/lib/muapiEnhanced.js` - `https://api.muapi.ai`
 - Supabase functions - `https://api.muapi.ai/api/v1`
@@ -99,7 +99,7 @@ From the codebase analysis:
 ### Issue 1: Sub-apps using wrong authentication header
 
 **Files to fix**:
-- `apps/sendspark/src/lib/muapi.js`
+- `apps/ai-outbound-outreach/src/lib/muapi.js`
 - `apps/ai-vfx/src/lib/muapi.js`
 
 **Current (WRONG)**:
@@ -178,7 +178,7 @@ export const muapiKeyManager = {
 
 ### Fix 2: Update sub-apps to use correct header
 
-**apps/sendspark/src/lib/muapi.js** - Change all occurrences:
+**apps/ai-outbound-outreach/src/lib/muapi.js** - Change all occurrences:
 ```javascript
 // BEFORE (WRONG):
 headers: {
@@ -218,7 +218,7 @@ apiPanel.querySelector('#settings-save-btn').onclick = () => {
 
 | File | Change Needed |
 |------|----------------|
-| `apps/sendspark/src/lib/muapi.js` | Change `Authorization: Bearer` to `x-api-key` (3 places) |
+| `apps/ai-outbound-outreach/src/lib/muapi.js` | Change `Authorization: Bearer` to `x-api-key` (3 places) |
 | `apps/ai-vfx/src/lib/muapi.js` | Change `Authorization: Bearer` to `x-api-key` (3 places) |
 | `src/lib/muapi.js` | Already correct - uses `x-api-key` |
 | `src/components/SettingsModal.js` | Could use centralized manager |
@@ -237,7 +237,7 @@ After applying fixes:
    - Check browser Network tab - request should have `x-api-key` header
 
 2. **Test sub-apps**:
-   - Navigate to sendspark app
+   - Navigate to ai-outbound-outreach app
    - Verify API key is read from `localStorage['muapi_key']`
    - Perform an action that calls muapi.ai
    - Check Network tab for `x-api-key` header (NOT `Authorization: Bearer`)
@@ -256,9 +256,9 @@ After applying fixes:
 | Main muapi.js client | ✅ Correct (`x-api-key`) |
 | Base URL | ✅ Correct (`https://api.muapi.ai`) |
 | SettingsModal storage | ✅ Correct (`muapi_key` in localStorage) |
-| sendspark sub-app | ❌ BROKEN (uses `Bearer`) |
+| ai-outbound-outreach sub-app | ❌ BROKEN (uses `Bearer`) |
 | ai-vfx sub-app | ❌ BROKEN (uses `Bearer`) |
 | API key storage consistency | ⚠️ INCONSISTENT (multiple locations) |
 | OpenAI key compatibility | ✅ YES (if sent via `x-api-key`) |
 
-**Critical Action Required**: Fix the sub-apps (sendspark, ai-vfx) to use `x-api-key` header instead of `Authorization: Bearer`.
+**Critical Action Required**: Fix the sub-apps (ai-outbound-outreach, ai-vfx) to use `x-api-key` header instead of `Authorization: Bearer`.

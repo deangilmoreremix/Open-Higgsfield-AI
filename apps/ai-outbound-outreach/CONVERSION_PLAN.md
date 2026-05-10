@@ -10,25 +10,25 @@
 **Current State:** Directory exists with node_modules, backend/, but no source code in Open-Higgsfield-AI
 
 #### What Exists:
-- ✅ `apps/sendspark/` directory structure
+- ✅ `apps/ai-outbound-outreach/` directory structure
 - ✅ Backend folder with uploads/ (Python? Node?)
 - ✅ Vite config (multiple timestamped versions)
-- ✅ Some logs (ai-vfx.log, sendspark.log)
+- ✅ Some logs (ai-vfx.log, ai-outbound-outreach.log)
 - ✅ `src/components/SendsparkWorkflow.jsx` in main app (reference UI)
 - ✅ Documentation in remix-new-editor: `SENDSPARK_IMPLEMENTATION_COMPLETE.md`
 
 #### What's Missing:
 - ❌ Actual frontend source code (no src/ directory)
-- ❌ package.json for sendspark app
+- ❌ package.json for ai-outbound-outreach app
 - ❌ Complete implementation
 
 #### Source Repository Analysis:
 
 From `deangilmoredemix/remix-new-editor`:
 - **SENDSPARK_IMPLEMENTATION_COMPLETE.md** - complete feature spec
-- **sendspark-research-analysis.md** - research documentation
-- **sendspark-style-video-creation.md** - style guide
-- Likely has full implementation in `apps/sendspark/` subdirectory
+- **ai-outbound-outreach-research-analysis.md** - research documentation
+- **ai-outbound-outreach-style-video-creation.md** - style guide
+- Likely has full implementation in `apps/ai-outbound-outreach/` subdirectory
 
 ### Phase 2: Plan - Build Complete App
 
@@ -37,12 +37,12 @@ From `deangilmoredemix/remix-new-editor`:
 #### Task 1: Clone Source Repository (5 min)
 ```bash
 cd apps
-git clone https://github.com/deangilmoredemix/remix-new-editor.git sendspark-source
-# Extract apps/sendspark/ from this repo
+git clone https://github.com/deangilmoredemix/remix-new-editor.git ai-outbound-outreach-source
+# Extract apps/ai-outbound-outreach/ from this repo
 ```
 
 #### Task 2: Copy Complete Implementation (10 min)
-- Copy `apps/sendspark/` from remix-new-editor to Open-Higgsfield-AI
+- Copy `apps/ai-outbound-outreach/` from remix-new-editor to Open-Higgsfield-AI
 - Ensure all files present: src/, package.json, vite.config.js, etc.
 - Preserve original structure
 
@@ -77,11 +77,11 @@ If source lacks tests, create minimal coverage:
 
 ### Phase 4: Execute - Implementation Steps
 
-**Step 1:** Clone remix-new-editor to extract sendspark
-**Step 2:** Copy complete `apps/sendspark/` directory
+**Step 1:** Clone remix-new-editor to extract ai-outbound-outreach
+**Step 2:** Copy complete `apps/ai-outbound-outreach/` directory
 **Step 3:** Update dependencies to match main app
 **Step 4:** Configure Vite for standalone mode
-**Step 5:** Add route to main router: `/sendspark`
+**Step 5:** Add route to main router: `/ai-outbound-outreach`
 **Step 6:** Test end-to-end workflow
 
 ### Phase 5: Review - Quality Gates

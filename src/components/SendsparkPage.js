@@ -37,7 +37,7 @@ export function SendsparkPage() {
 
   // Iframe container
   const iframe = document.createElement('iframe');
-  iframe.src = '/apps/sendspark/';
+  iframe.src = '/apps/ai-outbound-outreach/';
   iframe.className = 'w-full h-full border-0';
   iframe.style.display = 'none';
   iframe.onload = () => {

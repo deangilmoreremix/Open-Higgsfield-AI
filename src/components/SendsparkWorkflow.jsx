@@ -423,7 +423,7 @@ const SendsparkWorkflow = ({
   );
 
   return (
-    <div className="sendspark-workflow" style={{
+    <div className="ai-outbound-outreach-workflow" style={{
       backgroundColor: '#111827',
       border: '1px solid #374151',
       borderRadius: '12px',
