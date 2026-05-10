@@ -294,6 +294,144 @@ class ApiClient {
     }
   }
 
+  // AI Content Generation
+  async generateAIImages(prompt, options = {}) {
+    try {
+      // In a real implementation, this would call an AI image generation API
+      // For now, we'll simulate the response
+      console.log('Generating AI images for prompt:', prompt);
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Mock AI-generated images
+      const mockImages = [
+        {
+          id: `ai-img-${Date.now()}-1`,
+          type: 'photo',
+          url: `https://picsum.photos/800/600?random=${Date.now()}`,
+          prompt: prompt,
+          width: 800,
+          height: 600,
+          aiGenerated: true,
+          style: options.style || 'realistic'
+        },
+        {
+          id: `ai-img-${Date.now()}-2`,
+          type: 'photo',
+          url: `https://picsum.photos/800/600?random=${Date.now() + 1}`,
+          prompt: prompt,
+          width: 800,
+          height: 600,
+          aiGenerated: true,
+          style: options.style || 'realistic'
+        },
+        {
+          id: `ai-img-${Date.now()}-3`,
+          type: 'photo',
+          url: `https://picsum.photos/800/600?random=${Date.now() + 2}`,
+          prompt: prompt,
+          width: 800,
+          height: 600,
+          aiGenerated: true,
+          style: options.style || 'realistic'
+        },
+        {
+          id: `ai-img-${Date.now()}-4`,
+          type: 'photo',
+          url: `https://picsum.photos/800/600?random=${Date.now() + 3}`,
+          prompt: prompt,
+          width: 800,
+          height: 600,
+          aiGenerated: true,
+          style: options.style || 'realistic'
+        }
+      ];
+
+      return { images: mockImages };
+    } catch (error) {
+      console.error('AI image generation error:', error);
+      throw error;
+    }
+  }
+
+  async generateAIVideos(prompt, options = {}) {
+    try {
+      // In a real implementation, this would call an AI video generation API
+      // For now, we'll simulate the response
+      console.log('Generating AI videos for prompt:', prompt);
+
+      // Simulate API delay (longer for videos)
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      // Mock AI-generated videos
+      const mockVideos = [
+        {
+          id: `ai-video-${Date.now()}-1`,
+          type: 'video',
+          url: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`, // Sample video
+          video_url: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
+          prompt: prompt,
+          width: 1280,
+          height: 720,
+          duration: 10,
+          aiGenerated: true,
+          style: options.style || 'realistic'
+        },
+        {
+          id: `ai-video-${Date.now()}-2`,
+          type: 'video',
+          url: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`,
+          video_url: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`,
+          prompt: prompt,
+          width: 1280,
+          height: 720,
+          duration: 15,
+          aiGenerated: true,
+          style: options.style || 'realistic'
+        }
+      ];
+
+      return { videos: mockVideos };
+    } catch (error) {
+      console.error('AI video generation error:', error);
+      throw error;
+    }
+  }
+
+  async saveAIGeneratedContent(asset, userId, type) {
+    try {
+      const { data, error } = await this.supabase
+        .from('media_assets')
+        .insert({
+          user_id: userId,
+          source: 'ai_generated',
+          source_id: asset.id,
+          type: type,
+          url: asset.url || asset.video_url,
+          thumbnail: asset.url || asset.video_url, // For videos, could generate thumbnail
+          width: asset.width,
+          height: asset.height,
+          duration: asset.duration || null,
+          metadata: {
+            ...asset,
+            aiGenerated: true,
+            prompt: asset.prompt,
+            style: asset.style
+          },
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('AI content save error:', error);
+      throw error;
+    }
+  }
+
   // Campaign methods
   async createEmailCampaign(campaignData) {
     // Demo mode - return mock campaign
