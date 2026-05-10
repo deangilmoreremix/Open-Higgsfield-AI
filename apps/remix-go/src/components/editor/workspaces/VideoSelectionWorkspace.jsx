@@ -12,11 +12,12 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   const store = useStore();
   const { api } = store;
   
-  // Define scopes including AI content
+  // Define scopes including stock and AI content
   const SCOPES = {
     LIBRARY: 'library',
     UPLOADS: 'uploads',
-    STOCK: 'stock',
+    STOCK_IMAGES: 'stock_images',
+    STOCK_VIDEOS: 'stock_videos',
     AI_IMAGES: 'ai_images',
     AI_VIDEOS: 'ai_videos'
   };
@@ -24,7 +25,8 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   const [scope, setScope] = useState(SCOPES.LIBRARY);
   const [libraryData, setLibraryData] = useState({ hasMore: true, elements: [], query: '' });
   const [uploadsData, setUploadsData] = useState({ hasMore: true, elements: [], query: '' });
-  const [stockData, setStockData] = useState({ hasMore: false, elements: [], query: '', page: 1 });
+  const [stockImagesData, setStockImagesData] = useState({ hasMore: false, elements: [], query: '', page: 1 });
+  const [stockVideosData, setStockVideosData] = useState({ hasMore: false, elements: [], query: '', page: 1 });
   const [aiImagesData, setAiImagesData] = useState({ elements: [], query: '', generating: false });
   const [aiVideosData, setAiVideosData] = useState({ elements: [], query: '', generating: false });
 
@@ -32,7 +34,8 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
     switch (scope) {
       case SCOPES.LIBRARY: return libraryData;
       case SCOPES.UPLOADS: return uploadsData;
-      case SCOPES.STOCK: return stockData;
+      case SCOPES.STOCK_IMAGES: return stockImagesData;
+      case SCOPES.STOCK_VIDEOS: return stockVideosData;
       case SCOPES.AI_IMAGES: return aiImagesData;
       case SCOPES.AI_VIDEOS: return aiVideosData;
       default: return libraryData;
@@ -57,12 +60,27 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   };
 
   const onSearch = async (query) => {
-    if (scope === SCOPES.STOCK) {
+    if (scope === SCOPES.STOCK_IMAGES) {
+      // Search Pexels for stock images
+      setStockImagesData({ hasMore: false, elements: [], query, page: 1 });
+      try {
+        const result = await api.searchStockMedia(query, 'photo', { page: 1, perPage: 20 });
+        setStockImagesData({
+          elements: result.photos || [],
+          hasMore: result.nextPage !== null,
+          query,
+          page: 2,
+        });
+      } catch (error) {
+        console.error('Stock image search failed:', error);
+        setStockImagesData({ hasMore: false, elements: [], query, page: 1 });
+      }
+    } else if (scope === SCOPES.STOCK_VIDEOS) {
       // Search Pexels for stock videos
-      setStockData({ hasMore: false, elements: [], query, page: 1 });
+      setStockVideosData({ hasMore: false, elements: [], query, page: 1 });
       try {
         const result = await api.searchStockMedia(query, 'video', { page: 1, perPage: 20 });
-        setStockData({
+        setStockVideosData({
           elements: result.videos || [],
           hasMore: result.nextPage !== null,
           query,
@@ -70,7 +88,7 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
         });
       } catch (error) {
         console.error('Stock video search failed:', error);
-        setStockData({ hasMore: false, elements: [], query, page: 1 });
+        setStockVideosData({ hasMore: false, elements: [], query, page: 1 });
       }
     } else if (scope === SCOPES.AI_IMAGES) {
       // Generate AI images
@@ -116,8 +134,10 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   const onScopeChange = async (newScope) => {
     if (newScope !== scope) {
       setScope(newScope);
-      if (newScope === SCOPES.STOCK) {
-        setStockData({ hasMore: false, elements: [], query: '', page: 1 });
+      if (newScope === SCOPES.STOCK_IMAGES) {
+        setStockImagesData({ hasMore: false, elements: [], query: '', page: 1 });
+      } else if (newScope === SCOPES.STOCK_VIDEOS) {
+        setStockVideosData({ hasMore: false, elements: [], query: '', page: 1 });
       } else if (newScope === SCOPES.AI_IMAGES) {
         setAiImagesData({ elements: [], query: '', generating: false });
       } else if (newScope === SCOPES.AI_VIDEOS) {
@@ -130,7 +150,14 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   };
 
   // Stock media handlers
-  const onStockPreview = (item) => {
+  const onStockImagePreview = (item) => {
+    const imagePopup = (
+      <img src={item.src?.large || item.src?.original} alt={item.alt || 'Stock Image'} className="max-w-4xl max-h-96 object-contain" />
+    );
+    console.log('Stock image preview:', item);
+  };
+
+  const onStockVideoPreview = (item) => {
     const videoPopup = (
       <video className="w-full max-w-4xl" preload autoPlay controls>
         <source src={item.files?.[0]?.link || item.image} />
@@ -139,18 +166,30 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
     console.log('Stock video preview:', item);
   };
 
-  const onStockDownload = async (item) => {
+  const onStockImageDownload = async (item) => {
     try {
       const { user } = store;
       await api.downloadStockMedia(item, user?.id);
-      // Could show success message here
     } catch (error) {
-      console.error('Stock media download failed:', error);
-      // Could show error message here
+      console.error('Stock image download failed:', error);
     }
   };
 
-  const onStockUse = (item) => {
+  const onStockVideoDownload = async (item) => {
+    try {
+      const { user } = store;
+      await api.downloadStockMedia(item, user?.id);
+    } catch (error) {
+      console.error('Stock video download failed:', error);
+    }
+  };
+
+  const onStockImageUse = (item) => {
+    // For images, pass the image URL directly
+    onVideoSelected(item.src?.large || item.src?.original, item);
+  };
+
+  const onStockVideoUse = (item) => {
     // Use the highest quality video file available
     const videoFile = item.files?.find(f => f.quality === 'hd') ||
                      item.files?.find(f => f.quality === 'sd') ||
@@ -206,12 +245,27 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   };
 
   const loadMore = async () => {
-    if (scope === SCOPES.STOCK) {
+    if (scope === SCOPES.STOCK_IMAGES) {
+      // Load more stock images
+      const { elements, query, page } = stockImagesData;
+      try {
+        const result = await api.searchStockMedia(query, 'photo', { page, perPage: 20 });
+        setStockImagesData({
+          elements: [...elements, ...(result.photos || [])],
+          hasMore: result.nextPage !== null,
+          query,
+          page: page + 1,
+        });
+      } catch (error) {
+        console.error('Load more stock images failed:', error);
+        setStockImagesData(prev => ({ ...prev, hasMore: false }));
+      }
+    } else if (scope === SCOPES.STOCK_VIDEOS) {
       // Load more stock videos
-      const { elements, query, page } = stockData;
+      const { elements, query, page } = stockVideosData;
       try {
         const result = await api.searchStockMedia(query, 'video', { page, perPage: 20 });
-        setStockData({
+        setStockVideosData({
           elements: [...elements, ...(result.videos || [])],
           hasMore: result.nextPage !== null,
           query,
@@ -219,7 +273,7 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
         });
       } catch (error) {
         console.error('Load more stock videos failed:', error);
-        setStockData(prev => ({ ...prev, hasMore: false }));
+        setStockVideosData(prev => ({ ...prev, hasMore: false }));
       }
     } else if (scope === SCOPES.AI_IMAGES || scope === SCOPES.AI_VIDEOS) {
       // AI content doesn't support infinite scroll - generate new content instead
@@ -269,8 +323,14 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
           Uploads
         </button>
         <button
-          className={`px-4 py-2 rounded ${scope === SCOPES.STOCK ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => onScopeChange(SCOPES.STOCK)}
+          className={`px-4 py-2 rounded ${scope === SCOPES.STOCK_IMAGES ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => onScopeChange(SCOPES.STOCK_IMAGES)}
+        >
+          Stock Images
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${scope === SCOPES.STOCK_VIDEOS ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => onScopeChange(SCOPES.STOCK_VIDEOS)}
         >
           Stock Videos
         </button>
@@ -321,12 +381,19 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
 
         {currentData.elements.map((item, idx) => (
           <div key={idx} className="border rounded-lg overflow-hidden">
-            {scope === SCOPES.STOCK ? (
+            {scope === SCOPES.STOCK_IMAGES ? (
               <StockMediaGridItem
                 item={item}
-                onPreview={onStockPreview}
-                onDownload={onStockDownload}
-                onUse={onStockUse}
+                onPreview={onStockImagePreview}
+                onDownload={onStockImageDownload}
+                onUse={onStockImageUse}
+              />
+            ) : scope === SCOPES.STOCK_VIDEOS ? (
+              <StockMediaGridItem
+                item={item}
+                onPreview={onStockVideoPreview}
+                onDownload={onStockVideoDownload}
+                onUse={onStockVideoUse}
               />
             ) : scope === SCOPES.AI_IMAGES ? (
               <StockMediaGridItem
@@ -359,6 +426,20 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
             )}
           </div>
         ))}
+
+        {scope === SCOPES.STOCK_IMAGES && currentData.elements.length === 0 && (
+          <div className="col-span-full text-center py-12 text-gray-500">
+            <p>Search for stock images from Pexels</p>
+            <p className="text-sm mt-2">Examples: "nature", "business", "technology", "food"</p>
+          </div>
+        )}
+
+        {scope === SCOPES.STOCK_VIDEOS && currentData.elements.length === 0 && (
+          <div className="col-span-full text-center py-12 text-gray-500">
+            <p>Search for stock videos from Pexels</p>
+            <p className="text-sm mt-2">Examples: "ocean", "city", "nature", "technology"</p>
+          </div>
+        )}
 
         {scope === SCOPES.AI_IMAGES && currentData.elements.length === 0 && !aiImagesData.generating && (
           <div className="col-span-full text-center py-12 text-gray-500">
