@@ -6,15 +6,15 @@ const VideoPlayer = observer(({ src, className = '' }) => {
   const videoRef = useRef(null);
   const videoEditorStore = useVideoEditorStore();
 
-  // Default demo video if no src provided
-  const defaultSrc = src || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  // Use video from store if available, otherwise fallback to props or demo
+  const videoSrc = videoEditorStore.videoUrl || src || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
   useEffect(() => {
     if (videoRef.current) {
       videoEditorStore.setVideoElement(videoRef.current);
 
-      // Load video
-      videoRef.current.src = defaultSrc;
+      // Load video from store or props
+      videoRef.current.src = videoSrc;
       videoRef.current.load();
     }
 
@@ -22,7 +22,7 @@ const VideoPlayer = observer(({ src, className = '' }) => {
       // Cleanup on unmount
       videoEditorStore.setVideoElement(null);
     };
-  }, [defaultSrc, videoEditorStore]);
+  }, [videoSrc, videoEditorStore]);
 
   return (
     <div className={`relative ${className}`}>
@@ -104,14 +104,14 @@ const VideoPlayer = observer(({ src, className = '' }) => {
       </div>
 
       {/* Loading overlay */}
-      {!src && (
+      {!videoEditorStore.videoUrl && !src && (
         <div className="absolute inset-0 flex items-center justify-center bg-secondary/20">
           <div className="text-center text-muted">
             <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
             <p className="text-lg">No video loaded</p>
-            <p className="text-sm">Import a video to start editing</p>
+            <p className="text-sm">Select a video from the media library to start editing</p>
           </div>
         </div>
       )}

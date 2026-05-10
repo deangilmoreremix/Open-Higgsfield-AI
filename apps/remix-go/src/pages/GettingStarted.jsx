@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { FileText, Play, Upload, FolderOpen, Loader2 } from 'lucide-react';
-import { useProjectStore, useUserStore } from '../stores/StoreProvider';
+import { useProjectStore, useUserStore, useVideoEditorStore } from '../stores/StoreProvider';
 import VideoSelectionWorkspace from '../components/workspaces/VideoSelectionWorkspace';
 import NicheScriptsWorkspace from '../components/workspaces/NicheScriptsWorkspace';
 
@@ -10,6 +10,7 @@ const GettingStarted = observer(() => {
   const navigate = useNavigate();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  const videoEditorStore = useVideoEditorStore();
   const [selectedWizard, setSelectedWizard] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
@@ -89,12 +90,48 @@ const GettingStarted = observer(() => {
     }
   };
 
-  const handleVideoSelected = async (videoData) => {
+  const handleVideoSelected = async (mediaData, metadata = {}) => {
     try {
+      // Determine if this is a video or image based on metadata
+      const isVideo = metadata.type === 'video' || metadata.files || mediaData.includes('.mp4') || mediaData.includes('.webm') || mediaData.includes('video');
+      const isImage = metadata.type === 'photo' || metadata.src || mediaData.includes('.jpg') || mediaData.includes('.png') || mediaData.includes('image');
+
+      let mediaUrl = mediaData;
+      if (typeof mediaData === 'object') {
+        // Handle different media data formats
+        if (mediaData.url) {
+          mediaUrl = mediaData.url;
+        } else if (mediaData.video_url) {
+          mediaUrl = mediaData.video_url;
+        } else if (mediaData.files && mediaData.files[0]) {
+          mediaUrl = mediaData.files[0].link;
+          isVideo = true;
+        } else if (mediaData.src) {
+          mediaUrl = mediaData.src.large || mediaData.src.original;
+          isImage = true;
+        }
+      }
+
+      if (mediaUrl) {
+        if (isVideo) {
+          // Load video into editor
+          videoEditorStore.loadVideo(mediaUrl, metadata);
+        } else if (isImage) {
+          // Load image into editor
+          videoEditorStore.loadImage(mediaUrl, metadata);
+        } else {
+          // Default to video
+          videoEditorStore.loadVideo(mediaUrl, metadata);
+        }
+      }
+
+      // Create project record
       const projectData = {
-        title: `New Project from Video`,
-        wizardType: 'upload',
-        video: videoData,
+        title: metadata.title || metadata.photographer || `New Project from Media`,
+        wizardType: isImage ? 'image' : 'upload',
+        media: mediaData,
+        metadata: metadata,
+        mediaType: isVideo ? 'video' : isImage ? 'image' : 'unknown',
         createdAt: new Date().toISOString(),
       };
 
@@ -103,6 +140,7 @@ const GettingStarted = observer(() => {
       navigate('/editor');
     } catch (error) {
       console.error('Failed to create project:', error);
+      // Still navigate to editor even if project creation fails
       navigate('/editor');
     }
   };

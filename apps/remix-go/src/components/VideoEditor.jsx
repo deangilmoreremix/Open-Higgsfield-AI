@@ -53,8 +53,9 @@ const VideoEditor = observer(() => {
         setShowElementToolbar(true);
         break;
       case 'image':
-        // In real implementation, this would open file picker
-        videoEditorStore.addImageElement('https://via.placeholder.com/200x150/4f46e5/ffffff?text=Sample+Image');
+        // Use loaded image or fallback to placeholder
+        const imageUrl = videoEditorStore.imageUrl || 'https://via.placeholder.com/200x150/4f46e5/ffffff?text=Sample+Image';
+        videoEditorStore.addImageElement(imageUrl);
         setShowElementToolbar(true);
         break;
       case 'select':

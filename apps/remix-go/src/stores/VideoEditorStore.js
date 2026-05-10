@@ -73,6 +73,36 @@ class VideoEditorStore {
     }
   }
 
+  loadVideo(videoUrl, metadata = {}) {
+    this.videoUrl = videoUrl;
+    this.videoMetadata = metadata;
+
+    // If video element exists, load the new video
+    if (this.videoElement) {
+      this.videoElement.src = videoUrl;
+      this.videoElement.load();
+    }
+
+    // Reset video state
+    this.currentTime = 0;
+    this.isPlaying = false;
+  }
+
+  loadImage(imageUrl, metadata = {}) {
+    this.imageUrl = imageUrl;
+    this.imageMetadata = metadata;
+
+    // Add image to canvas immediately
+    this.addImageElement(imageUrl, {
+      width: metadata.width || 400,
+      height: metadata.height || 300,
+      left: 100,
+      top: 100,
+      scaleX: 0.5,
+      scaleY: 0.5,
+    });
+  }
+
   initializeVideoEvents() {
     if (!this.videoElement) return;
 
