@@ -1,6 +1,17 @@
-// DEPRECATED: This config is no longer used.
-// Remix-go is now integrated into the root vite.config.js
-// for unified development on port 8080.
-// 
-// To run remix-go standalone (not recommended), use:
-// cd apps/remix-go && npx vite --config vite.config.js.old
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  root: './',
+  publicDir: 'public',
+  base: '/apps/remix-go/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+  },
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+  },
+})
