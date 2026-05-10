@@ -6,18 +6,27 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Search from '../../Search';
 import InputField from './gridItems/InputField';
 import VideoGridItem from './gridItems/VideoGridItem';
+import StockMediaGridItem from './gridItems/StockMediaGridItem';
 
 const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected }) => {
   const store = useStore();
   const { api } = store;
   
-  const [scope, setScope] = useState(api.constructor.ASSET_SCOPES.LIBRARY);
+  // Define scopes including stock videos
+  const SCOPES = {
+    LIBRARY: 'library',
+    UPLOADS: 'uploads',
+    STOCK: 'stock'
+  };
+
+  const [scope, setScope] = useState(SCOPES.LIBRARY);
   const [libraryData, setLibraryData] = useState({ hasMore: true, elements: [], query: '' });
   const [uploadsData, setUploadsData] = useState({ hasMore: true, elements: [], query: '' });
-  
-  const currentData = scope === api.constructor.ASSET_SCOPES.LIBRARY ? libraryData : uploadsData;
-  const setCurrentData = scope === api.constructor.ASSET_SCOPES.LIBRARY ? setLibraryData : setUploadsData;
-  const editable = scope === api.constructor.ASSET_SCOPES.UPLOADS;
+  const [stockData, setStockData] = useState({ hasMore: false, elements: [], query: '', page: 1 });
+
+  const currentData = scope === SCOPES.LIBRARY ? libraryData : scope === SCOPES.UPLOADS ? uploadsData : stockData;
+  const setCurrentData = scope === SCOPES.LIBRARY ? setLibraryData : scope === SCOPES.UPLOADS ? setUploadsData : setStockData;
+  const editable = scope === SCOPES.UPLOADS;
 
   const onPreview = (title, url) => {
     const videoPopup = (
@@ -34,32 +43,104 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
   };
 
   const onSearch = async (query) => {
-    setCurrentData({ hasMore: true, elements: [], query });
-    const newElements = await api.assets(scope, api.constructor.ASSET_TYPES.VIDEOS, 0, query);
-    setCurrentData({
-      elements: newElements,
-      hasMore: newElements.length > 0,
-      query,
-    });
+    if (scope === SCOPES.STOCK) {
+      // Search Pexels for stock videos
+      setStockData({ hasMore: false, elements: [], query, page: 1 });
+      try {
+        const result = await api.searchStockMedia(query, 'video', { page: 1, perPage: 20 });
+        setStockData({
+          elements: result.videos || [],
+          hasMore: result.nextPage !== null,
+          query,
+          page: 2,
+        });
+      } catch (error) {
+        console.error('Stock video search failed:', error);
+        setStockData({ hasMore: false, elements: [], query, page: 1 });
+      }
+    } else {
+      // Search local library/uploads
+      setCurrentData({ hasMore: true, elements: [], query });
+      const newElements = await api.assets(scope, api.constructor.ASSET_TYPES.VIDEOS, 0, query);
+      setCurrentData({
+        elements: newElements,
+        hasMore: newElements.length > 0,
+        query,
+      });
+    }
   };
 
   const onScopeChange = async (newScope) => {
     if (newScope !== scope) {
       setScope(newScope);
-      setCurrentData({ hasMore: true, elements: [], query: '' });
+      if (newScope === SCOPES.STOCK) {
+        setStockData({ hasMore: false, elements: [], query: '', page: 1 });
+      } else {
+        setCurrentData({ hasMore: true, elements: [], query: '' });
+      }
+    }
+  };
+
+  // Stock media handlers
+  const onStockPreview = (item) => {
+    const videoPopup = (
+      <video className="w-full max-w-4xl" preload autoPlay controls>
+        <source src={item.files?.[0]?.link || item.image} />
+      </video>
+    );
+    console.log('Stock video preview:', item);
+  };
+
+  const onStockDownload = async (item) => {
+    try {
+      const { user } = store;
+      await api.downloadStockMedia(item, user?.id);
+      // Could show success message here
+    } catch (error) {
+      console.error('Stock media download failed:', error);
+      // Could show error message here
+    }
+  };
+
+  const onStockUse = (item) => {
+    // Use the highest quality video file available
+    const videoFile = item.files?.find(f => f.quality === 'hd') ||
+                     item.files?.find(f => f.quality === 'sd') ||
+                     item.files?.[0];
+
+    if (videoFile) {
+      onVideoSelected(videoFile.link, item);
     }
   };
 
   const loadMore = async () => {
-    const { elements, query } = currentData;
-    const newElements = await api.assets(
-      scope, api.constructor.ASSET_TYPES.VIDEOS, elements.length, query
-    );
-    setCurrentData({
-      query,
-      elements: [...elements, ...newElements],
-      hasMore: newElements.length > 0,
-    });
+    if (scope === SCOPES.STOCK) {
+      // Load more stock videos
+      const { elements, query, page } = stockData;
+      try {
+        const result = await api.searchStockMedia(query, 'video', { page, perPage: 20 });
+        setStockData({
+          elements: [...elements, ...(result.videos || [])],
+          hasMore: result.nextPage !== null,
+          query,
+          page: page + 1,
+        });
+      } catch (error) {
+        console.error('Load more stock videos failed:', error);
+        setStockData(prev => ({ ...prev, hasMore: false }));
+      }
+    } else {
+      // Load more library/uploads videos
+      const { elements, query } = currentData;
+      const newElements = await api.assets(
+        scope, api.constructor.ASSET_TYPES.VIDEOS, elements.length, query
+      );
+      setCurrentData({
+        query,
+        elements: [...elements, ...newElements],
+        hasMore: newElements.length > 0,
+      });
+    }
   };
 
   const sizes = inWindow ?
@@ -80,16 +161,22 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
     <div>
       <div className="flex justify-center gap-2 mb-4">
         <button
-          className={`px-4 py-2 rounded ${scope === api.constructor.ASSET_SCOPES.LIBRARY ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => onScopeChange(api.constructor.ASSET_SCOPES.LIBRARY)}
+          className={`px-4 py-2 rounded ${scope === SCOPES.LIBRARY ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => onScopeChange(SCOPES.LIBRARY)}
         >
           Library
         </button>
         <button
-          className={`px-4 py-2 rounded ${scope === api.constructor.ASSET_SCOPES.UPLOADS ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => onScopeChange(api.constructor.ASSET_SCOPES.UPLOADS)}
+          className={`px-4 py-2 rounded ${scope === SCOPES.UPLOADS ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => onScopeChange(SCOPES.UPLOADS)}
         >
           Uploads
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${scope === SCOPES.STOCK ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => onScopeChange(SCOPES.STOCK)}
+        >
+          Stock Videos
         </button>
       </div>
       <Search onSearch={onSearch} />
@@ -102,16 +189,27 @@ const VideoSelectionWorkspace = ({ className, inWindow = false, onVideoSelected 
       >
         {currentData.elements.map((item, idx) => (
           <div key={idx} className="border rounded-lg overflow-hidden">
-            <VideoGridItem
-              item={item}
-              onPreview={onPreview}
-              onUse={onVideoSelected}
-            />
-            {editable && (
-              <InputField
-                value={item.title}
-                onSave={onRename(item)}
+            {scope === SCOPES.STOCK ? (
+              <StockMediaGridItem
+                item={item}
+                onPreview={onStockPreview}
+                onDownload={onStockDownload}
+                onUse={onStockUse}
               />
+            ) : (
+              <>
+                <VideoGridItem
+                  item={item}
+                  onPreview={onPreview}
+                  onUse={onVideoSelected}
+                />
+                {editable && (
+                  <InputField
+                    value={item.title}
+                    onSave={onRename(item)}
+                  />
+                )}
+              </>
             )}
           </div>
         ))}

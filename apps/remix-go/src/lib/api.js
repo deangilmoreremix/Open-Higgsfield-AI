@@ -266,6 +266,34 @@ class ApiClient {
     return data;
   }
 
+  // Pexels API integration
+  async searchStockMedia(query, type = 'photo', options = {}) {
+    try {
+      const pexels = await import('./pexels');
+      if (type === 'video') {
+        return await pexels.default.searchVideos(query, options);
+      }
+      return await pexels.default.searchPhotos(query, options);
+    } catch (error) {
+      console.error('Stock media search error:', error);
+      throw error;
+    }
+  }
+
+  async downloadStockMedia(asset, userId) {
+    try {
+      const pexels = await import('./pexels');
+      // Download and save to Supabase
+      const downloadedAsset = await pexels.default.downloadAndSave(asset, userId);
+      // Save to user's media library
+      const savedAsset = await pexels.default.saveToLibrary(downloadedAsset, userId);
+      return savedAsset;
+    } catch (error) {
+      console.error('Stock media download error:', error);
+      throw error;
+    }
+  }
+
   // Campaign methods
   async createEmailCampaign(campaignData) {
     // Demo mode - return mock campaign
