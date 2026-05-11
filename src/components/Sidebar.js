@@ -42,6 +42,9 @@ export function Sidebar(navigate) {
     { id: 'ai-vfx', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/><circle cx="12" cy="8" r="1"/><path d="M12 14v4"/></svg>', label: 'AI-VFX' },
     { id: 'sendspark', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/><circle cx="12" cy="19" r="1"/><circle cx="7" cy="4" r="1"/><circle cx="17" cy="4" r="1"/></svg>', label: 'Sendspark' },
     { id: 'open-pomelli-studio', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 10h20"/></svg>', label: 'Open Pomelli' },
+    { id: 'vibe-workflow', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 12 17 4 10 2 10"/></svg>', label: 'Vibe Workflow' },
+    { id: 'videco-ai-platform', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>', label: 'Videco AI' },
+    { id: 'ai-headshot-generator', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', label: 'AI Headshot' },
   ];
 
   const bottomItems = [
