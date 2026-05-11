@@ -41,6 +41,7 @@ export function Sidebar(navigate) {
     { id: 'remix-go', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 9l5 3-5 3V9z"/><circle cx="16" cy="14" r="2"/></svg>', label: 'Remix Go' },
     { id: 'ai-vfx', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/><circle cx="12" cy="8" r="1"/><path d="M12 14v4"/></svg>', label: 'AI-VFX' },
     { id: 'sendspark', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/><circle cx="12" cy="19" r="1"/><circle cx="7" cy="4" r="1"/><circle cx="17" cy="4" r="1"/></svg>', label: 'Sendspark' },
+    { id: 'open-pomelli-studio', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 10h20"/></svg>', label: 'Open Pomelli' },
   ];
 
   const bottomItems = [
