@@ -51,11 +51,24 @@ const pageLoaders = {
   videotools: () => import('../components/VideoToolsStudio.js').then(m => m.VideoToolsStudio()),
   chat: () => import('../components/ChatStudio.js').then(m => m.ChatStudio()),
   lipsync: () => import('../components/LipSyncStudio.js').then(m => m.LipSyncStudio()),
-   workflows: () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
-   'workflows/editor': () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
-   'workflows/history': () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
-   'workflows/settings': () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
-  agents: () => import('../components/AgentStudio.js').then(m => m.AgentStudio()),
+    workflows: () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
+    'workflows/editor': () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
+    'workflows/history': () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
+    'workflows/settings': () => import('../components/VibeWorkflowPage.js').then(m => m.VibeWorkflowPage()),
+  'marketing-studio': () => {
+    const iframe = document.createElement('iframe');
+    iframe.src = '/apps/marketing-studio/';
+    iframe.className = 'w-full h-full border-0';
+    iframe.title = 'Marketing Studio';
+    return Promise.resolve(iframe);
+  },
+  agents: () => {
+    const iframe = document.createElement('iframe');
+    iframe.src = '/apps/agents/';
+    iframe.className = 'w-full h-full border-0';
+    iframe.title = 'Agents';
+    return Promise.resolve(iframe);
+  },
   'mcp-cli': () => import('../components/McpCliStudio.js').then(m => m.McpCliStudio()),
   'video-outreach': () => import('../components/VideoOutreachStudio.js').then(m => m.VideoOutreachStudio()),
 

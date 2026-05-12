@@ -33,9 +33,19 @@ export default {
                    rewrite: (path) => path.replace(/^\/apps\/videco-ai-platform/, "")
                 },
                 "/apps/ai-headshot-generator": {
-                   target: "http://localhost:3003",
-                   changeOrigin: true,
-                   rewrite: (path) => path.replace(/^\/apps\/ai-headshot-generator/, "")
+                    target: "http://localhost:3003",
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/apps\/ai-headshot-generator/, "")
+                },
+                "/apps/marketing-studio": {
+                    target: "http://localhost:5175",
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/apps\/marketing-studio/, "")
+                },
+                "/apps/agents": {
+                    target: "http://localhost:5176",
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/apps\/agents/, "")
                 }
            }
     },

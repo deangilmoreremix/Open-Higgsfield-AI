@@ -61,6 +61,7 @@
     "build:marketing-studio": "pnpm --filter marketing-studio run build && mkdir -p public/apps/marketing-studio && cp -r apps/marketing-studio/dist/* public/apps/marketing-studio/",
     "build:workflows": "pnpm --filter workflows run build && mkdir -p public/apps/workflows && cp -r apps/workflows/dist/* public/apps/workflows/",
     "build:agents": "pnpm --filter agents run build && mkdir -p public/apps/agents && cp -r apps/agents/dist/* public/apps/agents/",
+    "dev:ai-headshot-generator": "cd apps/ai-headshot-generator && npm run dev",
     "dev:marketing-studio": "cd apps/marketing-studio && npm run dev",
     "dev:workflows": "cd apps/workflows && npm run dev",
     "dev:agents": "cd apps/agents && npm run dev"

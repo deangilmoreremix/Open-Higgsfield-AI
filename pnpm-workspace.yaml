@@ -12,4 +12,5 @@ allowBuilds:
   protobufjs: true
   puppeteer: true
   sharp: true
+  unrs-resolver: set this to true or false
   workerd: true

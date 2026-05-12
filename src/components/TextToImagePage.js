@@ -27,8 +27,6 @@ const TEXT_TO_IMAGE_MODELS = [
   { name: 'Hunyuan Image 3.0', description: 'Tencent Hunyuan Image 3.0', category: 'Hunyuan' },
   { name: 'Kling O1', description: 'Kling O1 image generation', category: 'Kling' },
   { name: 'Qwen Image', description: 'Alibaba Qwen Image', category: 'Qwen' },
-  { name: 'Sora', description: 'OpenAI Sora image model', category: 'OpenAI' },
-  { name: 'Veo 3', description: 'Google Veo 3', category: 'Google' },
 ];
 
 const EXAMPLE_PROMPTS = [

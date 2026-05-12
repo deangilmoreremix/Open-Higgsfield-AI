@@ -117,7 +117,7 @@ function UploadSlot({ icon, url, progress, label, onUpload, onClear, multiple = 
         />
         
         {progress > 0 && progress < 100 ? (
-          <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-[#030303]/60 rounded-full flex items-center justify-center z-10">
             <span className="text-[8px] font-black text-primary">{progress}%</span>
           </div>
         ) : url ? (
@@ -161,7 +161,7 @@ function Dropdown({ isOpen, title, items, selectedId, onSelect, onClose, isVideo
   return (
     <div 
       ref={ref}
-      className="absolute bottom-[calc(100%+12px)] left-0 z-50 bg-[#0a0a0a] rounded p-4 shadow-4xl border border-white/10 w-[420px] animate-fade-in-up"
+      className="absolute bottom-[calc(100%+12px)] left-0 z-50 bg-[#030303] rounded p-4 shadow-4xl border border-white/10 w-[420px] animate-fade-in-up"
     >
       <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-4 px-1">{title}</div>
       <div className="grid grid-cols-3 gap-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-1">
@@ -210,7 +210,7 @@ function SimpleDropdown({ isOpen, title, options, selected, onSelect, onClose })
   return (
     <div 
       ref={ref}
-      className="absolute bottom-[calc(100%+12px)] left-0 z-50 bg-[#0a0a0a] rounded p-1 max-h-[200px] overflow-y-auto custom-scrollbar shadow-3xl border border-white/10 min-w-[140px] animate-fade-in-up"
+      className="absolute bottom-[calc(100%+12px)] left-0 z-50 bg-[#030303] rounded p-1 max-h-[200px] overflow-y-auto custom-scrollbar shadow-3xl border border-white/10 min-w-[140px] animate-fade-in-up"
     >
       <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2 px-3 pt-2">{title}</div>
       {options.map(opt => (
@@ -365,7 +365,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-app-bg relative p-4 md:p-6 overflow-hidden">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-[#030303] relative p-4 md:p-6 overflow-hidden">
       <style>{SCROLLBAR_STYLE}</style>
       
       {/* ── MAIN CONTENT AREA ── */}
@@ -373,7 +373,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
         {history.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
             {history.map(entry => (
-              <div key={entry.id} className="relative group rounded-lg overflow-hidden border border-white/10 bg-[#0a0a0a] shadow-xl hover:border-primary/50 transition-all duration-300 flex flex-col">
+              <div key={entry.id} className="relative group rounded-lg overflow-hidden border border-white/10 bg-[#030303] shadow-xl hover:border-primary/50 transition-all duration-300 flex flex-col">
                 <video 
                   src={entry.url} 
                   className="w-full aspect-video object-cover cursor-pointer hover:opacity-80 transition-opacity" 
@@ -385,7 +385,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
                 <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                    <button
                     onClick={(e) => { e.stopPropagation(); downloadFile(entry.url, `marketing-ad-${entry.id}.mp4`); }}
-                    className="p-2 bg-black/60 backdrop-blur-md rounded-full text-white hover:bg-primary hover:text-black transition-all border border-white/10"
+                    className="p-2 bg-[#030303]/60 backdrop-blur-md rounded-full text-white hover:bg-primary hover:text-black transition-all border border-white/10"
                     title="Download"
                    >
                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -394,7 +394,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
                    </button>
                 </div>
 
-                <div className="p-3 bg-black/80 backdrop-blur-sm border-t border-white/5 flex flex-col gap-1.5 flex-1">
+                <div className="p-3 bg-[#030303]/80 backdrop-blur-sm border-t border-white/5 flex flex-col gap-1.5 flex-1">
                   <p className="text-white/60 text-[10px] line-clamp-2 leading-relaxed font-medium">{entry.prompt}</p>
                   <div className="flex items-center justify-between mt-auto">
                     <span className="text-[9px] font-black text-primary px-2 py-0.5 bg-primary/10 rounded border border-primary/20 uppercase tracking-tighter">
@@ -434,7 +434,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
 
       {/* ── BOTTOM PROMPT BAR ── */}
       <div style={{ animationDelay: "0.2s" }} className="absolute bottom-4 w-full max-w-[95%] lg:max-w-4xl z-40 animate-fade-in-up">
-        <div className="bg-[#0a0a0a]/80 backdrop-blur-3xl rounded-lg border border-white/10 p-4 flex flex-col gap-2 shadow-4xl">
+        <div className="bg-[#030303]/80 backdrop-blur-3xl rounded-lg border border-white/10 p-4 flex flex-col gap-2 shadow-4xl">
           {additionalImages.length > 0 && (
             <div className="flex items-center gap-1.5">
               {additionalImages.map((img, idx) => (
@@ -442,7 +442,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
                   <img src={img} className="w-9 h-9 rounded-full object-cover border border-white/10" />
                   <button 
                     onClick={() => setAdditionalImages(prev => prev.filter((_, i) => i !== idx))}
-                    className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-black/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity border border-white/10"
+                    className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#030303]/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity border border-white/10"
                   >
                     <CloseSvg />
                   </button>
@@ -459,7 +459,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
               onInput={handleTextareaInput}
               placeholder="Describe your ad script... Use @image1 for product, @image2 for avatar."
               rows={1}
-              className="w-full bg-transparent border-none text-white text-sm placeholder:text-white/20 focus:outline-none resize-none pt-1 leading-relaxed min-h-[44px] max-h-[300px] custom-scrollbar font-medium"
+              className="w-full bg-transparent border-none text-white text-sm placeholder:text-white focus:outline-none resize-none pt-1 leading-relaxed min-h-[44px] max-h-[300px] custom-scrollbar font-medium"
             />
           </div>
 
@@ -591,7 +591,7 @@ export default function MarketingStudio({ apiKey, droppedFiles, onFilesHandled }
 
       {/* Fullscreen Preview */}
       {fullscreenUrl && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm animate-fade-in" onClick={() => setFullscreenUrl(null)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#030303]/95 backdrop-blur-sm animate-fade-in" onClick={() => setFullscreenUrl(null)}>
           <button className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white border border-white/10 transition-colors shadow-2xl"><CloseSvg /></button>
           <video src={fullscreenUrl} controls autoPlay className="max-w-[95vw] max-h-[95vh] rounded-lg shadow-4xl animate-scale-up" onClick={e => e.stopPropagation()} />
         </div>

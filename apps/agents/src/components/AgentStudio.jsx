@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import {
   getTemplateAgents,
   getUserAgents,
@@ -27,7 +27,7 @@ function AgentCard({ agent, onClick, onEdit }) {
     <div className="group relative aspect-[4/5] rounded-xl cursor-pointer">
       <div
         onClick={() => onClick(agent)}
-        className="absolute inset-0 rounded-xl overflow-hidden border border-white/5 bg-[#0a0a0a] transition-all group-hover:border-[#d9ff00]/30 group-hover:scale-[1.02] shadow-2xl"
+        className="absolute inset-0 rounded-xl overflow-hidden border border-white/5 bg-[#030303] transition-all group-hover:border-[#d9ff00]/30 group-hover:scale-[1.02] shadow-2xl"
       >
         {agent.icon_url ? (
           <img
@@ -64,7 +64,7 @@ function AgentCard({ agent, onClick, onEdit }) {
             e.stopPropagation();
             onEdit(agent);
           }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-[#d9ff00] hover:text-black hover:scale-110 z-10"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#030303]/60 border border-white/10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-[#d9ff00] hover:text-black hover:scale-110 z-10"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -90,7 +90,7 @@ function ConversationCard({ conv, onClick }) {
           {conv.agent_icon_url ? (
             <img src={conv.agent_icon_url} alt={conv.agent_name || "Agent"} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white/20">
+            <div className="w-full h-full flex items-center justify-center text-white">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
@@ -118,7 +118,7 @@ function ConversationCard({ conv, onClick }) {
 const TABS = ["templates", "my-agents", "my-chats"];
 
 export default function AgentStudio({ apiKey }) {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [activeMainTab, setActiveMainTab] = useState("templates");
   const [agents, setAgents] = useState([]);
@@ -130,28 +130,33 @@ export default function AgentStudio({ apiKey }) {
   const handleSelectAgent = useCallback(
     (agent) => {
       const id = agent.agent_id || agent.id;
-      router.push(`/agents/${id}`);
+      console.log(`Navigate to agent: ${id}`);
+      // For standalone app, could open in new window or handle differently
+      // window.open(`/agents/${id}`, '_blank');
     },
-    [router]
+    []
   );
 
   const handleEditAgent = useCallback(
     (agent) => {
       const id = agent.agent_id || agent.id;
-      router.push(`/agents/edit/${id}`);
+      console.log(`Edit agent: ${id}`);
+      // window.open(`/agents/edit/${id}`, '_blank');
     },
-    [router]
+    []
   );
 
   const handleCreateAgent = useCallback(() => {
-    router.push("/agents/create");
-  }, [router]);
+    console.log("Create new agent");
+    // window.open("/agents/create", '_blank');
+  }, []);
 
   const handleOpenConversation = useCallback(
     (agentSlug, convId) => {
-      router.push(`/agents/${agentSlug}/${convId}`);
+      console.log(`Open conversation: ${agentSlug}/${convId}`);
+      // window.open(`/agents/${agentSlug}/${convId}`, '_blank');
     },
-    [router]
+    []
   );
 
   useEffect(() => {
@@ -190,7 +195,7 @@ export default function AgentStudio({ apiKey }) {
   return (
     <div className="h-full flex flex-col bg-[#030303] text-white">
       {/* Header */}
-      <div className="flex-shrink-0 h-16 border-b border-white/5 flex items-center justify-between px-8 bg-black/40">
+      <div className="flex-shrink-0 h-16 border-b border-white/5 flex items-center justify-between px-8 bg-[#030303]/40">
         <div className="flex items-center gap-8 h-full">
           <h2 className="text-sm font-black uppercase tracking-[0.2em] text-[#d9ff00]">
             Agents
@@ -228,7 +233,7 @@ export default function AgentStudio({ apiKey }) {
             <div className="w-10 h-10 border-2 border-white/5 border-t-[#d9ff00] rounded-full animate-spin" />
           </div>
         ) : error ? (
-          <div className="h-full flex flex-col items-center justify-center text-white/20 gap-4">
+          <div className="h-full flex flex-col items-center justify-center text-white gap-4">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
