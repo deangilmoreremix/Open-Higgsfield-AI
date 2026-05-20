@@ -12,4 +12,4 @@
  * (WorkflowUI → workflow-builder → muapi → models) which Vite cannot
  * safely transform for SSR.
  */
-export * from '../../src/lib/muapi.js';
+export * from '../../../src/lib/muapi.js';

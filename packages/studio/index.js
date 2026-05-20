@@ -1,13 +1,13 @@
 "use client";
 
-export { default as ImageStudio } from './components/ImageStudio';
-export { default as VideoStudio } from './components/VideoStudio';
-export { default as LipSyncStudio } from './components/LipSyncStudio';
-export { default as CinemaStudio } from './components/CinemaStudio';
-export { default as MarketingStudio } from './components/MarketingStudio';
-export { default as WorkflowStudio } from './components/WorkflowStudio';
-export { default as AgentStudio } from './components/AgentStudio';
-export { default as DesignAgentStudio } from './components/DesignAgentStudio';
-export { default as AppsStudio } from './components/AppsStudio';
-export { default as McpCliStudio } from './components/McpCliStudio';
-export * from './muapi';
+export { default as ImageStudio } from './src/components/ImageStudio.jsx';
+export { default as VideoStudio } from './src/components/VideoStudio.jsx';
+export { default as LipSyncStudio } from './src/components/LipSyncStudio.jsx';
+export { default as CinemaStudio } from './src/components/CinemaStudio.jsx';
+export { default as MarketingStudio } from './src/components/MarketingStudio.jsx';
+export { default as WorkflowStudio } from './src/components/WorkflowStudio.jsx';
+export { default as AgentStudio } from './src/components/AgentStudio.jsx';
+export { default as DesignAgentStudio } from './src/components/DesignAgentStudio.jsx';
+export { default as AppsStudio } from './src/components/AppsStudio.jsx';
+export { default as McpCliStudio } from './src/components/McpCliStudio.jsx';
+export * from './src/muapi.js';

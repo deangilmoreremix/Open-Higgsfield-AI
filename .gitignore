@@ -41,3 +41,4 @@ package-lock.json
 
 # Coverage directory
 coverage/
+.next

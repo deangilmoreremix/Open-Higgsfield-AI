@@ -1,7 +1,5 @@
 "use client";
 
-import { CreateAgentPage } from "ai-agent";
-import "ai-agent/dist/tailwind.css";
 import { useCallback, useEffect, useRef } from "react";
 import axios from "axios";
 
@@ -54,9 +52,11 @@ export default function AgentCreateClient({ userData }) {
   );
 
   return (
-    <CreateAgentPage
-      useUser={useUser}
-      usedIn="studio"
-    />
+    <div className="h-full w-full flex items-center justify-center bg-black">
+      <div className="text-center">
+        <h2 className="text-white mb-4">Agent Creation</h2>
+        <p className="text-white/60">The AI Agent package will be loaded here</p>
+      </div>
+    </div>
   );
 }
