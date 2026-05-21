@@ -1,1 +1,19 @@
-{"description": "Shared UI components for Open Generative AI", "files": ["src"], "main": "src/index.js", "module": "src/index.js", "name": "shared-ui", "peerDependencies": {"react": ">=18.0.0", "react-dom": ">=18.0.0"}, "version": "1.0.0"}
+{
+    "name": "shared-ui",
+    "version": "1.0.0",
+    "description": "Shared UI components for Open Generative AI",
+    "main": "src/index.js",
+    "module": "src/index.js",
+    "files": [
+        "src"
+    ],
+    "dependencies": {
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "lucide-react": "^0.263.1"
+    },
+    "peerDependencies": {
+        "react": ">=18.0.0",
+        "react-dom": ">=18.0.0"
+    }
+}

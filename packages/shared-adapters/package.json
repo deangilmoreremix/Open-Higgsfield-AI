@@ -1,1 +1,17 @@
-{"description": "Shared API adapters for MuAPI, Supabase, OpenAI", "files": ["src"], "main": "src/index.js", "module": "src/index.js", "name": "shared-adapters", "version": "1.0.0"}
+{
+    "name": "shared-adapters",
+    "version": "1.0.0",
+    "description": "Shared API adapters for MuAPI, Supabase, OpenAI",
+    "main": "src/index.js",
+    "module": "src/index.js",
+    "files": [
+        "src"
+    ],
+    "dependencies": {
+        "@supabase/supabase-js": "^2.0.0",
+        "axios": "^1.6.0"
+    },
+    "peerDependencies": {
+        "react": ">=18.0.0"
+    }
+}

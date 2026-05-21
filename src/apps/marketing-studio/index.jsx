@@ -1,24 +1,41 @@
-import React, { useState } from 'react';
+'use client';
+
+import React from 'react';
 import { appManifest } from './manifest';
-import * as mktService from './services/marketingStudioService';
-import { sendToLibrary } from '../../lib/outputHandoff';
 
 export default function MarketingStudioApp() {
-  const [brief, setBrief] = useState('');
-  const [output, setOutput] = useState(null);
-
-  const generate = async () => {
-    const res = await mktService.generateCampaignIdeas(brief);
-    setOutput(res);
-  };
-
-  return React.createElement('div', { className: 'h-full p-4 bg-[#0a0a0a] text-white' },
-    React.createElement('h1', { className: 'text-xl mb-4' }, 'Marketing Studio'),
-    React.createElement('textarea', { value: brief, onChange: e => setBrief(e.target.value), placeholder: 'Product launch for AI tool', className: 'w-full h-24 bg-white/5 p-3 rounded mb-4' }),
-    React.createElement('button', { onClick: generate, className: 'px-6 py-2 bg-primary rounded' }, 'Generate Campaign'),
-    output && React.createElement('div', { className: 'mt-4' },
-      React.createElement('pre', { className: 'text-xs bg-black/40 p-3' }, JSON.stringify(output, null, 2)),
-      React.createElement('button', { onClick: () => sendToLibrary({ ...output, app_id: 'marketing-studio', app_name: 'Marketing Studio' }), className: 'mt-2 px-4 py-2 bg-white/10 rounded' }, 'Save to Library')
+  return React.createElement(
+    'div',
+    { className: 'w-full h-full flex items-center justify-center bg-[#030303] p-8' },
+    React.createElement(
+      'div',
+      { className: 'max-w-md w-full text-center' },
+      React.createElement(
+        'div',
+        {
+          className: 'w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#d9ff00]/10 flex items-center justify-center',
+        },
+        React.createElement(
+          'svg',
+          { className: 'w-10 h-10 text-[#d9ff00]', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' },
+          React.createElement('path', {
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: 1.5,
+            d: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
+          })
+        )
+      ),
+      React.createElement('h1', { className: 'text-2xl font-bold text-white mb-2' }, appManifest.name),
+      React.createElement('p', { className: 'text-white/60 mb-8' }, appManifest.description),
+      React.createElement(
+        'div',
+        {
+          className: 'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9ff00]/10 border border-[#d9ff00]/20',
+        },
+        React.createElement('span', { className: 'w-2 h-2 rounded-full bg-[#d9ff00] animate-pulse' }),
+        React.createElement('span', { className: 'text-sm text-[#d9ff00] font-medium' }, 'Coming Soon')
+      )
     )
   );
 }

@@ -1,54 +1,42 @@
-import React, { useState } from 'react';
+'use client';
+
+import React from 'react';
 import { appManifest } from './manifest';
-import * as vibeService from './services/vibeWorkflowService';
-import { sendToLibrary, sendToRender } from '../../lib/outputHandoff';
 
 export default function VibeWorkflowApp() {
-  const [workflow, setWorkflow] = useState(null);
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
-  const [runStatus, setRunStatus] = useState('');
-  const [result, setResult] = useState(null);
-
-  const addNode = (type) => {
-    const newNode = { id: Date.now(), type, data: {} };
-    setNodes([...nodes, newNode]);
-  };
-
-  const runWorkflow = async () => {
-    setRunStatus('Running...');
-    const run = await vibeService.runWorkflow(workflow?.id, { nodes, edges });
-    setResult(run.output);
-    setRunStatus('Completed');
-  };
-
-  const saveToLibrary = async () => {
-    if (!result) return;
-    await sendToLibrary({ ...result, app_id: 'vibe-workflow', app_name: 'Vibe Workflow' });
-  };
-
-  return React.createElement('div', { className: 'h-full flex flex-col bg-[#0a0a0a] text-white' },
-    React.createElement('div', { className: 'p-4 border-b flex justify-between' },
-      React.createElement('h1', { className: 'text-xl font-bold' }, 'Vibe Workflow'),
-      React.createElement('div', { className: 'flex gap-2' },
-        React.createElement('button', { onClick: () => addNode('prompt'), className: 'px-3 py-1 bg-white/10 rounded text-sm' }, 'Add Prompt Node'),
-        React.createElement('button', { onClick: () => addNode('image'), className: 'px-3 py-1 bg-white/10 rounded text-sm' }, 'Add Image Gen'),
-        React.createElement('button', { onClick: runWorkflow, className: 'px-4 py-1 bg-primary rounded' }, 'Run Workflow')
-      )
-    ),
-    React.createElement('div', { className: 'flex-1 flex' },
-      React.createElement('div', { className: 'flex-1 p-4 border-r' },
-        React.createElement('div', { className: 'h-full bg-black/40 rounded border border-white/10' }, 'ReactFlow Canvas - Nodes: ' + nodes.length)
-      ),
-      React.createElement('div', { className: 'w-80 p-4' },
-        result && React.createElement('div', null,
-          React.createElement('video', { src: result.url, controls: true, className: 'w-full mb-2' }),
-          React.createElement('button', { onClick: saveToLibrary, className: 'w-full py-2 bg-white/10 rounded' }, 'Save to Library'),
-          React.createElement('button', { onClick: () => sendToRender(result), className: 'w-full py-2 bg-white/10 rounded mt-1' }, 'Send to Render')
+  return React.createElement(
+    'div',
+    { className: 'w-full h-full flex items-center justify-center bg-[#030303] p-8' },
+    React.createElement(
+      'div',
+      { className: 'max-w-md w-full text-center' },
+      React.createElement(
+        'div',
+        {
+          className: 'w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#d9ff00]/10 flex items-center justify-center',
+        },
+        React.createElement(
+          'svg',
+          { className: 'w-10 h-10 text-[#d9ff00]', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' },
+          React.createElement('path', {
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: 1.5,
+            d: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z',
+          })
         )
+      ),
+      React.createElement('h1', { className: 'text-2xl font-bold text-white mb-2' }, appManifest.name),
+      React.createElement('p', { className: 'text-white/60 mb-8' }, appManifest.description),
+      React.createElement(
+        'div',
+        {
+          className: 'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9ff00]/10 border border-[#d9ff00]/20',
+        },
+        React.createElement('span', { className: 'w-2 h-2 rounded-full bg-[#d9ff00] animate-pulse' }),
+        React.createElement('span', { className: 'text-sm text-[#d9ff00] font-medium' }, 'Coming Soon')
       )
-    ),
-    React.createElement('div', { className: 'p-2 text-xs text-center border-t' }, runStatus)
+    )
   );
 }
 
