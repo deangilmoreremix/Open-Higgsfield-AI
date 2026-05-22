@@ -1,5 +1,6 @@
 import { supabase } from '../../../lib/supabase-client.ts';
-import { generateImage, generateVideo } from '../../../lib/muapi.js';
+import { generateImage, generateI2I, generateVideo, generateI2V, generateVideoEffect, uploadFile, deleteWorkflow } from '../../../lib/muapi.js';
+import { PHOTO_CATEGORIES, findStyle } from '../ai-vfx/lib/photo-styles.js';
 
 const STORAGE_KEY = 'higgsfield.open-pomelli.projects';
 
@@ -193,6 +194,39 @@ export function handoffOutput(target, output) {
   if (HANDOFF_KEYS[target]) {
     sessionStorage.setItem(HANDOFF_KEYS[target], JSON.stringify({ content: output, app: 'open-pomelli' }));
   }
+}
+
+
+// ── PHOTO STUDIO ────────────────────────────────────────────────
+export function getPhotoStudioCategories() { return PHOTO_CATEGORIES; }
+export function findPhotoStyle(cat, st) { return findStyle(cat, st); }
+export function buildBrandPhotoshootPrompt(style, brand, dir) { return style.prompt; }
+export async function generatePhotoshoot(imgUrl, style, brand, dir, opts = {}) {
+  const prompt = [style.label, style.prompt, 'Professional product photography using reference image as focal subject — preserve geometry, color, materials, proportions.'].join('\n');
+  const refs = [imgUrl];
+  if (brand?.logoUrl) refs.push(brand.logoUrl);
+  return generateI2I(apiK(), { prompt, images_list: refs, aspect_ratio: opts.aspect || style.aspect, resolution: opts.resolution || '2k' });
+}
+
+// ── ANIMATION ───────────────────────────────────────────────────
+const DEFAULT_PROMPTS = { asset:'Subtle hero motion: slow camera push-in, gentle parallax on background elements, ambient light shifts. Brand-consistent mood. Preserve typography and composition.', photoshoot:'Slow rotational camera move around the product, soft light play across the surface, premium reveal feel. Preserve product geometry, color and shadows.', upload:'Cinematic motion that suits the image. Subtle camera move, gentle ambient motion in environmental elements. Preserve subject geometry.' };
+export async function generateAnimation(srcImg, promptOrOpts, opts = {}) {
+  const srcType = typeof promptOrOpts === 'string' ? promptOrOpts : 'upload';
+  const prompt = typeof promptOrOpts === 'string' ? (DEFAULT_PROMPTS[srcType] || promptOrOpts) : (promptOrOpts.prompt || DEFAULT_PROMPTS.upload);
+  return generateVideo(apiK(), { prompt, image_url: srcImg, duration:opts.duration||5, resolution:opts.resolution||'720p' });
+}
+export async function generateImageToVideo(imgUrl, prompt, opts = {}) { return generateVideo(apiK(), { prompt, image_url:imgUrl, duration:opts.duration||5, resolution:opts.resolution||'480p' }); }
+export async function generateTextToVideo(prompt, opts = {}) { return generateVideo(apiK(), { prompt, aspect_ratio:opts.aspectRatio||'9:16', duration:opts.duration||5, resolution:opts.resolution||'480p' }); }
+export async function saveAnimationRecord(a) { try { const{data,error}=await supabase.from('animations').insert(a).select().single(); if(error)throw error; return data; } catch(err){console.error('pomelli saveAnimationRecord:',err); return null;} }
+
+// ── CAMPAIGN GENERATOR ───────────────────────────────────────────
+export const CAMPAIGN_GOALS = [ {value:'product_launch',label:'Product launch',description:'Announce a new product or feature'}, {value:'lead_generation',label:'Lead generation',description:'Capture qualified prospects'}, {value:'brand_awareness',label:'Brand awareness',description:'Reach new audiences'}, {value:'engagement',label:'Engagement',description:'Drive replies, shares, comments'}, {value:'thought_leadership',label:'Thought leadership',description:'Establish authority and POV'}, {value:'sales',label:'Direct sales',description:'Drive purchases or sign-ups'} ];
+export function getCampaignGoals() { return CAMPAIGN_GOALS; }
+
+export async function generateCampaignConceptsLLM(brand, goal, direction) {
+  const t=JSON.parse(brand.toneOfVoice||brand.tone||'[]').join(', ')||'—', p=JSON.parse(brand.brandPersonality||brand.personality||'[]').join(', ')||'—', m=JSON.parse(brand.keyMessages||brand.messages||'[]').join(' • ')||'—';
+  const goalLabel=CAMPAIGN_GOALS.find(g=>g.value===goal)?.label||goal;
+  return generateVideoEffect(apiK(), { prompt:`Senior brand strategist. Return STRICT JSON: array of 4 campaign concept objects with keys title, theme, key_message, hook, cta, recommended_platforms[], tone_notes, visual_direction.\nBRAND: ${brand.brandName||'—'} | Goal: ${goalLabel}${direction?' | Direction: '+direction:''}` });
 }
 
 export const PLATFORM_PRESETS = [
