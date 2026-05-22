@@ -1,13 +1,14 @@
 import { RuntimeAdapterBase } from '../../../lib/runtime/RuntimeAdapterBase.js';
 import { muapi } from '../../../lib/muapi.js';
 import { enhanceVideoPrompt } from '../providers/videoOpenAI.js';
-import { generateVideoFromText, generateVideoFromImage, generateCinematicScene } from '../providers/videoProvider.js';
+import { generateVideoFromText, generateVideoFromImage, generateCinematicScene, applyVideoEffect, processVideoToVideo, addLipSync } from '../providers/videoProvider.js';
 
 export class VidecoRuntimeAdapter extends RuntimeAdapterBase {
   constructor(options = {}) {
     super(options);
     this.provider = 'videco-ai-platform';
     this.timeline = { tracks: [], playhead: 0 };
+    this.activeProject = null;
   }
 
   async execute(input, context = {}) {
@@ -16,6 +17,45 @@ export class VidecoRuntimeAdapter extends RuntimeAdapterBase {
     this.state = 'running';
 
     try {
+      if (input.action === 'text-to-video') {
+        const enhancedPrompt = await enhanceVideoPrompt(input.prompt, { ...context });
+        const outputs = await generateVideoFromText(enhancedPrompt, { ...context, aspectRatio: input.aspectRatio });
+        this.state = 'completed';
+        return { executionId, state: this.state, outputs };
+      }
+
+      if (input.action === 'image-to-video') {
+        const enhancedPrompt = await enhanceVideoPrompt(input.prompt, { ...context });
+        const outputs = await generateVideoFromImage(input.imageUrl, enhancedPrompt, { ...context });
+        this.state = 'completed';
+        return { executionId, state: this.state, outputs };
+      }
+
+      if (input.action === 'cinematic') {
+        const enhancedPrompt = await enhanceVideoPrompt(input.prompt, { ...context, cinematic: true });
+        const outputs = await generateCinematicScene(enhancedPrompt, { ...context });
+        this.state = 'completed';
+        return { executionId, state: this.state, outputs };
+      }
+
+      if (input.action === 'video-to-video') {
+        const result = await processVideoToVideo(input.videoUrl, input.prompt, input.options || {});
+        this.state = 'completed';
+        return { executionId, state: this.state, result };
+      }
+
+      if (input.action === 'apply-effect') {
+        const result = await applyVideoEffect(input.videoUrl, input.effectName, input.options || {});
+        this.state = 'completed';
+        return { executionId, state: this.state, result };
+      }
+
+      if (input.action === 'lip-sync') {
+        const result = await addLipSync(input.videoUrl, input.audioUrl, input.options || {});
+        this.state = 'completed';
+        return { executionId, state: this.state, result };
+      }
+
       const enhancedPrompt = await enhanceVideoPrompt(input.prompt, {
         ...context,
         cinematicOptions: input.cinematicOptions
@@ -69,15 +109,24 @@ export class VidecoRuntimeAdapter extends RuntimeAdapterBase {
     }
   }
 
+  removeTrack(trackId) {
+    this.timeline.tracks = this.timeline.tracks.filter(t => t !== trackId);
+  }
+
   setPlayhead(position) {
     this.timeline.playhead = position;
+  }
+
+  getPlayhead() {
+    return this.timeline.playhead;
   }
 
   serialize() {
     return {
       id: this.executionId,
       state: this.state,
-      timeline: this.timeline
+      timeline: this.timeline,
+      project: this.activeProject
     };
   }
 
@@ -90,6 +139,9 @@ export class VidecoRuntimeAdapter extends RuntimeAdapterBase {
     }
     if (data.timeline) {
       this.timeline = data.timeline;
+    }
+    if (data.project !== undefined) {
+      this.activeProject = data.project;
     }
   }
 

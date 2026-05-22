@@ -1,6 +1,6 @@
 import { RuntimeAdapterBase } from '../../../lib/runtime/RuntimeAdapterBase.js';
 import { supabase } from '../../../lib/supabase-client.ts';
-import { listWorkflows, getWorkflow, createWorkflowLocal, updateWorkflow, deleteWorkflow, duplicateWorkflow, listWorkflowTemplates, createWorkflowFromTemplate, runWorkflow, runWorkflowNode, saveWorkflowRun, saveWorkflowOutput, saveOutputToLibrary, handoffWorkflowOutput } from '../services/vibeWorkflowService.js';
+import { listWorkflows, getWorkflow, createWorkflowLocal, updateWorkflow, deleteWorkflow, duplicateWorkflow, listWorkflowTemplates, createWorkflowFromTemplate, runWorkflow, runWorkflowNode, saveWorkflowRun, saveWorkflowOutput, saveOutputToLibrary, handoffWorkflowOutput, NODE_TYPES, NODE_CATEGORIES, WORKFLOW_TEMPLATES, buildWorkflowGraph, getExecutionOrder, executeWorkflowGraph, validateWorkflow, serializeWorkflow, deserializeWorkflow } from '../services/vibeWorkflowService.js';
 
 export class VibeWorkflowRuntimeAdapter extends RuntimeAdapterBase {
   constructor(options = {}) {
@@ -37,6 +37,26 @@ export class VibeWorkflowRuntimeAdapter extends RuntimeAdapterBase {
         return { executionId, state: this.state, workflow };
       }
 
+      if (input.action === 'update') {
+        const updated = await updateWorkflow(input.workflowId, input.updates);
+        return { executionId, state: this.state, workflow: updated };
+      }
+
+      if (input.action === 'delete') {
+        await deleteWorkflow(input.workflowId);
+        return { executionId, state: this.state, deleted: true };
+      }
+
+      if (input.action === 'duplicate') {
+        const workflow = await duplicateWorkflow(input.workflowId);
+        return { executionId, state: this.state, workflow };
+      }
+
+      if (input.action === 'list-templates') {
+        const templates = await listWorkflowTemplates();
+        return { executionId, state: this.state, templates };
+      }
+
       if (input.action === 'run') {
         const result = await runWorkflow(input.workflow, input.params);
         return { executionId, state: this.state, result };
@@ -47,14 +67,25 @@ export class VibeWorkflowRuntimeAdapter extends RuntimeAdapterBase {
         return { executionId, state: this.state, result };
       }
 
-      if (input.action === 'duplicate') {
-        const workflow = await duplicateWorkflow(input.workflowId);
-        return { executionId, state: this.state, workflow };
+      if (input.action === 'execute-graph') {
+        const result = await executeWorkflowGraph(input.workflow, context);
+        return { executionId, state: this.state, result };
       }
 
-      if (input.action === 'delete') {
-        await deleteWorkflow(input.workflowId);
-        return { executionId, state: this.state, deleted: true };
+      if (input.action === 'validate') {
+        const validation = validateWorkflow(input.workflow);
+        return { executionId, state: this.state, validation };
+      }
+
+      if (input.action === 'build-graph') {
+        const graph = buildWorkflowGraph(input.nodes, input.edges);
+        return { executionId, state: this.state, graph };
+      }
+
+      if (input.action === 'get-execution-order') {
+        const graph = buildWorkflowGraph(input.nodes, input.edges);
+        const order = getExecutionOrder(graph);
+        return { executionId, state: this.state, order };
       }
 
       this.state = 'completed';
@@ -80,11 +111,24 @@ export class VibeWorkflowRuntimeAdapter extends RuntimeAdapterBase {
     return { executionId, state: this.state };
   }
 
+  getNodeTypes() {
+    return NODE_TYPES;
+  }
+
+  getNodeCategories() {
+    return NODE_CATEGORIES;
+  }
+
+  getTemplates() {
+    return WORKFLOW_TEMPLATES;
+  }
+
   serialize() {
     return {
       id: this.executionId,
       state: this.state,
-      workflow: this.activeWorkflow
+      workflow: this.activeWorkflow,
+      templates: this.templates
     };
   }
 
@@ -92,6 +136,7 @@ export class VibeWorkflowRuntimeAdapter extends RuntimeAdapterBase {
     if (data.id !== undefined) this.executionId = data.id;
     if (data.state !== undefined) this.state = data.state;
     if (data.workflow !== undefined) this.activeWorkflow = data.workflow;
+    if (data.templates !== undefined) this.templates = data.templates;
   }
 
   getExecutionState() {
