@@ -39,7 +39,6 @@ const pageLoaders = {
   templates: () => import('../components/TemplatesPage.js').then(m => m.TemplatesPage()),
   effects: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
   vfx: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
-  'ai-vfx': () => import('../components/AIVFXStudio.js').then(m => m.AIVFXStudio()),
   'ai-vfx': () => { const p = '/apps/ai-vfx/runtime/entry.runtime.js'; return import(p).then(m => m.mountNative(contentArea, { legacyFallback: () => import('../components/AIVFXStudio.js') })); },
   edit: () => import('../components/EditStudio.js').then(m => m.EditStudio()),
   upscale: () => import('../components/UpscaleStudio.js').then(m => m.UpscaleStudio()),
