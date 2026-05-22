@@ -86,4 +86,20 @@ describe('Router Unit Tests', () => {
       expect(getRouteForItem('Vibe Motion')).toBe('effects');
     });
   });
+
+  describe('Native Runtime Route Loaders (Task 0.3)', () => {
+    it('should register native runtime loaders for ai-headshot-generator, videco-ai-platform, vibe-workflow, open-pomelli, ai-vfx (TDD RED until added to pageLoaders)', async () => {
+      const { navigate } = await import('../../src/lib/router.js');
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      await navigate('ai-headshot-generator');
+      const aiCalls = errorSpy.mock.calls.filter(c => c[0] && c[0].includes('ai-headshot-generator'));
+      const isNativeLoaderError = aiCalls.some(c => c[1] && typeof c[1].message === 'string' && c[1].message.includes('entry.runtime.js'));
+      expect(isNativeLoaderError).toBe(true);
+      await navigate('open-pomelli');
+      const openCalls = errorSpy.mock.calls.filter(c => c[0] && c[0].includes('open-pomelli'));
+      const isNativeForOpen = openCalls.some(c => c[1] && typeof c[1].message === 'string' && c[1].message.includes('entry.runtime.js'));
+      expect(isNativeForOpen).toBe(true);
+      errorSpy.mockRestore();
+    });
+  });
 });

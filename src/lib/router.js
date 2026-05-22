@@ -40,8 +40,11 @@ const pageLoaders = {
   effects: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
   vfx: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
   'ai-vfx': () => import('../components/AIVFXStudio.js').then(m => m.AIVFXStudio()),
+  'ai-vfx': () => { const p = '/apps/ai-vfx/runtime/entry.runtime.js'; return import(p).then(m => m.mountNative(contentArea, { legacyFallback: () => import('../components/AIVFXStudio.js') })); },
   edit: () => import('../components/EditStudio.js').then(m => m.EditStudio()),
   upscale: () => import('../components/UpscaleStudio.js').then(m => m.UpscaleStudio()),
+
+
   library: () => import('../components/LibraryPage.js').then(m => m.LibraryPage()),
   character: () => import('../components/CharacterStudio.js').then(m => m.CharacterStudio()),
   influencer: () => import('../components/InfluencerStudio.js').then(m => m.InfluencerStudio()),
@@ -92,9 +95,12 @@ const pageLoaders = {
   'remix-go': () => import('../apps/remix-go/index.js').then(m => m.RemixGoApp()),
   'ai-video-outreach': () => import('../components/AIVideoOutreachPage.js').then(m => m.AIVideoOutreachPage()),
   'ai-headshot': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
+  'ai-headshot-generator': () => { const p = '/apps/ai-headshot-generator/runtime/entry.runtime.js'; return import(p).then(m => m.mountNative(contentArea, { legacyFallback: () => import('../components/HeadshotStudio.js') })); },
+  'videco-ai-platform': () => { const p = '/apps/videco-ai-platform/runtime/entry.runtime.js'; return import(p).then(m => m.mountNative(contentArea)); },
   'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
   'tiktok-carousel': () => import('../components/TikTokCarouselStudio.js').then(m => m.TikTokCarouselStudio()),
   'advanced-dubbing': () => import('../components/AdvancedDubbingStudio.js').then(m => m.AdvancedDubbingStudio()),
+
   documentation: () => import('../components/DocumentationPage.js').then(m => m.DocumentationPage()),
   landing: () => import('../components/landing/LandingPage.jsx').then(m => m.LandingPage()),
   signin: () => import('../components/landing/SignInPage.jsx').then(m => m.SignInPage()),
@@ -104,12 +110,15 @@ const pageLoaders = {
   'headshots-settings': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   personalizer: () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Personalizer')),
   'pomelli-studio': () => import('../components/PomelliStudio.js').then(m => m.PomelliStudio()),
+  'open-pomelli': () => { const p = '/apps/open-pomelli/runtime/entry.runtime.js'; return import(p).then(m => m.mountNative(contentArea, { legacyFallback: () => import('../components/PomelliStudio.js') })); },
   'workflow-studio': () => import('../components/WorkflowStudioApp.js').then(m => m.WorkflowStudioApp()),
+  'vibe-workflow': () => { const p = '/apps/vibe-workflow/runtime/entry.runtime.js'; return import(p).then(m => m.mountNative(contentArea, { legacyFallback: () => import('../components/WorkflowStudioApp.js') })); },
   'agents/create': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
   'agents/edit': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
 };
 
 let currentPage = null;
+
 let contentArea = null;
 let onNavigateCallback = null;
 let isNavigating = false;
