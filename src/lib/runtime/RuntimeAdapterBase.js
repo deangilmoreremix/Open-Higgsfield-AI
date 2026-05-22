@@ -1,61 +1,22 @@
-import WorkflowEngine from '../workflow/WorkflowEngine.ts';
+// src/lib/runtime/RuntimeAdapterBase.js
+import { WorkflowEngine } from '../workflow/WorkflowEngine.ts';
+// import other shared singletons (PersistenceLayer, ProviderRegistry, etc.)
 
-export default class RuntimeAdapterBase {
-  constructor() {
-    this.stack = Object.freeze({
-      llm: 'openai',
-      generation: 'muapi',
-      storage: 'supabase'
-    });
+export class RuntimeAdapterBase {
+  constructor(options = {}) {
+    this.executionId = null;
+    this.state = 'idle';
+    this.workflow = new WorkflowEngine();
+    this.stack = { llm: 'openai', generation: 'muapi', storage: 'supabase' };
   }
-
-  execute() {
-    throw new Error('Must implement in subclass');
-  }
-
-  pause() {
-    // base implementation - no-op, override in subclass
-  }
-
-  resume() {
-    // base implementation - no-op, override in subclass
-  }
-
-  cancel() {
-    // base implementation - no-op, override in subclass
-  }
-
-  recover() {
-    // base implementation - no-op, override in subclass
-  }
-
-  serialize() {
-    return {
-      stack: this.stack,
-      state: {}
-    };
-  }
-
-  deserialize(data) {
-    // base implementation - accept data, no-op, override in subclass for restore
-    if (data && data.stack) {
-      // stack is locked, cannot override
-    }
-  }
-
-  subscribe(callback) {
-    // base implementation returns a subscription id, subclasses manage listeners
-    return Date.now();
-  }
-
-  unsubscribe(subscriptionId) {
-    // base implementation - no-op, override in subclass
-  }
-
-  getExecutionState() {
-    return {
-      status: 'idle',
-      stack: this.stack
-    };
-  }
+  async execute(input, context) { throw new Error('Must implement in subclass'); }
+  async pause(executionId) { this.state = 'paused'; }
+  async resume(executionId) { this.state = 'running'; }
+  async cancel(executionId) { this.state = 'cancelled'; }
+  async recover(snapshot) {}
+  serialize() { return { id: this.executionId, state: this.state }; }
+  deserialize(data) { Object.assign(this, data); }
+  subscribe(events, cb) {}
+  unsubscribe(events, cb) {}
+  getExecutionState() { return { id: this.executionId, state: this.state, stack: this.stack }; }
 }
