@@ -18,6 +18,22 @@
 - **Tests Must Pass**: `npm run test:run` (unit + integration + e2e + stress + orchestration + persistence + recovery + realtime + workflow) + all existing tests.
 - **Unified OS Outcome**: Shared everything across all apps (including the new 6).
 
+## Approved Technology Stack (Hard Lock — Non-Negotiable)
+For **all 6 apps** (and any runtime adapters/providers/workflows created for them), the **only** allowed stack is:
+
+- **LLM / Prompt Engineering / Intelligence**: OpenAI API (via existing `src/lib/openaiService.js`, `apps/*/src/ai/openai.js` patterns, and MuAPI chat proxy where used for consistency).
+- **Image + Video Creation / Generation / Effects / Headshots / VFX / Scenes**: MuAPI API exclusively (https://api.muapi.ai — all calls go through existing `src/lib/muapi.js`, `MuapiClient`, `apps/*/src/ai/muapi.js`, and the MuAPIGenerationPipeline. No direct fal.ai, RunPod, Replicate, or other generators unless wrapped inside MuAPI).
+- **Storage, Database, Auth, Realtime, Edge Functions, Persistence Snapshots, Assets, Execution History**: Supabase (via `src/lib/supabase.js`, `hybrid-supabase.js`, `src/lib/persistence*`, existing supabase/edge functions, and channels for RealtimeExecutionTracker).
+- **Hosting / CDN / Serverless (main Higgsfield + built app artifacts)**: Netlify (netlify.toml, Netlify Functions for any additional proxies, `public/apps/` deploys, existing build:* scripts that copy artifacts).
+
+**Explicitly forbidden for these 6 apps**:
+- Any other LLM (Anthropic, Gemini, local models, etc.) unless routed through the approved OpenAI/MuAPI path.
+- Any other generation provider (fal, Kling direct, Luma, Pika, etc.) — all must use MuAPI.
+- Any other storage (S3 direct, Firebase, etc.).
+- Any other hosting for the integrated native modules (they run inside the main Netlify-hosted Higgsfield Vite app).
+
+All previous shell code already follows this stack (muapi + openai + supabase + netlify). The adapters will **only** call the existing clients/services. This guarantees consistency with the rest of Higgsfield and satisfies the user's explicit requirement.
+
 ## 2. Target Apps & Canonical Mapping
 1. **videco-ai-platform** (features: AI Video Gen (text-to-video, image-to-video, cinematic, scene gen, AI transitions/effects/motion/camera, timeline/editing/layer/scene/clip/export, queued rendering, realtime progress, distributed orchestration, recovery, persistence, execution replay, workflow graph/node-based, render chaining, pipeline orchestration) — Source: deangilmoreremix/videco_ai_platform (ZapDigits origin)
 2. **vibe-workflow** (Workflow Builder: visual node editor, drag/drop, graph exec, serialization/persistence/replay, async node, orchestration/queue/concurrent, AI pipeline chaining/prompt transform/multi-stage/provider routing/conditional/branching, snapshots/crash recovery/replay/deterministic) — Source: deangilmoreremix/Vibe-Workflow (enhance existing shell)
