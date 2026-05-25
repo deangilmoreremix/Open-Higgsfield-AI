@@ -60,7 +60,7 @@ const pageLoaders: Record<string, () => Promise<{ default: React.ComponentType }
   render: () => import('./components/RenderPage.js').then(m => ({ default: m.RenderPage })),
   'video-agent': () => import('./components/VideoAgentPage.js').then(m => ({ default: m.VideoAgentPage })),
   director: () => import('./components/DirectorPage.tsx').then(m => ({ default: m.default })),
-  timeline: () => import('./components/PlaceholderPage.js').then(m => ({ default: () => m.PlaceholderPage('Timeline') })),
+  timeline: () => import('./components/TimelineEditorPage.tsx').then(m => ({ default: m.default })),
   'remix-go': () => import('./apps/remix-go/index.js').then(m => ({ default: m.RemixGoApp })),
   'ai-video-outreach': () => import('./components/AIVideoOutreachPage.js').then(m => ({ default: m.AIVideoOutreachPage })),
   'ai-headshot': () => import('./components/HeadshotStudio.js').then(m => ({ default: m.HeadshotStudio })),
