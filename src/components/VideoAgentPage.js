@@ -5,6 +5,7 @@ import { createVideoAgentWorkspace } from './video-agent-workspace.js';
 import { directorRuntime } from '../lib/directorAgentRuntime.js';
 import { Tooltip } from './common/Tooltip.js';
 import { VideoUpload } from './common/Upload.js';
+import { getPendingHandoff, clearPendingHandoff } from '../lib/handoff.ts';
 
 const AI_TOOLS = [
     { id: 'scene-detection', name: 'Scene Detection', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5"/></svg>', thumbnail: '/thumbnails/videoagent/scene-detection.png', color: 'blue', description: 'Identify scene boundaries', category: 'understanding' },
@@ -52,6 +53,14 @@ const USE_CASES = [
 let runtime = null;
 
 export function VideoAgentPage() {
+    // Check for pending handoff from other apps (Director, Timeline, etc.)
+    const pendingHandoff = getPendingHandoff('videoAgent');
+    if (pendingHandoff) {
+        console.log('[VideoAgentPage] Received handoff:', pendingHandoff);
+        window.__pendingVideoAgentHandoff = pendingHandoff;
+        clearPendingHandoff('videoAgent');
+    }
+
     if (!runtime) {
         runtime = directorRuntime;
         runtime.initialize();

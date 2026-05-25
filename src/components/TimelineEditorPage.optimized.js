@@ -1,5 +1,6 @@
 // Task 4: Optimize TimelineEditorPage with lazy loading and code splitting
 import { supabase, uploadFileToStorage } from '../lib/hybrid-supabase.js';
+import { getPendingHandoff, clearPendingHandoff } from '../lib/handoff.ts';
 import { initializeTimelineDragDrop, createEnhancedClipElement, renderCompositingOverlay, renderTimelineControls, renderLayerManagement, renderPopcornElements, showTimelineContextMenu } from '../lib/editor/timelineRendererEnhanced.js';
 import { initializeMediaLibraryDragDrop, setupEnhancedTooltips } from '../lib/editor/dragDrop.js';
 import { renderMediaGrid, addMediaToTimeline } from '../lib/editor/mediaLibrary.js';
@@ -91,3 +92,10 @@ const lazyLoadTracker = {
 };
 
 export function TimelineEditorPage() {
+    // Check for pending handoff from other apps (Director, Render, etc.)
+    const pendingHandoff = getPendingHandoff('timeline');
+    if (pendingHandoff && pendingHandoff.url) {
+        console.log('[TimelineEditorPage] Received handoff with URL:', pendingHandoff.url);
+        window.__pendingTimelineHandoff = pendingHandoff;
+        clearPendingHandoff('timeline');
+    }
