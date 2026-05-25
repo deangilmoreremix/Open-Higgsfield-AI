@@ -3,6 +3,7 @@ import { muapi } from '../lib/muapi.js';
 import { CameraControls } from './CameraControls.js';
 import { buildNanoBananaPrompt, CAMERA_MAP, LENS_MAP, FOCAL_PERSPECTIVE, APERTURE_EFFECT } from '../lib/promptUtils.js';
 import { AuthModal } from './AuthModal.js';
+import { sendToHandoff, createHandoffPayload } from '../lib/handoff.ts';
 
 export function CinemaStudio() {
     const container = document.createElement('div');
@@ -408,6 +409,65 @@ export function CinemaStudio() {
     canvasControls.appendChild(regenerateBtn);
     canvasControls.appendChild(downloadBtn);
     canvasControls.appendChild(newPromptBtn);
+
+    // Send to... dropdown button
+    const sendToBtn = createActionBtn('↗ Send to');
+    sendToBtn.title = 'Send to other apps';
+
+    const sendToDropdown = document.createElement('div');
+    sendToDropdown.className = 'absolute z-50 hidden flex-col bg-[#1a1a1a] border border-white/10 rounded-xl py-1 shadow-xl min-w-[160px]';
+    sendToDropdown.style.bottom = '100%';
+    sendToDropdown.style.right = '0';
+    sendToDropdown.style.marginBottom = '8px';
+
+    const sendToOptions = [
+        { label: '📚 Library', target: 'library' },
+        { label: '🎬 Render', target: 'render' },
+        { label: '🎥 Director', target: 'director' },
+        { label: '⏱️ Timeline', target: 'timeline' },
+        { label: '🤖 Video Agent', target: 'videoAgent' },
+    ];
+
+    sendToOptions.forEach(opt => {
+        const optBtn = document.createElement('button');
+        optBtn.className = 'px-4 py-2.5 text-xs text-left text-white hover:bg-white/10 transition-colors flex items-center gap-2';
+        optBtn.textContent = opt.label;
+        optBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (resultImg.src) {
+                const payload = createHandoffPayload(
+                    `cin_${Date.now()}`,
+                    'image',
+                    'cinema-studio',
+                    currentSettings.prompt || 'Generated cinema shot',
+                    resultImg.src,
+                    resultImg.src,
+                    { camera: currentSettings.camera, lens: currentSettings.lens, focal: currentSettings.focal, aperture: currentSettings.aperture, aspectRatio: currentSettings.aspect_ratio }
+                );
+                sendToHandoff(opt.target, payload);
+                sendToBtn.textContent = '✓ Sent!';
+                setTimeout(() => { sendToBtn.textContent = '↗ Send to'; }, 1500);
+            }
+            sendToDropdown.classList.add('hidden');
+            sendToDropdown.classList.remove('flex');
+        };
+        sendToDropdown.appendChild(optBtn);
+    });
+
+    sendToBtn.onclick = (e) => {
+        e.stopPropagation();
+        sendToDropdown.classList.toggle('hidden');
+        sendToDropdown.classList.toggle('flex');
+    };
+
+    document.addEventListener('click', () => {
+        sendToDropdown.classList.add('hidden');
+        sendToDropdown.classList.remove('flex');
+    });
+
+    canvasControls.appendChild(sendToBtn);
+    canvasControls.style.position = 'relative';
+    canvasControls.appendChild(sendToDropdown);
     canvas.appendChild(canvasControls);
 
     container.appendChild(canvas);

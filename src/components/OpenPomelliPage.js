@@ -1,95 +1,25 @@
-import { createSecureIframe } from "../lib/security/index.js";
 export function OpenPomelliPage() {
-  const element = document.createElement('div');
-  element.className = 'w-full h-full relative';
-  element.style.overflow = 'hidden';
+  const container = document.createElement('div');
+  container.className = 'w-full h-full flex flex-col items-center justify-center bg-app-bg overflow-hidden';
 
-  // Loading state
-  const loadingContainer = document.createElement('div');
-  loadingContainer.className = 'absolute inset-0 flex items-center justify-center bg-gray-50 z-10';
-  loadingContainer.innerHTML = `
-    <div class="text-center">
-      <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-      <p class="text-secondary">Loading Open Pomelli...</p>
-    </div>
-  `;
-  element.appendChild(loadingContainer);
-
-  // Error state container
-  const errorContainer = document.createElement('div');
-  errorContainer.className = 'absolute inset-0 flex items-center justify-center bg-gray-50 z-10 hidden';
-  errorContainer.innerHTML = `
+  container.innerHTML = `
     <div class="text-center max-w-md mx-auto p-6">
-      <div class="text-red-500 mb-4">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="15" y1="9" x2="9" y2="15"/>
-          <line x1="9" y1="9" x2="15" y2="15"/>
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mx-auto mb-6">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
       </div>
-      <h3 class="text-lg font-semibold mb-2">Open Pomelli Unavailable</h3>
-      <p class="text-secondary mb-4">The Open Pomelli application is currently unavailable. Please try again later.</p>
-      <button class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition-colors" onclick="location.reload()">
-        Try Again
-      </button>
+      <h1 class="text-2xl font-bold text-white mb-3">Open Pomelli</h1>
+      <p class="text-secondary mb-6">Focus timer and productivity app for creative workflows.</p>
+      <div class="flex flex-col gap-3">
+        <button class="px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
+          Coming Soon
+        </button>
+        <p class="text-xs text-muted">This feature is under development</p>
+      </div>
     </div>
   `;
-  element.appendChild(errorContainer);
 
-  // Iframe container
-  const iframe = document.createElement('iframe');
-  iframe.src = '/apps/open-pomelli/';
-  iframe.className = 'w-full h-full border-0';
-  iframe.style.display = 'none';
-  let hasLoaded = false;
-  iframe.onload = () => {
-    console.log('OpenPomelli iframe loaded successfully');
-    hasLoaded = true;
-    loadingContainer.style.display = 'none';
-    errorContainer.style.display = 'none';
-    iframe.style.display = 'block';
-  };
-  iframe.onerror = (event) => {
-    console.error('OpenPomelli iframe ERROR event fired:', event, Date.now());
-    if (!hasLoaded) {
-      loadingContainer.style.display = 'none';
-      errorContainer.classList.remove('hidden');
-    }
-  };
-
-  element.appendChild(iframe);
-
-  // Development-only auto-retry mechanism
-  if (import.meta.env.DEV) {
-    let retryCount = 0;
-    const maxRetries = 3;
-    const retryInterval = 5000; // 5 seconds
-
-    const checkAvailability = () => {
-      if (retryCount < maxRetries) {
-        setTimeout(() => {
-          const testIframe = createSecureIframe('http://localhost:3000');
-          testIframe.src = 'http://localhost:3000';
-          testIframe.style.display = 'none';
-          testIframe.onload = () => {
-            location.reload(); // Reload to show the iframe
-          };
-          testIframe.onerror = () => {
-            retryCount++;
-            checkAvailability();
-          };
-          document.body.appendChild(testIframe);
-          setTimeout(() => document.body.removeChild(testIframe), 1000);
-        }, retryInterval);
-      }
-    };
-
-    iframe.onerror = () => {
-      loadingContainer.style.display = 'none';
-      errorContainer.classList.remove('hidden');
-      checkAvailability();
-    };
-  }
-
-  return element;
+  return container;
 }

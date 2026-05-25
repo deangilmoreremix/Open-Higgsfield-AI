@@ -15,6 +15,7 @@ import { CameraEffects } from './timeline/CameraEffects.js';
 import { AIChatPanel } from './timeline/AIChatPanel.js';
 import TIMELINE_DESIGN_SYSTEM, { enforceDesignSystem } from '../lib/designSystemEnforcer.js';
 import { createVideoPreview } from '../lib/videoPlayer.js';
+import { getPendingHandoff, clearPendingHandoff } from '../lib/handoff.ts';
 // Import rendiv animation primitives
 import { interpolate, spring, blendColors, noise2D, useSequence, useSeries } from '../lib/editor/animationControls.jsx';
 // Agent system integration
@@ -73,6 +74,37 @@ export function TimelineEditorPage() {
 
   // Initialize design system enforcement
   enforceDesignSystem();
+
+  // Check for pending handoff from other apps (video/image)
+  (function checkTimelineHandoff() {
+    const pending = getPendingHandoff('timeline');
+    if (pending && pending.url) {
+      const banner = document.createElement('div');
+      banner.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-[#111] border border-white/10 text-white text-sm px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3';
+      banner.innerHTML = `<span class="text-primary">📥</span> <span>New ${pending.type} from ${pending.sourceApp}</span><button id="add-to-timeline" class="px-3 py-1 bg-primary text-black rounded-lg text-xs font-bold">Add to Timeline</button><button id="dismiss-timeline-handoff" class="px-3 py-1 bg-white/10 rounded-lg text-xs">Dismiss</button>`;
+      document.body.appendChild(banner);
+
+      banner.querySelector('#add-to-timeline')?.addEventListener('click', () => {
+        if (typeof addMediaToTimeline === 'function') {
+          addMediaToTimeline({
+            type: pending.type,
+            url: pending.url,
+            prompt: pending.prompt,
+            source: pending.sourceApp
+          });
+        }
+        clearPendingHandoff('timeline');
+        banner.remove();
+      });
+
+      banner.querySelector('#dismiss-timeline-handoff')?.addEventListener('click', () => {
+        clearPendingHandoff('timeline');
+        banner.remove();
+      });
+
+      setTimeout(() => { if (banner.parentNode) banner.remove(); }, 10000);
+    }
+  })();
 
   // CutAI integration - popup storyboard UX with timeline communication
   // Uses dynamic import to avoid syntax issues in AIStoryboardStudio.jsx

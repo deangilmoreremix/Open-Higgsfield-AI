@@ -10,6 +10,7 @@ import { ENHANCE_TAGS, QUICK_PROMPTS } from '../lib/promptUtils.js';
 import { AuthModal } from './AuthModal.js';
 import { createUploadPicker } from './UploadPicker.js';
 import { savePendingJob, removePendingJob, getPendingJobs } from '../lib/pendingJobs.js';
+import { sendToHandoff, createHandoffPayload } from '../lib/handoff.ts';
 
 function createInlineInstructions(type) {
     const el = document.createElement('div');
@@ -1036,6 +1037,67 @@ export function ImageStudio() {
     canvasControls.appendChild(regenerateBtn);
     canvasControls.appendChild(downloadBtn);
     canvasControls.appendChild(newPromptBtn);
+
+    // Send to... dropdown button
+    const sendToBtn = document.createElement('button');
+    sendToBtn.className = 'bg-white/10 hover:bg-white/20 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all border border-white/5 backdrop-blur-lg text-white';
+    sendToBtn.textContent = '↗ Send to';
+    sendToBtn.title = 'Send to other apps';
+
+    const sendToDropdown = document.createElement('div');
+    sendToDropdown.className = 'absolute z-50 hidden flex-col bg-[#1a1a1a] border border-white/10 rounded-xl py-1 shadow-xl min-w-[160px]';
+    sendToDropdown.style.bottom = '100%';
+    sendToDropdown.style.right = '0';
+    sendToDropdown.style.marginBottom = '8px';
+
+    const sendToOptions = [
+        { label: '📚 Library', target: 'library' },
+        { label: '🎬 Render', target: 'render' },
+        { label: '🎥 Director', target: 'director' },
+        { label: '⏱️ Timeline', target: 'timeline' },
+        { label: '🤖 Video Agent', target: 'videoAgent' },
+    ];
+
+    sendToOptions.forEach(opt => {
+        const optBtn = document.createElement('button');
+        optBtn.className = 'px-4 py-2.5 text-xs text-left text-white hover:bg-white/10 transition-colors flex items-center gap-2';
+        optBtn.textContent = opt.label;
+        optBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (resultImg.src) {
+                const payload = createHandoffPayload(
+                    `img_${Date.now()}`,
+                    'image',
+                    'image-studio',
+                    textarea.value || 'Generated image',
+                    resultImg.src,
+                    resultImg.src,
+                    { model: selectedModel, aspectRatio: selectedAr }
+                );
+                sendToHandoff(opt.target, payload);
+                sendToBtn.textContent = '✓ Sent!';
+                setTimeout(() => { sendToBtn.textContent = '↗ Send to'; }, 1500);
+            }
+            sendToDropdown.classList.add('hidden');
+            sendToDropdown.classList.remove('flex');
+        };
+        sendToDropdown.appendChild(optBtn);
+    });
+
+    sendToBtn.onclick = (e) => {
+        e.stopPropagation();
+        sendToDropdown.classList.toggle('hidden');
+        sendToDropdown.classList.toggle('flex');
+    };
+
+    document.addEventListener('click', () => {
+        sendToDropdown.classList.add('hidden');
+        sendToDropdown.classList.remove('flex');
+    });
+
+    canvasControls.appendChild(sendToBtn);
+    canvasControls.style.position = 'relative';
+    canvasControls.appendChild(sendToDropdown);
 
     // Variations button
     const variationsBtn = document.createElement('button');

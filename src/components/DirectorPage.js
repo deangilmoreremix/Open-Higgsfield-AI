@@ -5,6 +5,7 @@ import { directorRuntime } from '../lib/directorAgentRuntime.js';
 import { supabase } from '../lib/hybrid-supabase.js';
 import { VideoUpload } from './common/Upload.js';
 import { Tooltip, addTooltip } from './common/Tooltip.js';
+import { getPendingHandoff, clearPendingHandoff } from '../lib/handoff.ts';
 
 const DIRECTOR_AGENTS = [
     { id: 'summarizer', name: 'Video Summarizer', icon: '📝', description: 'Summarize video content', category: 'analysis' },
@@ -68,7 +69,20 @@ export function DirectorPage() {
     
     const urlParams = new URLSearchParams(window.location.search);
     const videoId = urlParams.get('videoId') || '';
-    const videoUrl = urlParams.get('videoUrl') || '';
+    let videoUrl = urlParams.get('videoUrl') || '';
+
+    // Check for pending handoff from other apps (video)
+    (function checkDirectorHandoff() {
+      const pending = getPendingHandoff('director');
+      if (pending && pending.url && !videoUrl) {
+        videoUrl = pending.url;
+        // Trigger video load after DOM is ready
+        setTimeout(() => {
+          const videoEl = container.querySelector('#director-video');
+          if (videoEl) videoEl.src = videoUrl;
+        }, 100);
+      }
+    })();
     
     let chatHistory = [];
     const activeAgents = new Set();

@@ -1,6 +1,7 @@
 import { getPageThumbnail, createThumbnailImg } from '../lib/thumbnails.js';
 import { createSafeImage, createSafeVideo, safeSetText } from '../lib/security.js';
 import { createVideoPreview } from '../lib/videoPlayer.js';
+import { getPendingHandoff, clearPendingHandoff } from '../lib/handoff.ts';
 
 export function LibraryPage() {
   const container = document.createElement('div');
@@ -64,6 +65,41 @@ export function LibraryPage() {
     if (e.target === previewOverlay) previewOverlay.classList.add('hidden');
   };
   container.appendChild(previewOverlay);
+
+  // Check for pending handoff from other apps
+  (function checkPendingHandoff() {
+    const pending = getPendingHandoff('library');
+    if (pending && pending.url) {
+      const banner = document.createElement('div');
+      banner.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-[#111] border border-white/10 text-white text-sm px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3';
+      banner.innerHTML = `<span class="text-primary">📥</span> <span>New ${pending.type} from ${pending.sourceApp}</span><button id="accept-handoff" class="px-3 py-1 bg-primary text-black rounded-lg text-xs font-bold">Add to Library</button><button id="dismiss-handoff" class="px-3 py-1 bg-white/10 rounded-lg text-xs">Dismiss</button>`;
+      document.body.appendChild(banner);
+
+      banner.querySelector('#accept-handoff')?.addEventListener('click', () => {
+        const entry = {
+          id: pending.id,
+          url: pending.url,
+          prompt: pending.prompt,
+          model: pending.metadata?.model || pending.sourceApp,
+          type: pending.type,
+          timestamp: pending.createdAt
+        };
+        const existing = JSON.parse(localStorage.getItem('muapi_history') || '[]');
+        existing.unshift(entry);
+        localStorage.setItem('muapi_history', JSON.stringify(existing.slice(0, 50)));
+        clearPendingHandoff('library');
+        banner.remove();
+        renderGrid();
+      });
+
+      banner.querySelector('#dismiss-handoff')?.addEventListener('click', () => {
+        clearPendingHandoff('library');
+        banner.remove();
+      });
+
+      setTimeout(() => { if (banner.parentNode) banner.remove(); }, 10000);
+    }
+  })();
 
   function getHistory() {
     let imageHistory = [];

@@ -7,6 +7,7 @@ import { supabase } from '../lib/hybrid-supabase.js';
 import { VideoUpload } from './common/Upload.js';
 import { Tooltip, addTooltip } from './common/Tooltip.js';
 import { createVideoUpload, addVideoErrorRecovery } from '../lib/videoPlayer.js';
+import { getPendingHandoff, clearPendingHandoff } from '../lib/handoff.ts';
 
 // Repository endpoints
 const REPO_ENDPOINTS = {
@@ -429,12 +430,12 @@ export function RenderPage() {
    let videoUrl = urlParams.get('videoUrl') || '';
    let videoTitle = urlParams.get('prompt') || 'Generated Video Prompt Title';
 
-   // Handle universal asset pipeline handoff via ?asset=<id>
+// Handle universal asset pipeline handoff via ?asset=<id>
    const assetId = urlParams.get('asset');
    if (assetId) {
      (async () => {
        try {
-const asset = await assetStore.getAsset(assetId);
+ const asset = await assetStore.getAsset(assetId);
           if (asset && asset.media?.url) {
             videoId = assetId;
             videoUrl = asset.media.url;
@@ -447,6 +448,23 @@ const asset = await assetStore.getAsset(assetId);
         }
      })();
    }
+
+   // Check for pending handoff from other apps (video)
+   (function checkRenderHandoff() {
+     const pending = getPendingHandoff('render');
+     if (pending && pending.url && !videoUrl) {
+       videoUrl = pending.url;
+       videoTitle = pending.prompt || 'Handoff Video';
+       // Trigger video load
+       setTimeout(() => {
+         const vc = container.querySelector('#videoContainer');
+         if (vc && videoUrl) {
+           const vid = vc.querySelector('video');
+           if (vid) vid.src = videoUrl;
+         }
+       }, 100);
+     }
+   })();
 
   let selectedPreset = 'Luxury Brand Grade';
   let activeAction = 'Export Video';
