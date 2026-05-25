@@ -18,12 +18,18 @@ This document defines the exact phased approach for converting Higgsfield to a R
 ## What NOT to Do
 
 - Do NOT replace `index.html` / `src/main.js` with the upstream repo's entry point
-- Do NOT delete `src/components/Sidebar.js` or `src/components/Header.js` to use upstream equivalents
-- Do NOT replace `src/lib/router.js` with upstream routing
+- Do NOT delete `src/components/Sidebar.js` or `src/components/Header.js` to use upstream equivalents (renamed to `.vanilla.bak` for diff purposes)
+- Do NOT replace `src/lib/router.js` with upstream routing (replaced with react-router-dom in App.tsx)
 - Do NOT add upstream Prisma, NextAuth, or custom backend auth
 - Do NOT move `src/components/` out of the root — it stays
 - Do NOT collapse existing apps into a single "upstream shell"
 - Do NOT import upstream global CSS or design system as the primary system
+- Do NOT load apps via iframe — all apps must use native React imports
+
+## Known Issues / Blockers
+
+- `src/components/TimelineEditorPage.jsx` has a pre-existing syntax error at line 3088 (async function inside finally block) — blocks timeline route
+- `src/main.js` → `src/main.js.vanilla.bak` (the actual entry point is `src/main.tsx` but index.html may still reference main.js — verify)
 
 ---
 
@@ -215,19 +221,20 @@ src/
 
 ## File-by-File Migration Map
 
-| Original File | New File | Notes |
-|---|---|---|
-| `src/main.js` | `src/main.tsx` | React entry point with createRoot |
-| n/a | `src/App.tsx` | Main React shell component |
-| `src/components/Header.js` | `src/components/Header.tsx` | React functional component |
-| `src/components/Sidebar.js` | `src/components/Sidebar.tsx` | React functional component; reads appRegistry |
-| `src/lib/router.js` | React Router in `App.tsx` | Temporary overlap; replaced in Phase 1 |
-| `src/components/ImageStudio.js` | `src/components/ImageStudio.tsx` | Phase 3 |
-| `src/components/VideoStudio.js` | `src/components/VideoStudio.tsx` | Phase 3 |
-| `src/components/CinemaStudio.js` | `src/components/CinemaStudio.tsx` | Phase 3 |
-| `src/components/EffectsStudio.js` | `src/components/EffectsStudio.tsx` | Phase 3 |
-| ... | ... | All remaining studios |
-| n/a | `src/lib/appRegistry.js` | Phase 2, single source of truth |
+| Original File | New File | Status | Notes |
+|---|---|---|---|
+| `src/main.js` | `src/main.tsx` | ✅ DONE | React entry point with createRoot |
+| n/a | `src/App.tsx` | ✅ DONE | Main React shell component |
+| `src/components/Header.js` | `src/components/Header.tsx` | ✅ DONE | React functional component |
+| `src/components/Sidebar.js` | `src/components/Sidebar.tsx` | ✅ DONE | React functional component; reads appRegistry |
+| `src/lib/router.js` | React Router in `App.tsx` | ✅ DONE | Replaced with react-router-dom in Phase 1 |
+| n/a | `src/lib/appRegistry.ts` | ✅ DONE | Phase 2, single source of truth (36KB, 687 lines, 50+ apps) |
+| `src/components/ImageStudio.js` | `src/components/ImageStudio.tsx` | 🚫 TODO | Phase 3 |
+| `src/components/VideoStudio.js` | `src/components/VideoStudio.tsx` | 🚫 TODO | Phase 3 |
+| `src/components/CinemaStudio.js` | `src/components/CinemaStudio.tsx` | 🚫 TODO | Phase 3 |
+| `src/components/EffectsStudio.js` | `src/components/EffectsStudio.tsx` | 🚫 TODO | Phase 3 |
+| `src/components/DirectorPage.js` | `src/components/DirectorPage.tsx` | 🚫 TODO | Phase 3 |
+| ... | ... | 🚫 TODO | All remaining studios Phase 3 |
 
 ---
 
@@ -325,10 +332,32 @@ If at any point an AI proposes changes that:
 
 | Phase | Status |
 |-------|--------|
-| Phase 1: React Shell | ❌ NOT STARTED |
-| Phase 2: App Registry | ❌ NOT STARTED |
-| Phase 3: Convert Studios | ❌ NOT STARTED |
-| Phase 4: Import Upstream Apps | ⚠️ PARTIAL (4 apps migrated, but via iframe) |
-| Phase 5: API Unification | ⚠️ PARTIAL |
-| Phase 6: Media Handoff | ⚠️ PARTIAL |
-| Phase 7: Netlify Build & QA | ⚠️ PARTIAL |
+| Phase 1: React Shell | ✅ DONE |
+| Phase 2: App Registry | ✅ DONE |
+| Phase 3: Convert Studios | 🚫 TODO (5 priority: ImageStudio, VideoStudio, CinemaStudio, EffectsStudio, DirectorPage) |
+| Phase 4: Import Upstream Apps | ⚠️ PARTIAL (4 apps migrated, iframe pages still need native replacement) |
+| Phase 5: API Unification | ⚠️ TODO |
+| Phase 6: Media Handoff | ⚠️ TODO |
+| Phase 7: Netlify Build & QA | ⚠️ TODO |
+
+## Phase 3 Conversion Queue
+
+Order (priority):
+1. `ImageStudio.js` → `ImageStudio.tsx`
+2. `VideoStudio.js` → `VideoStudio.tsx`
+3. `CinemaStudio.js` → `CinemaStudio.tsx`
+4. `EffectsStudio.js` → `EffectsStudio.tsx`
+5. `DirectorPage.js` → `DirectorPage.tsx`
+6. All remaining studios (alphabetical)
+
+## Phase 4 Iframe Replacement Targets
+
+- `RemixGoPage.js` → native import from `src/apps/remix-go/`
+- `VibeWorkflowPage.js` → native import from `src/apps/vibe-workflow/`
+- `AiVfxPage.js` → native import from `src/apps/ai-vfx/`
+- `VidecoAIPlatformPage.js` → native import from upstream
+- `OpenPomelliPage.js` → native import from `src/apps/pomelli/`
+- `AIHeadshotPage.js` → native import from `src/apps/headshots/`
+- `AIHeadshotGeneratorPage.js` → native import from `src/apps/headshots/`
+- `HeadshotStudioPage.js` → native import from `src/apps/headshots/`
+- `WorkflowEmbedPage.js` → native import from `src/apps/workflows/`
