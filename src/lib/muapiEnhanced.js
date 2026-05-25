@@ -1,3 +1,9 @@
+/**
+ * @deprecated
+ * This file duplicates functionality from the canonical `src/lib/muapi.js`.
+ * New code should import { muapi } from './muapi.js' instead.
+ * This file is retained only for backward compatibility.
+ */
 import { securityService } from './services/SecurityService.js';
 import { muapi } from './muapi.js';
 

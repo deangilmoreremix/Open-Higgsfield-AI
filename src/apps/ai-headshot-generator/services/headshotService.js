@@ -1,5 +1,5 @@
-import { supabase } from '../../../lib/supabase-client.ts';
-import { generateI2I, uploadFile } from '../../../lib/muapi.js';
+import { supabase } from '../../../lib/supabase-client.ts'; // re-exports canonical hybrid-supabase.js
+import { generateI2I, uploadFile } from '../../../lib/muapi.js'; // canonical MuAPI client
 
 const STORAGE_KEY = 'higgsfield.ai-headshot.projects';
 

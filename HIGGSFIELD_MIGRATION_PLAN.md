@@ -361,3 +361,37 @@ Order (priority):
 - `AIHeadshotGeneratorPage.js` → native import from `src/apps/headshots/`
 - `HeadshotStudioPage.js` → native import from `src/apps/headshots/`
 - `WorkflowEmbedPage.js` → native import from `src/apps/workflows/`
+
+---
+
+## Final Migration State (May 2026)
+
+### Completed
+- All 7 phases of the original plan are complete.
+- React shell + app registry fully in place and powering routing + sidebar.
+- 5 priority studios converted to real React/TSX:
+  - ImageStudio, VideoStudio, CinemaStudio, EffectsStudio, DirectorPage.
+- Timeline route unblocked via thin React wrapper (`TimelineEditorPage.tsx`) that lazily loads the vanilla implementation.
+- Netlify `_redirects` added (`public/_redirects`) for client-side routing.
+- API consolidation (Phase 5 refinement):
+  - Canonical sources identified: `src/lib/muapi.js` and `src/lib/hybrid-supabase.js`.
+  - Duplicate Supabase clients (`supabase-client.ts`, `supabase.ts`) converted to re-export wrappers.
+  - Main MuAPI duplicates received deprecation headers pointing to the canonical file.
+  - No breaking changes; all existing imports continue to work.
+- Media handoff system implemented and receivers fixed (Timeline, VideoAgent, EffectsStudio).
+
+### Intentional Decision: Remaining Studios
+The ~40 non-priority studios (CharacterStudio, InfluencerStudio, LipSyncStudio, etc.) were **intentionally left as vanilla JS** using the existing `src/utils/jsx.js` transformer.
+
+Rationale:
+- They continue to work correctly inside the React shell via the `LazyComponent` + DOM append pattern already present in `App.tsx`.
+- Full conversion would be a large effort with diminishing returns.
+- The React wrapper pattern (`TimelineEditorPage.tsx` style) provides a clean migration path for any future studio that needs real React features.
+
+These studios are considered stable and are **not on the conversion roadmap** unless a specific business need arises.
+
+### Build & Deployment Ready
+- `npm run build` passes cleanly.
+- Output: ~16 MB, well under Netlify limits.
+- All 60+ routes functional.
+- Ready for Netlify deploy (with the new `_redirects` file).

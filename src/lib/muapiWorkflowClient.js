@@ -1,3 +1,8 @@
+/**
+ * @deprecated
+ * Duplicate of canonical MuAPI client. Use `src/lib/muapi.js` instead.
+ * Retained only for backward compatibility.
+ */
 const DEFAULT_BASE = 'https://api.muapi.ai';
 const PROXY_BASE = import.meta.env.VITE_MUAPI_PROXY_URL || '';
 
