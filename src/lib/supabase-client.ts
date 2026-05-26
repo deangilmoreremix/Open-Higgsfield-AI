@@ -20,29 +20,47 @@ export async function createGenerationJob(job: any) {
     .insert(job)
     .select()
     .single();
+
   if (error) throw error;
   return data;
+}
+
+// Get current user
+export async function getCurrentUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
+
+// Get MuAPI workflows
+export async function getMuapiWorkflows() {
+  const { data, error } = await supabase
+    .from('muapi_workflows')
+    .select('*')
+    .eq('is_active', true);
+
+  if (error) throw error;
+  return data || [];
 }
 
 // Helper to check workspace membership
 export async function isWorkspaceMember(workspaceId: string): Promise<boolean> {
   const { data, error } = await supabase
     .rpc('is_workspace_member', { _workspace_id: workspaceId } as any);
-  
+
   if (error) {
     console.error('Error checking workspace membership:', error);
     return false;
   }
-  
+
   return (data as any) || false;
 }
 
 // Get current user's workspaces
 export async function getUserWorkspaces() {
   const { data: { user } } = await supabase.auth.getUser();
-  
+
   if (!user) return [];
-  
+
   const { data, error } = await supabase
     .from('workspaces')
     .select(`
@@ -50,12 +68,12 @@ export async function getUserWorkspaces() {
       workspace_members!inner(*)
     `)
     .eq('workspace_members.user_id', user.id);
-  
+
   if (error) {
     console.error('Error fetching workspaces:', error);
     return [];
   }
-  
+
   return data || [];
 }
 
@@ -66,7 +84,7 @@ export async function getCampaigns(workspaceId: string) {
     .select('*')
     .eq('workspace_id', workspaceId)
     .order('created_at', { ascending: false }) as any;
-  
+
   if (error) throw error;
   return data || [];
 }
@@ -77,7 +95,7 @@ export async function createCampaign(campaign: any) {
     .insert(campaign)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 }
@@ -89,7 +107,7 @@ export async function getContacts(campaignId: string) {
     .select('*')
     .eq('campaign_id', campaignId)
     .order('created_at', { ascending: false }) as any;
-  
+
   if (error) throw error;
   return data || [];
 }
@@ -99,7 +117,7 @@ export async function createContacts(contacts: Database['public']['Tables']['con
     .from('contacts')
     .insert(contacts)
     .select();
-  
+
   if (error) throw error;
   return data || [];
 }
@@ -110,7 +128,7 @@ export async function getScripts(campaignId: string) {
     .from('personalized_scripts')
     .select('*, contacts(first_name, last_name, email)')
     .eq('campaign_id', campaignId);
-  
+
   if (error) throw error;
   return data || [];
 }
@@ -122,7 +140,7 @@ export async function getVideos(workspaceId: string) {
     .select('*, campaigns(name), contacts(first_name, last_name)')
     .eq('workspace_id', workspaceId)
     .order('created_at', { ascending: false });
-  
+
   if (error) throw error;
   return data || [];
 }
@@ -133,12 +151,12 @@ export async function getVideoEvents(videoId: string, startDate?: string, endDat
     .from('video_events')
     .select('*')
     .eq('video_id', videoId);
-  
+
   if (startDate) query = query.gte('created_at', startDate);
   if (endDate) query = query.lte('created_at', endDate);
-  
+
   const { data, error } = await query.order('created_at', { ascending: false });
-  
+
   if (error) throw error;
   return data || [];
 }
@@ -150,7 +168,7 @@ export async function getLeads(campaignId: string) {
     .select('*, contacts(first_name, last_name)')
     .eq('campaign_id', campaignId)
     .order('created_at', { ascending: false });
-  
+
   if (error) throw error;
   return data || [];
 }
