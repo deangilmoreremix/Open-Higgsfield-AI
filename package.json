@@ -9,28 +9,23 @@
     "packages/*"
   ],
   "scripts": {
-<<<<<<< HEAD
-    "dev": "next dev",
-    "dev:vite": "vite",
-    "build": "next build",
-    "build:vite": "vite build",
-    "start": "next start",
-=======
     "dev": "vite",
+    "dev:next": "next dev",
+    "dev:vite": "vite",
     "build": "vite build",
+    "build:vite": "vite build",
     "build:all": "npm run build:remix-go && npm run build",
     "build:remix-go": "cd apps/remix-go && npm run build && cd ../.. && if [ -d apps/remix-go/dist ]; then mkdir -p public/apps/remix-go && cp -r apps/remix-go/dist/* public/apps/remix-go/; else echo '❌ Remix-go build failed: dist/ missing'; exit 1; fi",
     "build:analyze": "vite build --mode analyze",
->>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
     "preview": "vite preview",
-    "lint": "next lint && eslint src --ext .js,.ts",
+    "lint": "eslint src --ext .js,.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:e2e": "playwright test",
     "apps:validate": "node scripts/validate-apps.mjs",
     "apps:validate:strict": "node scripts/validate-apps.mjs --strict",
-    "postinstall": "node scripts/setup-nextjs-bridges.mjs",
+    "postinstall": "node scripts/setup-nextjs-bridges.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
