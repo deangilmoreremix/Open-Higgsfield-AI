@@ -17,8 +17,10 @@ export {
   errorLogger,
   classifyError,
   getErrorSeverity,
-  withErrorBoundary
 } from './ErrorRecovery';
+
+// Export HOC from ReactIntegration (supports multiple overloads used across the app)
+export { withErrorBoundary } from './ReactIntegration';
 
 // Specialized fallback UI components
 export {
