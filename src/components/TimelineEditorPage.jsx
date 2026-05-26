@@ -22,8 +22,6 @@ import { initTimelineAgentIntegration } from '../timelineAgentIntegration.js';
 import { ColorCorrectionSystem } from '../lib/editor/colorCorrectionSystem.jsx';
 import { runCineGenTool, CINEGEN_TOOLS } from '../lib/cinegenIntegration.js';
 
-// CineGen standalone app (for modal or separate route)
-import { CineGenApp } from '../../apps/cinegen/src/CineGenApp.js';
 // CutAI integration loaded dynamically to avoid syntax issues in AIStoryboardStudio.jsx
 // import { AIStoryboardStudio } from './ai-storyboard/AIStoryboardStudio.jsx';
 // CineGen integration ready

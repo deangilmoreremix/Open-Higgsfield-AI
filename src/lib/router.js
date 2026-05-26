@@ -1,5 +1,7 @@
 /* global history */
 
+import { registry } from '../platform/AppRegistry.jsx';
+
 const ROUTE_MAP = {
   'Explore': 'explore',
   'Image': 'image',
@@ -89,16 +91,15 @@ const pageLoaders = {
   director: () => import('../components/DirectorPage.js').then(m => m.DirectorPage()),
   timeline: () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Timeline')),
   'timeline-test': () => import('../components/TimelineTestPage.jsx').then(m => m.TimelineTestPage),
-<<<<<<< HEAD
-   'remix-go': () => import('../apps/remix-go/index.jsx').then(m => m.default()),
-   'ai-video-outreach': () => import('../components/AIVideoOutreachPage.js').then(m => m.AIVideoOutreachPage()),
-   'ai-headshot': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
-   'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
-   'sendspark': () => import('../components/SendsparkPage.js').then(m => m.SendsparkPage()),
-   'open-pomelli-studio': () => import('../components/OpenPomelliStudio.js').then(m => m.OpenPomelliStudio()),
-   'vibe-workflow': () => import('../components/VibeWorkflowStudio.js').then(m => m.VibeWorkflowStudio()),
-   'videco-ai-platform': () => import('../components/VidecoAIPlatform.js').then(m => m.VidecoAIPlatform()),
-   'ai-headshot-generator': () => import('../components/AIHeadshotGenerator.js').then(m => m.AIHeadshotGenerator()),
+  'remix-go': () => import('../apps/remix-go/index.jsx').then(m => m.default()),
+  'ai-video-outreach': () => import('../components/AIVideoOutreachPage.js').then(m => m.AIVideoOutreachPage()),
+  'ai-headshot': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
+  'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
+  'sendspark': () => import('../components/SendsparkPage.js').then(m => m.SendsparkPage()),
+  'open-pomelli-studio': () => import('../components/OpenPomelliStudio.js').then(m => m.OpenPomelliStudio()),
+  'vibe-workflow': () => import('../components/VibeWorkflowStudio.js').then(m => m.VibeWorkflowStudio()),
+  'videco-ai-platform': () => import('../components/VidecoAIPlatform.js').then(m => m.VidecoAIPlatform()),
+  'ai-headshot-generator': () => import('../components/AIHeadshotGenerator.js').then(m => m.AIHeadshotGenerator()),
   'tiktok-carousel': () => import('../components/TikTokCarouselStudio.js').then(m => m.TikTokCarouselStudio()),
   'advanced-dubbing': () => import('../components/AdvancedDubbingStudio.js').then(m => m.AdvancedDubbingStudio()),
   documentation: () => import('../components/DocumentationPage.js').then(m => m.DocumentationPage()),
@@ -113,6 +114,7 @@ const pageLoaders = {
   'workflow-studio': () => import('../components/WorkflowStudioApp.js').then(m => m.WorkflowStudioApp()),
   'agents/create': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
   'agents/edit': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
+  cinegen: () => import('../components/cinegen/CineGenStudio.jsx').then(m => m.default || m.CineGenStudio),
 };
 
 let currentPage = null;
@@ -199,7 +201,15 @@ export async function navigate(page, params = {}) {
   try {
     let element;
 
-    if (page.startsWith('effects/template/')) {
+    // Registry-aware no-iframe enforcement + null safety:
+    // - Any app registered with mount:'iframe' gets safe Placeholder (no iframe ever emitted from router)
+    // - Registry apps without pageLoaders entry safely reach final Placeholder fallback (never appendChild(null))
+    const route = `/${page}`;
+    const app = registry && typeof registry.getByRoute === 'function' ? registry.getByRoute(route) : null;
+    if (app && app.mount === 'iframe') {
+      const mod = await import('../components/PlaceholderPage.js');
+      element = mod.PlaceholderPage(`${page} (legacy - no-iframe)`);
+    } else if (page.startsWith('effects/template/')) {
       const templateId = page.replace('effects/template/', '');
       const mod = await import('../components/TemplateStudio.js');
       element = mod.TemplateStudio(templateId);
@@ -215,6 +225,26 @@ export async function navigate(page, params = {}) {
       element = mod.AIAgentApp();
     } else if (pageLoaders[page]) {
       element = await pageLoaders[page]();
+      // Direct native React component support (centralized, no per-app createRoot bridge)
+      // Triggered when pageLoader returns a component function (not pre-called DOM element)
+      if (element && typeof element === 'function') {
+        const React = await import('react');
+        const { createRoot } = await import('react-dom/client');
+        const container = document.createElement('div');
+        container.className = 'w-full h-full overflow-hidden bg-[#0a0a0a] text-white';
+        container.style.height = '100%';
+        const root = createRoot(container);
+        container._reactRoot = root;
+        container._cleanup = () => {
+          try {
+            root.unmount();
+          } catch (e) {
+            console.warn('[Router] React unmount error for', page, e);
+          }
+        };
+        root.render(React.createElement(element));
+        element = container;
+      }
     } else {
       const mod = await import('../components/PlaceholderPage.js');
       element = mod.PlaceholderPage(page);

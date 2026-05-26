@@ -1,0 +1,1 @@
+{"description": "Marketing Studio - AI-powered marketing video generation", "files": ["src"], "main": "src/index.jsx", "name": "marketing-studio", "version": "1.0.0", "peerDependencies": {"react": ">=18.0.0"}}

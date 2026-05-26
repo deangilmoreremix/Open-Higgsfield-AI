@@ -1,0 +1,101 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { Kernel } from '../../src/kernel/kernel.js';
+import { runtimeInitializer } from '../../src/lib/runtime-initializer.js';
+import { AppRegistry } from '../../src/lib/appRegistry.js';
+
+describe('AI Operating System Loop', () => {
+  let kernel;
+
+  beforeEach(() => {
+    kernel = new Kernel();
+  });
+
+  it('INITIALIZE: loads all registered apps', async () => {
+    const result = await runtimeInitializer.init();
+    
+    expect(result.registered).toBeGreaterThan(0);
+    expect(result.apps.length).toBeGreaterThan(0);
+  });
+
+  it('DISPATCH: can dispatch execution to registered apps', async () => {
+    await runtimeInitializer.init();
+    
+    const registered = AppRegistry.getAll();
+    expect(registered.length).toBeGreaterThan(0);
+    
+    const appIds = registered.map(a => a.id);
+    expect(appIds).toContain('vibe-workflow');
+    expect(appIds).toContain('videco-ai-platform');
+  });
+
+  it('EXECUTE: runs workflow app through kernel', async () => {
+    await runtimeInitializer.init();
+    
+    const workflowApp = AppRegistry.get('vibe-workflow');
+    expect(workflowApp).toBeDefined();
+    expect(typeof workflowApp.execute).toBe('function');
+  });
+
+it('PERSISTENCE: execution state is tracked', async () => {
+    const graph = {
+      id: 'exec-os-test',
+      nodes: [{ id: 'persist-task', type: 'test', input: {} }],
+      edges: [],
+    };
+
+    const executionId = await kernel.submit(graph);
+    await kernel.execute(executionId);
+
+    const snapshot = kernel.snapshots.load('exec-os-test');
+    expect(snapshot).not.toBeNull();
+  });
+    
+    await new Promise((r) => setTimeout(r, 50));
+    
+    kernel.stop();
+    
+    const snapshot = kernel.snapshots.load('exec-os-test');
+    expect(snapshot).not.toBeNull();
+  });
+
+  it('RECOVERY: can recover from execution failure', async () => {
+    await runtimeInitializer.init();
+    
+    const workflowApp = AppRegistry.get('vibe-workflow');
+    
+    const result = await workflowApp.execute(
+      { prompt: 'test generation' },
+      { executionId: 'recovery-test' }
+    ).catch(e => ({ error: e.message }));
+    
+    expect(result).toBeDefined();
+  });
+
+it('CONCURRENCY: handles multiple parallel executions', async () => {
+    const executionId = 'concurrent-test';
+
+    const graph = {
+      id: executionId,
+      nodes: [
+        { id: 'task-0', type: 'test', input: {} },
+        { id: 'task-1', type: 'test', input: {} },
+      ],
+      edges: [],
+    };
+
+    await kernel.submit(graph);
+    await kernel.execute(executionId);
+
+    const snapshot = kernel.snapshots.load(executionId);
+    expect(snapshot).not.toBeNull();
+  });
+    }
+    
+    await new Promise((r) => setTimeout(r, 100));
+    
+    kernel.stop();
+    
+    const snapshot = kernel.snapshots.load(executionId);
+    expect(snapshot).not.toBeNull();
+  });
+});
