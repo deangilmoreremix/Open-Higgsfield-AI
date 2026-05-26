@@ -1,4 +1,5 @@
 import { ErrorInfo } from 'react';
+import { ErrorBoundary } from './ErrorBoundary';
 
 // Error severity levels
 export enum ErrorSeverity {
