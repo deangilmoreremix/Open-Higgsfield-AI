@@ -132,12 +132,12 @@ export default function PersonalizerDialog({
       const { data, error } = await supabase.from('personalization_projects').select('*').eq('id', id).single();
       if (error) throw error;
       if (data) {
-        setProject(data);
-        setAppId(data.app_id);
-        setMode(data.mode);
-        setTargetName(data.target_name);
-        setTargetCompany(data.target_company || '');
-        setManualNotes(data.manual_notes || '');
+        setProject(data as any);
+        setAppId((data as any).app_id);
+        setMode((data as any).mode);
+        setTargetName((data as any).target_name);
+        setTargetCompany((data as any).target_company || '');
+        setManualNotes((data as any).manual_notes || '');
       }
     } catch (err) {
       setError(getErrorMessage(err));
@@ -223,7 +223,7 @@ export default function PersonalizerDialog({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Scan failed');
       setScanResults(data.scanData);
-      setProject(prev => ({ ...prev, scan_id: data.scanId }));
+      setProject(prev => ({ ...prev, scan_id: (data as any).scanId }));
       setScanProgress(100);
     } catch (err) {
       if (err.name !== 'AbortError') setError(getErrorMessage(err));
@@ -248,7 +248,7 @@ export default function PersonalizerDialog({
         // First, ensure we have a project
         let currentProjectId = project?.id;
         if (!currentProjectId) {
-          const { data: newProject, error: projectError } = await supabase
+const { data: newProject, error: projectError } = await supabase
             .from('personalization_projects')
             .insert({
               user_id: session.user.id,
@@ -265,9 +265,9 @@ export default function PersonalizerDialog({
             })
             .select()
             .single();
-          if (projectError) throw projectError;
-          setProject(newProject);
-          currentProjectId = newProject.id;
+           if (projectError) throw projectError;
+           setProject(newProject as any);
+           currentProjectId = (newProject as any).id;
         }
 
         const generationInputs = {

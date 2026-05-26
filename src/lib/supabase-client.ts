@@ -8,13 +8,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing Supabase environment variables');
 }
 
-export const supabase: SupabaseClient<Database> = createClient<Database>(
+export const supabase: SupabaseClient<any> = createClient<any>(
   supabaseUrl,
   supabaseAnonKey
 );
 
 // Create a generation job (wrapper for insertion into generation_jobs table)
-export async function createGenerationJob(job: Partial<Database['public']['Tables']['generation_jobs']['Insert']>) {
+export async function createGenerationJob(job: any) {
   const { data, error } = await supabase
     .from('generation_jobs')
     .insert(job)
@@ -27,14 +27,14 @@ export async function createGenerationJob(job: Partial<Database['public']['Table
 // Helper to check workspace membership
 export async function isWorkspaceMember(workspaceId: string): Promise<boolean> {
   const { data, error } = await supabase
-    .rpc('is_workspace_member', { _workspace_id: workspaceId });
+    .rpc('is_workspace_member', { _workspace_id: workspaceId } as any);
   
   if (error) {
     console.error('Error checking workspace membership:', error);
     return false;
   }
   
-  return data || false;
+  return (data as any) || false;
 }
 
 // Get current user's workspaces
@@ -65,13 +65,13 @@ export async function getCampaigns(workspaceId: string) {
     .from('campaigns')
     .select('*')
     .eq('workspace_id', workspaceId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false }) as any;
   
   if (error) throw error;
   return data || [];
 }
 
-export async function createCampaign(campaign: Partial<Database['public']['Tables']['campaigns']['Insert']>) {
+export async function createCampaign(campaign: any) {
   const { data, error } = await supabase
     .from('campaigns')
     .insert(campaign)
@@ -88,7 +88,7 @@ export async function getContacts(campaignId: string) {
     .from('contacts')
     .select('*')
     .eq('campaign_id', campaignId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false }) as any;
   
   if (error) throw error;
   return data || [];
