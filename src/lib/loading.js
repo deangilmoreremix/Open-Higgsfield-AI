@@ -103,4 +103,36 @@ export function createSkeletonCard() {
     return card;
 }
 
+/**
+ * Show a toast notification
+ * @param {string} message - Toast message
+ * @param {string} type - Toast type: 'success', 'error', 'warning', 'info'
+ * @param {number} duration - Duration in milliseconds
+ */
+export function showToast(message, type = 'info', duration = 3000) {
+    const toast = document.createElement('div');
+    const colors = {
+        success: 'bg-green-500/20 border-green-500/50 text-green-400',
+        error: 'bg-red-500/20 border-red-500/50 text-red-400',
+        warning: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400',
+        info: 'bg-blue-500/20 border-blue-500/50 text-blue-400'
+    };
+    
+    toast.className = `fixed bottom-4 right-4 px-4 py-3 rounded-xl border backdrop-blur-sm z-50 transition-all duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+    });
+    
+    setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+    
+    return toast;
+}
+
 

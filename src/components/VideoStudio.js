@@ -1126,18 +1126,6 @@ export function VideoStudio() {
         }
     };
 
-<<<<<<< HEAD
-=======
-    // --- Wan AI Effect Application ---
-    async function applySelectedWanEffect() {
-        const effectType = document.getElementById('wan-ai-effect').value;
-        if (!effectType) {
-            alert('Please select a Wan AI effect first');
-            return;
-        }
->>>>>>> d6df36c (refactor(ui): convert applySelectedWanEffect to function declaration)
-
-
     // --- Load history from localStorage ---
     try {
         const saved = JSON.parse(localStorage.getItem('video_history') || '[]');
