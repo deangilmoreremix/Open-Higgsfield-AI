@@ -41,6 +41,7 @@ type EditorAction =
   | { type: 'ZOOM_IN' }
   | { type: 'ZOOM_OUT' }
   | { type: 'FIT_TO_VIEW' }
+  | { type: 'EXPORT_PROJECT'; payload: any }
 
 const initialState: EditorState = {
   project: null,
@@ -163,7 +164,8 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
     case 'FIT_TO_VIEW':
       return { ...state, zoom: 1 }
     case 'EXPORT_PROJECT':
-      return { ...state, exportData: action.payload }
+      // allow exporting without changing core EditorState shape
+      return state
   }
 }
 

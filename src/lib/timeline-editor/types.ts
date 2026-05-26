@@ -1,4 +1,4 @@
-export type AssetType = 'video' | 'image' | 'audio' | 'adjustment'
+export type AssetType = 'video' | 'image' | 'audio' | 'adjustment' | 'text'
 
 export interface AssetTake {
   url: string
@@ -10,6 +10,7 @@ export interface AssetTake {
 export interface Asset {
   id: string
   type: AssetType
+  name?: string
   path: string
   url: string
   prompt?: string
@@ -78,6 +79,7 @@ export const DEFAULT_COLOR_CORRECTION: ColorCorrection = {
 
 export interface TimelineClip {
   id: string
+  name?: string
   assetId: string | null
   type: 'video' | 'image' | 'audio' | 'adjustment' | 'text'
   startTime: number
@@ -105,6 +107,7 @@ export interface TimelineClip {
   effects?: ClipEffect[]
   letterbox?: LetterboxSettings
   textStyle?: TextOverlayStyle
+  end?: number
 }
 
 export interface LetterboxSettings {
