@@ -1,36 +1,20 @@
-<<<<<<< HEAD
 # Netlify Configuration - Single Source of Truth
 # This file consolidates all Netlify-specific configuration for the Open-Higgsfield-AI monorepo
 
 [build]
-  # Publish directory for built assets
-  publish = "dist"
-  
-  # Build command - builds the main Vite application
-  command = "npx vite build"
-  
-  # Netlify Functions directory
-  functions = "netlify/functions/dist"
-
-[build.environment]
-  # Node.js version for build and functions
-  NODE_VERSION = "20.18.1"
-  COREPACK_INTEGRITY_KEYS = "0"
-  PNPM_FLAGS = "--no-frozen-lockfile"
-=======
-[build]
   publish = "dist"
   # Use pnpm for consistent monorepo workspace support
+  # Build wrapper: install deps and run monorepo build tasks
   command = "pnpm install && pnpm run build:all"
-  functions = "netlify/functions"
+  # Functions directory - built artifacts should be placed under netlify/functions/dist
+  functions = "netlify/functions/dist"
 
 [build.environment]
   NODE_VERSION = "20"
   NODE_PACKAGE_MANAGER = "pnpm"
->>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
-
-  # Production optimizations
   NODE_OPTIONS = "--max-old-space-size=4096"
+  COREPACK_INTEGRITY_KEYS = "0"
+  PNPM_FLAGS = "--no-frozen-lockfile"
 
 [functions]
   # Serverless functions directory
@@ -42,6 +26,123 @@
     timeout = 60
     # 1GB memory for video processing functions
     memory = 1024
+
+# Redirects: SPA routing, API proxy, and app-specific routing
+# API proxy - must be before SPA fallback
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.muapi.ai/:splat"
+  status = 200
+  force = false
+
+# App redirects - must be before SPA fallback
+[[redirects]]
+  from = "/apps/storyboarder/*"
+  to = "/apps/storyboarder/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/agents-studio/*"
+  to = "/apps/agents-studio/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/studio/*"
+  to = "/apps/studio/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/assistant/*"
+  to = "/apps/assistant/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/workflow/*"
+  to = "/apps/workflow/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/vibe-workflow/*"
+  to = "/apps/vibe-workflow/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/remix-go/*"
+  to = "/apps/remix-go/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/open-pomelli/*"
+  to = "/apps/open-pomelli/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/ai-vfx/*"
+  to = "/apps/ai-vfx/index.html"
+  status = 200
+  force = false
+
+# Pomelli Studio - Supabase Edge Functions
+[[redirects]]
+  from = "/api/pomelli-analyze-site"
+  to = "https://bzxohkrxcwodllketcpz.supabase.co/functions/v1/pomelli-analyze-site"
+  status = 200
+  force = false
+
+# Static asset pass-through — MUST be before SPA fallback to prevent MIME type errors
+# Files in /assets/* and /apps/*/assets/* are real build artifacts, not routes
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/apps/*/assets/*"
+  to = "/apps/:1/assets/:splat"
+  status = 200
+  force = true
+
+# Security Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-${NONCE}'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.muapi.ai https://supabase.co https://*.supabase.co https://api.openai.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;"
+
+# SPA fallback - must be LAST
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
 
 # Redirects: SPA routing, API proxy, and app-specific routing
 # API proxy - must be before SPA fallback

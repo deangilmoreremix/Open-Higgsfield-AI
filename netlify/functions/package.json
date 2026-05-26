@@ -6,10 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-<<<<<<< HEAD
-=======
     "pretest": "npm run build",
->>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
     "test": "jest --config jest.config.cjs",
     "test:watch": "jest --config jest.config.cjs --watch"
   },

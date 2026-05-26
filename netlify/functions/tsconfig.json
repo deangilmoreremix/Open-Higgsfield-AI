@@ -14,12 +14,6 @@
     "noEmit": false,
     "outDir": "./dist",
     "types": ["node"]
-=======
-    "noEmit": false,
-    "outDir": ".",
-    "declaration": false,
-    "types": ["node", "jest"]
->>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
   },
   "include": [
     "**/*.ts"
