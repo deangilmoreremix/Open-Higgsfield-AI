@@ -1,6 +1,9 @@
 export const routes = [
-  { path: '/', name: 'Pomelli' },
-  { path: '/projects', name: 'Projects' },
-  { path: '/projects/:id', name: 'Project Detail' },
-  { path: '/campaigns/:id', name: 'Campaign' }
+  { path: '/', name: 'Studio', component: 'OpenPomelliApp' },
+  { path: '/projects', name: 'Projects', component: 'ProjectsPage' },
+  { path: '/projects/:id', name: 'Project Detail', component: 'ProjectDetailPage' },
+  { path: '/campaigns/:id', name: 'Campaign', component: 'CampaignPage' },
+  { path: '/brand-dna', name: 'Brand DNA', component: 'BrandDnaPage' },
 ];
+
+export default routes;

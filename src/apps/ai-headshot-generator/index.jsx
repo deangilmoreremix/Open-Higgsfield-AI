@@ -1,47 +1,46 @@
-import React, { useState } from 'react';
+'use client';
+
+import React from 'react';
 import { appManifest } from './manifest';
-import * as headshotService from './services/headshotService';
-import { sendToLibrary, sendToEditStudio } from '../../lib/outputHandoff';
 
-export default function AIHeadshotApp() {
-  const [photo, setPhoto] = useState(null);
-  const [preset, setPreset] = useState(null);
-  const [result, setResult] = useState(null);
-  const [status, setStatus] = useState('');
-
-  const upload = (e) => {
-    const file = e.target.files[0];
-    setPhoto(URL.createObjectURL(file));
-  };
-
-  const generate = async () => {
-    setStatus('Generating headshot...');
-    const res = await headshotService.generateHeadshot(photo, preset);
-    setResult(res);
-    setStatus('Done');
-  };
-
-  const save = async () => {
-    await sendToLibrary({ ...result, app_id: 'ai-headshot-generator', app_name: 'AI Headshot Generator' });
-  };
-
-  return React.createElement('div', { className: 'h-full p-4 bg-[#0a0a0a] text-white' },
-    React.createElement('h1', { className: 'text-xl mb-4' }, 'AI Headshot Studio'),
-    React.createElement('div', { className: 'flex gap-4' },
-      React.createElement('div', { className: 'flex-1' },
-        React.createElement('input', { type: 'file', onChange: upload, className: 'mb-4' }),
-        photo && React.createElement('img', { src: photo, className: 'max-w-xs mb-4 border border-white/10' }),
-        React.createElement('button', { onClick: generate, className: 'px-6 py-2 bg-primary rounded' }, 'Generate Headshot')
+export default function AIHeadshotGeneratorApp() {
+  return React.createElement(
+    'div',
+    { className: 'w-full h-full flex items-center justify-center bg-[#030303] p-8' },
+    React.createElement(
+      'div',
+      { className: 'max-w-md w-full text-center' },
+      React.createElement(
+        'div',
+        {
+          className: 'w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#d9ff00]/10 flex items-center justify-center',
+        },
+        React.createElement(
+          'svg',
+          { className: 'w-10 h-10 text-[#d9ff00]', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' },
+          React.createElement('path', {
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: 1.5,
+            d: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z',
+          }),
+          React.createElement('path', {
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: 1.5,
+            d: 'M15 13a3 3 0 11-6 0 3 3 0 016 0z',
+          })
+        )
       ),
-      React.createElement('div', { className: 'flex-1' },
-        result && React.createElement('div', null,
-          React.createElement('img', { src: result.url, className: 'max-w-xs mb-2' }),
-          React.createElement('div', { className: 'flex gap-2' },
-            React.createElement('button', { onClick: save, className: 'px-4 py-2 bg-white/10 rounded' }, 'Save to Library'),
-            React.createElement('button', { onClick: () => sendToEditStudio(result), className: 'px-4 py-2 bg-white/10 rounded' }, 'Edit Studio')
-          )
-        ),
-        React.createElement('div', { className: 'text-xs mt-2 text-muted' }, status)
+      React.createElement('h1', { className: 'text-2xl font-bold text-white mb-2' }, appManifest.name),
+      React.createElement('p', { className: 'text-white/60 mb-8' }, appManifest.description),
+      React.createElement(
+        'div',
+        {
+          className: 'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9ff00]/10 border border-[#d9ff00]/20',
+        },
+        React.createElement('span', { className: 'w-2 h-2 rounded-full bg-[#d9ff00] animate-pulse' }),
+        React.createElement('span', { className: 'text-sm text-[#d9ff00] font-medium' }, 'Coming Soon')
       )
     )
   );

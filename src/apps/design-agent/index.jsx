@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
+'use client';
+
+import React from 'react';
 import { appManifest } from './manifest';
-import * as designService from './services/designAgentService';
-import { sendToLibrary, sendToRender } from '../../lib/outputHandoff';
 
 export default function DesignAgentApp() {
-  const [brief, setBrief] = useState('');
-  const [assets, setAssets] = useState([]);
-
-  const planAndGenerate = async () => {
-    const results = await designService.runDesignAgent(brief);
-    setAssets(results);
-  };
-
-  return React.createElement('div', { className: 'h-full p-4 bg-[#0a0a0a] text-white' },
-    React.createElement('h1', { className: 'text-xl mb-4' }, 'Design Agent'),
-    React.createElement('textarea', { value: brief, onChange: e => setBrief(e.target.value), placeholder: 'Brand campaign for new product', className: 'w-full h-20 bg-white/5 p-3 rounded mb-4' }),
-    React.createElement('button', { onClick: planAndGenerate, className: 'px-6 py-2 bg-primary rounded mb-4' }, 'Plan & Generate Assets'),
-    assets.length > 0 && React.createElement('div', { className: 'grid grid-cols-3 gap-2' },
-      assets.map((a, i) => React.createElement('div', { key: i },
-        React.createElement('img', { src: a.url, className: 'w-full mb-1' }),
-        React.createElement('button', { onClick: () => sendToLibrary(a), className: 'text-xs px-2 py-1 bg-white/10 w-full rounded' }, 'Save')
-      ))
+  return React.createElement(
+    'div',
+    { className: 'w-full h-full flex items-center justify-center bg-[#030303] p-8' },
+    React.createElement(
+      'div',
+      { className: 'max-w-md w-full text-center' },
+      React.createElement(
+        'div',
+        {
+          className: 'w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#d9ff00]/10 flex items-center justify-center',
+        },
+        React.createElement(
+          'svg',
+          { className: 'w-10 h-10 text-[#d9ff00]', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' },
+          React.createElement('path', {
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: 1.5,
+            d: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
+          })
+        )
+      ),
+      React.createElement('h1', { className: 'text-2xl font-bold text-white mb-2' }, appManifest.name),
+      React.createElement('p', { className: 'text-white/60 mb-8' }, appManifest.description),
+      React.createElement(
+        'div',
+        {
+          className: 'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9ff00]/10 border border-[#d9ff00]/20',
+        },
+        React.createElement('span', { className: 'w-2 h-2 rounded-full bg-[#d9ff00] animate-pulse' }),
+        React.createElement('span', { className: 'text-sm text-[#d9ff00] font-medium' }, 'Coming Soon')
+      )
     )
   );
 }

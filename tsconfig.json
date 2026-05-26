@@ -2,8 +2,20 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "strict": false,
-    "noEmit": true
+    "noEmit": true,
+    "allowJs": true,
+    "incremental": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["src/**/*.test.*", "src/**/__tests__/**", "node_modules", "dist", "build"]
 }

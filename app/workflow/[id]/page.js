@@ -1,9 +1,11 @@
-import StandaloneShell from '@/components/StandaloneShell';
+"use client";
 
-export const metadata = {
-  title: 'Workflow — Open Generative AI',
-};
+import { WorkflowBuilder } from 'workflow-builder';
 
-export default function WorkflowPage() {
-  return <StandaloneShell />;
+export default function WorkflowPage({ params }) {
+  return (
+    <div className="h-screen bg-black">
+      <WorkflowBuilder workflowId={params?.id} />
+    </div>
+  );
 }
