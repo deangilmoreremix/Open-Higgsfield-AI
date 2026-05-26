@@ -150,17 +150,61 @@ export interface MuapiWorkflow {
 export interface Database {
   public: {
     Tables: {
-      profiles: Profile;
-      workspaces: Workspace;
-      workspace_members: WorkspaceMember;
-      campaigns: Campaign;
-      contacts: Contact;
-      personalized_scripts: PersonalizedScript;
-      generation_jobs: GenerationJob;
-      personalized_videos: PersonalizedVideo;
-      video_events: VideoEvent;
-      leads: Lead;
-      muapi_workflows: MuapiWorkflow;
+      profiles: {
+        Row: Profile;
+        Insert: Profile;
+        Update: Partial<Profile>;
+      };
+      workspaces: {
+        Row: Workspace;
+        Insert: Workspace;
+        Update: Partial<Workspace>;
+      };
+      workspace_members: {
+        Row: WorkspaceMember;
+        Insert: WorkspaceMember;
+        Update: Partial<WorkspaceMember>;
+      };
+      campaigns: {
+        Row: Campaign;
+        Insert: Campaign;
+        Update: Partial<Campaign>;
+      };
+      contacts: {
+        Row: Contact;
+        Insert: Contact;
+        Update: Partial<Contact>;
+      };
+      personalized_scripts: {
+        Row: PersonalizedScript;
+        Insert: PersonalizedScript;
+        Update: Partial<PersonalizedScript>;
+      };
+      generation_jobs: {
+        Row: GenerationJob;
+        Insert: GenerationJob;
+        Update: Partial<GenerationJob>;
+      };
+      personalized_videos: {
+        Row: PersonalizedVideo;
+        Insert: PersonalizedVideo;
+        Update: Partial<PersonalizedVideo>;
+      };
+      video_events: {
+        Row: VideoEvent;
+        Insert: VideoEvent;
+        Update: Partial<VideoEvent>;
+      };
+      leads: {
+        Row: Lead;
+        Insert: Lead;
+        Update: Partial<Lead>;
+      };
+      muapi_workflows: {
+        Row: MuapiWorkflow;
+        Insert: MuapiWorkflow;
+        Update: Partial<MuapiWorkflow>;
+      };
     };
     Views: {};
     Functions: {

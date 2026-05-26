@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PersonalizerDialog from '../components/personalizer/PersonalizerDialog';
 import { useNavigate, useParams } from 'react-router-dom';
-import { supabase, getVideos, getMuapiWorkflows, createGenerationJob } from '../lib/supabase-client';
+import { supabase, getVideos, createGenerationJob } from '../lib/supabase-client';
 
 interface Video {
   id: string;
@@ -73,6 +73,8 @@ export function VideoGenerator() {
       // Create generation jobs for each contact
       for (const contact of contacts) {
         await createGenerationJob({
+          // Minimal payload — keep types compatible with supabase-client createGenerationJob
+
           workspace_id: (await supabase.from('campaigns').select('workspace_id').eq('id', campaignId!).single())?.data?.workspace_id || '',
           campaign_id: campaignId!,
           contact_id: contact.id,

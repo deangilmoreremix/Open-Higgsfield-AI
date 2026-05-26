@@ -75,7 +75,7 @@ export default function PersonalizerDialog({
   open, onClose, appId: initialAppId, mode: initialMode, projectId: initialProjectId,
   defaultOffer, defaultGoal, defaultTone = 'professional', defaultCTA, initialTarget,
   onComplete, onSave
-}) {
+}: Partial<any>) {
   const [currentStep, setCurrentStep] = useState(1);
   const [appId, setAppId] = useState(initialAppId || 'ai-video-agency');
   const [mode, setMode] = useState(initialMode || 'cold-email');

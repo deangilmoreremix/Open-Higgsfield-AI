@@ -5,12 +5,14 @@ export { EditorErrorBoundary } from './EditorErrorBoundary';
 export { DashboardErrorBoundary } from './DashboardErrorBoundary';
 
 // Error recovery and logging utilities
-export {
+export type {
   ErrorSeverity,
   ErrorCategory,
   ErrorContext,
   ErrorRecoveryOptions,
-  ErrorReportingConfig,
+  ErrorReportingConfig
+} from './ErrorRecovery';
+export {
   errorRecoveryManager,
   errorLogger,
   classifyError,

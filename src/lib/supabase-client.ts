@@ -1,8 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from './supabase-types';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing Supabase environment variables');
@@ -12,6 +12,17 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
   supabaseUrl,
   supabaseAnonKey
 );
+
+// Create a generation job (wrapper for insertion into generation_jobs table)
+export async function createGenerationJob(job: Partial<Database['public']['Tables']['generation_jobs']['Insert']>) {
+  const { data, error } = await supabase
+    .from('generation_jobs')
+    .insert(job)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
 
 // Helper to check workspace membership
 export async function isWorkspaceMember(workspaceId: string): Promise<boolean> {

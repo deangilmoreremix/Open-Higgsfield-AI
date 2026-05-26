@@ -4,5 +4,6 @@
     "strict": false,
     "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.test.*", "src/**/__tests__/**", "node_modules", "dist", "build"]
 }
