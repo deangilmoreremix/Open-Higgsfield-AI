@@ -14,7 +14,7 @@ export function usePlaybackEngine({
   const [currentTime, setCurrentTime] = useState(0)
   const [shuttleSpeed, setShuttleSpeed] = useState(0)
   const animationRef = useRef<number>()
-  const lastTimeRef = useRef<number>()
+  const lastTimeRef = useRef<number | undefined>(undefined)
   const videoPoolRef = useRef<Map<string, HTMLVideoElement>>(new Map())
 
   const getClipAtTime = useCallback((time: number): TimelineClip | null => {
@@ -30,7 +30,7 @@ export function usePlaybackEngine({
   }, [clips])
 
   const playbackLoop = useCallback((timestamp: number) => {
-    if (!lastTimeRef.current) {
+    if (lastTimeRef.current === undefined) {
       lastTimeRef.current = timestamp
       animationRef.current = requestAnimationFrame(playbackLoop)
       return
@@ -69,7 +69,7 @@ export function usePlaybackEngine({
 
   const play = useCallback(() => {
     setIsPlaying(true)
-    lastTimeRef.current = undefined as any
+    lastTimeRef.current = undefined
   }, [])
 
   const pause = useCallback(() => {

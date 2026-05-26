@@ -25,7 +25,7 @@ export function useTimelineDrag({
     if (!snapEnabled) return time
     
     const track = tracks[trackIndex]
-    if (!track || track.snapToGrid) return time
+    if (!track || !(track as any).snapToGrid) return time
     
     const grid = 0.1
     return Math.round(time / grid) * grid
@@ -116,7 +116,7 @@ export function useTimelineDrag({
       newClips[clipIndex] = {
         ...clip,
         startTime: newTime,
-        duration: clip.end - newTime,
+        duration: (clip as any).end - newTime,
         trimStart: clip.trimStart + (clip.startTime - newTime),
       }
     }

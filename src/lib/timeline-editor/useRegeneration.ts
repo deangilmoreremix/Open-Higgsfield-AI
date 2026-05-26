@@ -9,7 +9,6 @@ interface UseRegenerationProps {
 
 export function useRegeneration({
   clips,
-  assets,
   setClips,
   onRegenerate,
 }: UseRegenerationProps) {
@@ -67,11 +66,7 @@ export function useRegeneration({
             ...c,
             importedUrl: result.url,
             isRegenerating: false,
-            asset: {
-              ...(c.asset || {}),
-              url: result.url,
-              path: result.path,
-            },
+            asset: Object.assign({}, c.asset || {}, { url: result.url, path: result.path }),
           }
         }
         return c

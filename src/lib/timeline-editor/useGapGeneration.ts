@@ -22,7 +22,6 @@ interface UseGapGenerationProps {
 
 export function useGapGeneration({
   clips,
-  tracks,
   setClips,
   onGenerate,
 }: UseGapGenerationProps) {
@@ -111,7 +110,7 @@ export function useGapGeneration({
 
   const deleteGap = useCallback((trackIndex: number, startTime: number, endTime: number) => {
     const newClips = clips.filter(c => 
-      !(c.trackIndex === trackIndex && c.startTime >= startTime && c.endTime <= endTime)
+      !(c.trackIndex === trackIndex && c.startTime >= startTime && ((c as any).end ?? (c.startTime + c.duration)) <= endTime)
     )
     setClips(newClips)
   }, [clips, setClips])

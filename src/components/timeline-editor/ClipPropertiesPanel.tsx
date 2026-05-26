@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Trash2, Video, Eye, Contrast, Droplets, Thermometer, SunDim, RotateCcw, Palette, ChevronDown, ChevronRight, FlipHorizontal2, FlipVertical2 } from 'lucide-react'
-import type { TimelineClip, Track, ColorCorrection } from '../lib/timeline-editor/types'
-import { DEFAULT_COLOR_CORRECTION } from '../lib/timeline-editor/types'
+import type { TimelineClip, Track, ColorCorrection } from '../../lib/timeline-editor/types'
+import { DEFAULT_COLOR_CORRECTION } from '../../lib/timeline-editor/types'
 import { TooltipWrapper } from './TooltipWrapper'
 
 interface ClipPropertiesPanelProps {

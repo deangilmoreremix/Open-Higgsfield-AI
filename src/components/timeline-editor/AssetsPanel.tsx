@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Plus, Upload, Search, Video, Image, Music, FileText } from 'lucide-react'
 import { TooltipWrapper } from './TooltipWrapper'
-import type { Asset } from '../lib/timeline-editor/types'
+import type { Asset } from '../../lib/timeline-editor/types'
 
 interface AssetsPanelProps {
   assets: Asset[]
