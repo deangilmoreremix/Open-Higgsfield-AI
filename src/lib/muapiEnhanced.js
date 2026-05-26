@@ -400,6 +400,50 @@ export class MuapiEnhancedClient {
 // Export singleton instance
 export const muapiEnhanced = new MuapiEnhancedClient();
 
+// Track initialization state for idempotency
+let isEnhancedMuAPIInitialized = false;
+
+/**
+ * Initialize the Enhanced MuAPI system
+ * Ensures the enhanced API client is ready for use.
+ * This function is idempotent - safe to call multiple times.
+ * 
+ * @param {Object} config - Optional configuration options
+ * @param {string} config.apiKey - Override API key
+ * @param {string} config.endpoint - Override API endpoint
+ * @returns {Promise<boolean>} true if initialization succeeded, false otherwise
+ */
+export async function initializeEnhancedMuAPI(config = {}) {
+  if (isEnhancedMuAPIInitialized) {
+    return true;
+  }
+
+  try {
+    // Validate API key if present
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      console.warn('[MuAPI Enhanced] No API key found. Some features may not work.');
+    }
+
+    // Apply custom configuration if provided
+    if (config && Object.keys(config).length > 0) {
+      if (config.apiKey && muapiEnhanced.setApiKey) {
+        muapiEnhanced.setApiKey(config.apiKey);
+      }
+      if (config.endpoint) {
+        muapiEnhanced.config = { ...muapiEnhanced.config, endpoint: config.endpoint };
+      }
+    }
+
+    isEnhancedMuAPIInitialized = true;
+    console.log('[MuAPI Enhanced] Initialized successfully');
+    return true;
+  } catch (error) {
+    console.warn('[MuAPI Enhanced] Initialization failed:', error.message);
+    return false;
+  }
+}
+
 // Export individual functions for backward compatibility
 export async function applyPixverseAdvancedEffect(videoUrl, effectType, options = {}) {
     return await muapiEnhanced.applyPixverseAdvancedEffect(videoUrl, effectType, options);

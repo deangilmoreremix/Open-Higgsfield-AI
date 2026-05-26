@@ -146,7 +146,12 @@ async function handleFacelessVideo(collection, prompt) {
     const stream = await timeline.generate_stream()
 
     return {
+<<<<<<< HEAD
       video_url: stream.url
+=======
+      video_url: stream.url,
+      status: 'completed'
+>>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
     }
   } catch (error) {
     console.error('Faceless video error:', error)
@@ -157,6 +162,7 @@ async function handleFacelessVideo(collection, prompt) {
   }
 }
 
+<<<<<<< HEAD
 // Timeline / Editor Agent handler
 async function handleTimelineEdit(prompt: string, options: any = {}) {
   try {
@@ -219,3 +225,44 @@ async function handleTimelineEdit(prompt: string, options: any = {}) {
     }
   }
 }
+=======
+async function handleAIAd(collection, prompt) {
+  return {
+    message: 'AI ad creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handleLyricVideo(collection, prompt) {
+  return {
+    message: 'Lyric video creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handleVoiceover(collection, prompt) {
+  return {
+    message: 'Voiceover creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handleKidsStory(collection, prompt) {
+  return {
+    message: 'Kids story creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+async function handlePhotoMontage(collection, prompt) {
+  return {
+    message: 'Photo montage creation - feature coming soon',
+    status: 'pending'
+  }
+}
+
+// Helper function (placeholder)
+async function generateScript(topic) {
+  return `Script about ${topic}: This is an engaging narrative...`
+}
+>>>>>>> 89984e4 (fix: resolve Netlify deployment blockers)
