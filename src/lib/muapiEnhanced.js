@@ -456,19 +456,3 @@ export async function applyVeoAdvancedI2V(imageUrl, options = {}) {
 export async function applyRunwayMotion(videoUrl, motionConfig = {}) {
     return await muapiEnhanced.applyRunwayMotion(videoUrl, motionConfig);
 }
-
-/**
- * Initialize enhanced MuAPI features
- * @param {Object} config - Configuration object
- * @returns {Promise<boolean>} Success status
- */
-export async function initializeEnhancedMuAPI(config) {
-    try {
-        // Initialize enhanced features if available
-        // For now, return true as enhanced features are not yet implemented
-        return true;
-    } catch (error) {
-        console.error('[MuAPI Enhanced] Initialization failed:', error);
-        return false;
-    }
-}
