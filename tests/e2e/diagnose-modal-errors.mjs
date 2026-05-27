@@ -3,7 +3,6 @@ import { chromium } from '@playwright/test';
 const apps = [
   { name: 'vibe-workflow', path: '/apps/vibe-workflow/', factory: 'WorkflowBuilderApp' },
   { name: 'open-pomelli', factory: 'PomelliStudio', path: '', note: 'Router key: pomelli-studio' },
-  { name: 'remix-go', factory: 'RemixGoApp', path: '', note: 'Router key: remix-go' },
   { name: 'headshot', factory: 'HeadshotStudio', path: '', note: 'Router key: ai-headshot' },
 ];
 

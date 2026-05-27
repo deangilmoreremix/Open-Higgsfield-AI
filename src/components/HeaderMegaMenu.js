@@ -52,8 +52,6 @@ export function HeaderMegaMenu({ navigate, currentPage }) {
         { id: 'render', label: 'Render', description: 'Rendering & export' },
         { id: 'video-agent', label: 'Video Agent', description: 'AI video assistance' },
         { id: 'director', label: 'Director', description: 'Automated production' },
-        { id: 'timeline', label: 'Timeline', description: 'Multi-track editing' },
-        { id: 'remix-go', label: 'Remix Go', description: 'Advanced video editor' },
       ]
     }
   };

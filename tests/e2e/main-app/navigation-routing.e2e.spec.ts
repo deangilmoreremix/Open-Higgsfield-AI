@@ -13,7 +13,7 @@ test.describe('Comprehensive Navigation & Routing', () => {
 
   const extendedRoutes = [
     'upscale', 'training', 'videotools', 'chat', 'lipsync', 'commercial',
-    'render', 'video-agent', 'director', 'remix-go', 'runway-motion',
+    'render', 'video-agent', 'director', 'runway-motion',
     'tiktok-carousel', 'advanced-dubbing'
   ];
 

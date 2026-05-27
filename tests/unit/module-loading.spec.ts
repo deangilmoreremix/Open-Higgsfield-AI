@@ -66,12 +66,11 @@ const ROUTE_COMPONENTS = {
   'video-agent': '../../src/components/VideoAgentPage.js',
   director: '../../src/components/DirectorPage.js',
   
-  // Timeline routes (heavy imports - need extra timeout)
+// Timeline routes (heavy imports - need extra timeout)
   timeline: '../../src/components/TimelineEditorPage.jsx',
   'timeline-test': '../../src/components/TimelineTestPage.jsx',
-  
+
   // Additional routes
-  'remix-go': '../../src/components/RemixGoPage.js',
   'ai-video-outreach': '../../src/components/AIVideoOutreachPage.js',
   'ai-headshot': '../../src/components/AIHeadshotPage.js',
   'runway-motion': '../../src/components/RunwayMotionStudio.js',
@@ -136,7 +135,6 @@ const COMPONENT_PATHS = [
   '../../src/components/DirectorPage.js',
   '../../src/components/TimelineEditorPage.jsx',
   '../../src/components/TimelineTestPage.jsx',
-  '../../src/components/RemixGoPage.js',
   '../../src/components/AIVideoOutreachPage.js',
   '../../src/components/AIHeadshotPage.js',
   '../../src/components/RunwayMotionStudio.js',
@@ -178,7 +176,6 @@ const APPS = [
   'apps/vibe-workflow',
   'apps/open-pomelli',
   'apps/vibe-workflow/client',
-  'apps/remix-go',
   'apps/director/frontend',
   'apps/ai-vfx',
   'apps/ai-storyboarder/frontend',
