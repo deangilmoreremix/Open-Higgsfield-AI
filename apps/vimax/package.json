@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cd frontend && npm start",
-    "start": "cd frontend && npm start",
-    "build": "cd frontend && npm install && npm run build"
+    "dev": "vite",
+    "start": "vite preview",
+    "build": "vite build"
   }
 }
