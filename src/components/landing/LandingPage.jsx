@@ -1,9 +1,7 @@
 // AI Video Agency Studio Landing Page
 // Optimized with lazy loading for sections
 
-import { LandingHeader } from './common/Header.jsx';
-
-// All 33 AI Creative Apps - moved to separate module for lazy loading
+// All 33 AI Creative Apps
 const ALL_APPS = [
   { id: 'image', title: 'Image', description: 'Generate high-quality AI images for ads, thumbnails, product visuals, social media, websites, and client campaigns.', link: '/image' },
   { id: 'video', title: 'Video', description: 'Create text-to-video, image-to-video, video-to-video, and cinematic motion content for social, ads, and branded campaigns.', link: '/video' },
@@ -39,24 +37,6 @@ const ALL_APPS = [
   { id: 'mcp-cli', title: 'MCP & CLI', description: 'Control advanced workflows, connect tools, automate tasks, and extend the platform with agent-ready command and integration support.', link: '/mcp-cli' }
 ];
 
-// Lazy-loaded sections (loaded when scrolled into view)
-const lazySectionConfigs = [
-  { path: './sections/HeroSection.jsx', id: 'hero' },
-  { path: './sections/ScrollingAppStrip.jsx', id: 'scrolling' },
-  { path: './sections/HookSection.jsx', id: 'hook' },
-  { path: './sections/SixEnginesSection.jsx', id: 'engines' },
-  { path: './sections/AppsGridSection.jsx', id: 'apps' },
-  { path: './sections/DemosSection.jsx', id: 'demos' },
-  { path: './sections/FeaturesSection.jsx', id: 'features' },
-  { path: './sections/ProblemSection.jsx', id: 'problem' },
-  { path: './sections/WorkflowSection.jsx', id: 'workflow' },
-  { path: './sections/ComparisonSection.jsx', id: 'comparison' },
-  { path: './sections/ValueStackSection.jsx', id: 'value' },
-  { path: './sections/AgencySection.jsx', id: 'agency' },
-  { path: './sections/OfferSection.jsx', id: 'offer' },
-  { path: './sections/FinalCTASection.jsx', id: 'cta' }
-];
-
 // Section loader using Intersection Observer for lazy loading
 function createLazySection(importFn, sectionId, props = {}) {
   const placeholder = document.createElement('div');
@@ -64,14 +44,12 @@ function createLazySection(importFn, sectionId, props = {}) {
   placeholder.className = 'min-h-[200px] flex items-center justify-center';
   placeholder.innerHTML = '<div class="animate-spin w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full"></div>';
   
-  // Use Intersection Observer to load when visible
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         observer.unobserve(placeholder);
         importFn().then(module => {
           let section;
-          // Handle different export patterns
           if (module.default) {
             section = props.apps ? module.default({ apps: props.apps }) : module.default(props);
           } else if (module.AppsGridSection) {
@@ -93,20 +71,24 @@ function createLazySection(importFn, sectionId, props = {}) {
   return placeholder;
 }
 
-export default function LandingPage() {
+export default async function LandingPage() {
   const container = document.createElement('div');
   container.className = 'landing-page min-h-screen bg-[#020205]';
   container.setAttribute('lang', document.documentElement.lang || 'en');
   container.setAttribute('dir', document.documentElement.dir || 'ltr');
 
   try {
-    // Landing Header - prepend to ensure it's always the first element (above icons/hero)
-    import('./common/Header.jsx').then(({ LandingHeader }) => {
-      const headerEl = LandingHeader();
-      container.prepend(headerEl);
-    });
+    // Header - loaded immediately to appear first
+    const { LandingHeader } = await import('./common/Header.jsx');
+    const headerEl = LandingHeader();
+    container.appendChild(headerEl);
 
-    // Lazy-loaded sections (loaded when scrolled into view)
+    // Hero section - loaded immediately to appear above icon section
+    const { Hero } = await import('./sections/Hero.jsx');
+    const heroEl = Hero();
+    container.appendChild(heroEl);
+
+    // Lazy-loaded sections
     const scrollingStrip = createLazySection(() => import('./sections/ScrollingAppStrip.jsx'), 'scrolling');
     const hookSection = createLazySection(() => import('./sections/HookSection.jsx'), 'hook');
     const sixEngines = createLazySection(() => import('./sections/SixEnginesSection.jsx'), 'engines');
@@ -121,7 +103,7 @@ export default function LandingPage() {
     const offer = createLazySection(() => import('./sections/OfferSection.jsx'), 'offer');
     const finalCTA = createLazySection(() => import('./sections/FinalCTASection.jsx'), 'cta');
 
-    // Append placeholders in order
+    // Append all sections
     container.appendChild(scrollingStrip);
     container.appendChild(hookSection);
     container.appendChild(sixEngines);
@@ -142,7 +124,7 @@ export default function LandingPage() {
       <section class="relative py-32 px-4 text-center bg-[#020205] min-h-screen flex items-center justify-center">
         <div class="container mx-auto max-w-3xl">
           <h1 class="text-4xl md:text-6xl text-white mb-6">AI Video Agency Studio</h1>
-          <p class="text-xl text-gray-400 mb-8">Something went wrong loading the page.</p>
+          <p class="text-xl text-gray-400 mb-4">Something went wrong loading the page.</p>
           <button onclick="window.location.reload()" class="px-6 py-3 bg-cyan-400 text-black font-semibold rounded hover:bg-cyan-300 transition">
             Try Again
           </button>
