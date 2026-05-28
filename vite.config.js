@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 // Custom CORS middleware for strict origin validation
 function corsMiddleware() {
@@ -93,7 +94,11 @@ export default defineConfig({
           include: ['src/**/*.{js,jsx,ts,tsx}'],
           exclude: ['src/components/EffectsStudio.js', 'src/components/TimelineEditorPage.jsx', 'director/**/*', 'external-repos/**/*', 'modules/**/*', 'node_modules/workflow-builder/**/*', 'node_modules/ai-agent/**/*', 'node_modules/design-agent/**/*']
       },
-
+    resolve: {
+      alias: {
+        studio: path.resolve(__dirname, './packages/studio')
+      }
+    },
     server: {
         host: '0.0.0.0',
         port: 8080,
@@ -106,24 +111,24 @@ export default defineConfig({
             'Referrer-Policy': 'strict-origin-when-cross-origin',
             'Content-Security-Policy': process.env.NODE_ENV === 'production' ? PRODUCTION_CSP : DEVELOPMENT_CSP
         },
-     proxy: {
-           "/api": {
-                    target: process.env.VITE_MUAPI_URL || "https://api.muapi.ai",
-                    changeOrigin: true,
-                    secure: true,
-                    rewrite: (path) => path.replace(/^\/api/, "")
-                 },
-"/apps/videco-ai-platform": {
-                    target: "http://localhost:3002",
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/apps\/videco-ai-platform/, "")
+      proxy: {
+            "/api": {
+                     target: process.env.VITE_MUAPI_URL || "https://api.muapi.ai",
+                     changeOrigin: true,
+                     secure: true,
+                     rewrite: (path) => path.replace(/^\/api/, "")
                   },
-                 "/apps/ai-headshot-generator": {
-                    target: "http://localhost:3003",
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/apps\/ai-headshot-generator/, "")
-                 }
-            }
+            "/apps/videco-ai-platform": {
+                     target: "http://localhost:3002",
+                     changeOrigin: true,
+                     rewrite: (path) => path.replace(/^\/apps\/videco-ai-platform/, "")
+                   },
+            "/apps/ai-headshot-generator": {
+                     target: "http://localhost:3003",
+                     changeOrigin: true,
+                     rewrite: (path) => path.replace(/^\/apps\/ai-headshot-generator/, "")
+                   }
+          }
     },
     build: {
         target: 'esnext',
@@ -150,14 +155,14 @@ export default defineConfig({
         sourcemap: process.env.NODE_ENV !== 'production',
         chunkSizeWarningLimit: 1000
     },
-     preview: {
-         port: 3000,
-         headers: {
-             'Cache-Control': 'public, max-age=31536000',
-             'X-Frame-Options': 'SAMEORIGIN',
-             'X-Content-Type-Options': 'nosniff',
-             'X-XSS-Protection': '1; mode=block',
-             'Referrer-Policy': 'strict-origin-when-cross-origin'
-         }
-     }
+    preview: {
+        port: 3000,
+        headers: {
+            'Cache-Control': 'public, max-age=31536000',
+            'X-Frame-Options': 'SAMEORIGIN',
+            'X-Content-Type-Options': 'nosniff',
+            'X-XSS-Protection': '1; mode=block',
+            'Referrer-Policy': 'strict-origin-when-cross-origin'
+        }
+    }
 });
