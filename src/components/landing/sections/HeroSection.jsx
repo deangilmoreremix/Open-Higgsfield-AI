@@ -6,15 +6,16 @@ export function HeroSection() {
   section.className = 'relative py-24 md:py-32 px-4 overflow-hidden min-h-screen flex items-center';
   section.setAttribute('role', 'banner');
   section.setAttribute('aria-labelledby', 'hero-headline');
+  section.setAttribute('data-testid', 'hero-section');
 
   section.innerHTML = `
     <!-- Cinematic Background -->
     <div class="absolute inset-0 bg-[#020205] -z-10"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-[#171b24] via-[#05070b] to-[#020205] opacity-90 -z-10"></div>
-    
+
     <!-- Animated particle grid -->
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 3px 3px, rgba(34,211,238,0.15) 1px, transparent 0); background-size: 80px 80px;"></div>
-    
+
     <!-- Floating geometric shapes with animations -->
     <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl animate-pulse -z-5"></div>
     <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl animate-pulse -z-5" style="animation-delay: 2s;"></div>
@@ -47,7 +48,7 @@ export function HeroSection() {
           <span class="flex items-center justify-center gap-2">
             Start Building My AI Video Agency
             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-weight="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
             </svg>
           </span>
         </button>
@@ -55,8 +56,7 @@ export function HeroSection() {
           <span class="flex items-center justify-center gap-2">
             Watch The Demo Video
             <svg class="w-5 h-5 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-weight="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
             </svg>
           </span>
         </button>
@@ -78,55 +78,54 @@ export function HeroSection() {
           <div class="text-gray-400">AI Models</div>
         </div>
         <div class="stat-item text-center transform hover:scale-110 transition-transform duration-200">
-          <div class="text-purple-400 font-bold text-2xl md:text-3xl mb-1">Lifetime</div>
+          <div class="text-cyan-400 font-bold text-2xl md:text-3xl mb-1">Lifetime</div>
           <div class="text-gray-400">Access</div>
         </div>
       </div>
-    </div>
 
-    <!-- Scroll indicator with bounce animation -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-      <svg class="w-6 h-6 text-cyan-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-      </svg>
-    </div>
+      <!-- Scroll indicator with bounce animation -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg class="w-6 h-6 text-cyan-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-weight="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
+      </div>
 
-    <style>
-      @keyframes fadeSlideUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
+      <style>
+        @keyframes fadeSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        .cta-primary:hover {
+          box-shadow: 0 20px 40px rgba(34, 211, 238, 0.3);
         }
-      }
-      .cta-primary:hover {
-        box-shadow: 0 20px 40px rgba(34, 211, 238, 0.3);
-      }
-      .cta-secondary:hover {
-        border-color: rgba(34, 211, 238, 0.8);
-        background-color: rgba(34, 211, 238, 0.1);
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .animate-pulse, .animate-bounce { animation: none; }
-        .trust-badge, .hero-headline, .hero-subheadline, .hero-cta, .hero-stats {
-          opacity: 1;
-          transform: none;
-          animation: none;
+        .cta-secondary:hover {
+          border-color: rgba(34, 211, 238, 0.8);
+          background-color: rgba(34, 211, 238, 0.1);
         }
-        .stat-item:hover { transform: none; }
-        .cta-primary:hover, .cta-secondary:hover { transform: none; }
-      }
-      @media (prefers-contrast: high) {
-        .text-cyan-400 { color: #ffffff; }
-        .text-cyan-100 { color: #ffffff; }
-        .border-cyan-400\/30 { border-color: #ffffff; }
-        .bg-cyan-400\/10 { background-color: rgba(255,255,255,0.1); }
-      }
-    </style>
-  `;
+        @media (prefers-reduced-motion: reduce) {
+          .animate-pulse, .animate-bounce { animation: none; }
+          .trust-badge, .hero-headline, .hero-subheadline, .hero-cta, .hero-stats {
+            opacity: 1;
+            transform: none;
+            animation: none;
+          }
+          .stat-item:hover { transform: none; }
+          .cta-primary:hover, .cta-secondary:hover { transform: none; }
+        }
+        @media (prefers-contrast: high) {
+          .text-cyan-400 { color: #ffffff; }
+          .text-cyan-100 { color: #ffffff; }
+          .border-cyan-400\/30 { border-color: #ffffff; }
+          .bg-cyan-400\/10 { background-color: rgba(255,255,255,0.1); }
+        }
+      </style>
+    `;
 
   // Trigger animations after load
   setTimeout(() => {

@@ -25,7 +25,6 @@ const ALL_APPS = [
   { id: 'runway-motion', title: 'Motion', description: 'Generate camera movement, scene motion, product motion, character motion, and cinematic animation effects.', link: '/runway-motion' },
   { id: 'tiktok-carousel', title: 'TikTok', description: 'Create TikTok-style videos, hooks, short-form content, viral concepts, creator clips, and social-ready vertical assets.', link: '/tiktok-carousel' },
   { id: 'advanced-dubbing', title: 'Dubbing', description: 'Translate, localize, and dub video content for different languages, audiences, campaigns, and global delivery.', link: '/advanced-dubbing' },
-  { id: 'chat', title: 'Chat', description: 'Use AI chat assistance to brainstorm, write prompts, plan campaigns, generate ideas, and guide the creative workflow.', link: '/chat' },
   { id: 'commercial', title: 'Commercial', description: 'Create product commercials, brand ads, local business promos, ecommerce videos, launch videos, and agency-ready ad concepts.', link: '/commercial' },
   { id: 'templates', title: 'Templates', description: 'Start faster with prebuilt creative templates for ads, thumbnails, products, social posts, cinematic shots, VFX, and more.', link: '/templates' },
   { id: 'explore', title: 'Explore', description: 'Browse creative ideas, examples, presets, templates, use cases, visual styles, and production inspiration.', link: '/explore' },
@@ -84,8 +83,8 @@ export default async function LandingPage() {
     container.appendChild(headerEl);
 
     // Hero section - loaded immediately to appear above icon section
-    const { Hero } = await import('./sections/Hero.jsx');
-    const heroEl = Hero();
+    const { HeroSection } = await import('./sections/HeroSection.jsx');
+    const heroEl = HeroSection();
     container.appendChild(heroEl);
 
     // Lazy-loaded sections
