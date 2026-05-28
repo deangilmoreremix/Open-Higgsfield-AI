@@ -32,7 +32,7 @@ import { initRouter, navigate } from './lib/router.js';
     if (initialPage === 'landing') {
       const LandingPageMod = await import('./components/landing/LandingPage.jsx');
       const LandingPage = LandingPageMod.default || LandingPageMod;
-      const landingPage = LandingPage();
+      const landingPage = await LandingPage();
       app.appendChild(landingPage);
       console.log('[App] Landing page rendered');
       return;
