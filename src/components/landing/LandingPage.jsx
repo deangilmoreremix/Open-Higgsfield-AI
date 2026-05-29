@@ -160,7 +160,7 @@ export default async function LandingPage() {
   try {
     // Header - loaded immediately to appear first
     const { LandingHeader } = await import('./common/Header.jsx');
-    const headerEl = LandingHeader();
+    const headerEl = LandingHeader().element;
     container.appendChild(headerEl);
 
     // Hero section - loaded immediately to appear above icon section
