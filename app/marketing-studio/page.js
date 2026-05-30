@@ -1,10 +1,10 @@
 "use client";
 
-import LipSyncStudio from '../../packages/studio/src/components/LipSyncStudio';
+import MarketingStudio from '../../packages/studio/src/components/MarketingStudio';
 import { securityService } from '../../src/lib/services/SecurityService';
 import { useState, useEffect } from 'react';
 
-export default function LipSyncPage() {
+export default function MarketingStudioPage() {
   const [apiKey, setApiKey] = useState(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function LipSyncPage() {
 
   return (
     <div className="h-full w-full bg-[#030303]">
-      <LipSyncStudio apiKey={apiKey} />
+      <MarketingStudio apiKey={apiKey} />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import LipSyncStudio from '../../packages/studio/src/components/LipSyncStudio';
-import { securityService } from '../../src/lib/services/SecurityService';
 import { useState, useEffect } from 'react';
+import CinemaStudio from '../../packages/studio/src/components/CinemaStudio';
+import { securityService } from '../../src/lib/services/SecurityService';
 
-export default function LipSyncPage() {
+export default function CinemaPage() {
   const [apiKey, setApiKey] = useState(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function LipSyncPage() {
 
   return (
     <div className="h-full w-full bg-[#030303]">
-      <LipSyncStudio apiKey={apiKey} />
+      <CinemaStudio apiKey={apiKey} />
     </div>
   );
 }

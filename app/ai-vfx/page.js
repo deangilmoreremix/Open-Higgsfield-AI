@@ -1,3 +1,5 @@
+'use client';
+
 import AIVFXStudioApp from '../../src/apps/ai-vfx/index.jsx';
 
 export default function AIVFXPage() {

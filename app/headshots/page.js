@@ -9,7 +9,8 @@ import {
   saveHeadshot,
   saveOutputToLibrary,
   handoffHeadshotOutput 
-} from '../services/headshotService';
+} from '../../src/apps/ai-headshot-generator/services/headshotService.js';
+import { securityService } from '../../src/lib/services/SecurityService.js';
 
 const UPLOAD_STATE = { IDLE: 'idle', UPLOADING: 'uploading', READY: 'ready' };
 
@@ -22,12 +23,15 @@ export default function HeadshotStudio() {
   const [selectedPreset, setSelectedPreset] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [batchResults, setBatchResults] = useState([]);
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(null);
   
   const fileInputRef = useRef(null);
 
   React.useEffect(() => {
     listHeadshotPresets().then(setPresets).catch(() => setPresets([]));
+    securityService.getDecryptedKey().then(key => {
+      if (key) setApiKey(key);
+    });
   }, []);
 
   const handleFileSelect = async (file) => {
@@ -50,10 +54,15 @@ export default function HeadshotStudio() {
   const handleGenerate = async () => {
     if (!sourcePhoto || !selectedPreset) return;
     
+    const key = apiKey || import.meta.env.VITE_MUAPI_KEY;
+    if (!key) {
+      alert('Please set your MuAPI API key in Settings first');
+      return;
+    }
+    
     setIsGenerating(true);
     
     try {
-      const key = apiKey || import.meta.env.VITE_MUAPI_KEY;
       const result = await generateHeadshot(key, sourcePhoto, selectedPreset);
       const output = { ...result, preset: selectedPreset.id, prompt: selectedPreset.prompt };
       
@@ -70,10 +79,15 @@ export default function HeadshotStudio() {
   const handleBatchGenerate = async () => {
     if (!sourcePhoto || presets.length === 0) return;
     
+    const key = apiKey || import.meta.env.VITE_MUAPI_KEY;
+    if (!key) {
+      alert('Please set your MuAPI API key in Settings first');
+      return;
+    }
+    
     setIsGenerating(true);
     
     try {
-      const key = apiKey || import.meta.env.VITE_MUAPI_KEY;
       const results = await generateHeadshotBatch(key, sourcePhoto, presets);
       setBatchResults(results);
       
@@ -99,16 +113,8 @@ export default function HeadshotStudio() {
     React.createElement('div', { className: 'flex-1 flex overflow-hidden' },
       React.createElement('div', { className: 'w-80 border-r border-white/10 p-4 overflow-y-auto' },
         React.createElement('div', { className: 'mb-4' },
-          React.createElement('label', { className: 'text-xs text-white/40 block mb-2' }, 'MuAPI API Key'),
-          React.createElement('input', {
-            type: 'password',
-            value: apiKey,
-            onChange: (e) => setApiKey(e.target.value),
-            placeholder: 'Enter API key',
-            className: 'w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm'
-          })
+          apiKey && React.createElement('div', { className: 'text-xs text-primary' }, '✓ API Key Configured')
         ),
-        
         React.createElement('div', { className: 'mb-4' },
           React.createElement('div', { 
             className: 'border-2 border-dashed border-white/10 rounded-lg p-6 text-center cursor-pointer hover:border-white/20',

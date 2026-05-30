@@ -1,3 +1,5 @@
+'use client';
+
 import RemixGoApp from '../../src/apps/remix-go/index.jsx';
 
 export default function RemixGoPage() {
