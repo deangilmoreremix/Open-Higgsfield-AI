@@ -19,7 +19,6 @@ const KNOWN_COMPLETE_APPS = [
 
 const SHELL_APP_DIRS = [
   'ai-headshot-generator',
-  'design-agent',
   'open-pomelli',
   'remix-go',
   'vibe-workflow',

@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageStudio, VideoStudio, LipSyncStudio, CinemaStudio, MarketingStudio, WorkflowStudio, AgentStudio, AppsStudio } from 'studio';
+import { ImageStudio, VideoStudio, LipSyncStudio, CinemaStudio, MarketingStudio, WorkflowStudio, AgentStudio, AppsStudio, AudioStudio, AiClippingStudio } from 'studio';
 import { useState, useEffect } from 'react';
 
 const TABS = [
@@ -9,6 +9,8 @@ const TABS = [
   { id: 'lipsync', label: 'Lip Sync' },
   { id: 'cinema', label: 'Cinema Studio' },
   { id: 'marketing', label: 'Marketing Studio' },
+  { id: 'audio', label: 'Audio Studio' },
+  { id: 'clipping', label: 'AI Clipping' },
   { id: 'workflows', label: 'Workflows' },
   { id: 'agents', label: 'Agents' },
   { id: 'apps', label: 'Explore Apps' },
@@ -67,6 +69,8 @@ export default function StudioPage({ params }) {
         {activeTab === 'lipsync' && <LipSyncStudio apiKey={apiKey} />}
         {activeTab === 'cinema' && <CinemaStudio apiKey={apiKey} />}
         {activeTab === 'marketing' && <MarketingStudio apiKey={apiKey} />}
+        {activeTab === 'audio' && <AudioStudio apiKey={apiKey} />}
+        {activeTab === 'clipping' && <AiClippingStudio apiKey={apiKey} />}
         {activeTab === 'workflows' && <WorkflowStudio apiKey={apiKey} />}
         {activeTab === 'agents' && <AgentStudio apiKey={apiKey} />}
         {activeTab === 'apps' && <AppsStudio apiKey={apiKey} />}

@@ -8085,3 +8085,31 @@ export const imageLipSyncModels = lipsyncModels.filter(m => m.category === 'imag
 export const videoLipSyncModels = lipsyncModels.filter(m => m.category === 'video');
 
 export const getV2VModelById = (id) => v2vModels.find(m => m.id === id);
+
+// ─── Audio Models ────────────────────────────────────────────────────────────
+export const audioModels = [
+  {
+    id: 'music-1',
+    name: 'Music Generator',
+    endpoint: 'text-to-audio',
+    hasPrompt: true,
+    supportsStyles: true
+  },
+  {
+    id: 'speech-1',
+    name: 'Speech Synthesis',
+    endpoint: 'text-to-audio',
+    hasPrompt: true,
+    supportsStyles: false
+  }
+];
+
+// ─── Design Agent Models ───────────────────────────────────────────────────────
+export const designAgentModels = [
+  {
+    id: 'design-agent',
+    name: 'Design Agent',
+    endpoint: 'creative-agent',
+    description: 'AI-powered design canvas for image and video generation'
+  }
+];

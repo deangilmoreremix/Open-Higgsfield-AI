@@ -13,3 +13,5 @@ export const appManifest = {
 };
 
 export default appManifest;
+
+export default appManifest;

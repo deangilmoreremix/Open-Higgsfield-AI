@@ -740,8 +740,170 @@ const muapi = {
     handleServerSideProxy,
     calculateDynamicCost,
     registerAppInterest,
-    getAppInterests
+    getAppInterests,
+    // Design Agent API functions
+    getDesignAgentSessions,
+    createDesignAgentSession,
+    getDesignAgentSessionAssets,
+    getDesignAgentSessionMessages,
+    sendDesignAgentMessage,
+    getDesignAgentJobs,
+    createDesignAgentAsset,
+    getTemplateDesignAgents,
+    runDesignAgentSkill,
 };
+
+// ─── Design Agent API ───────────────────────────────────────────────────────────
+const DESIGN_AGENT_BASE = `${BASE_URL}/api/v1/creative-agent`;
+
+export async function getDesignAgentSessions(apiKey) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to fetch design agent sessions: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function createDesignAgentSession(apiKey, name) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        },
+        body: JSON.stringify({ name })
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to create design agent session: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function getDesignAgentSessionAssets(apiKey, sessionId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/assets`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to fetch session assets: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function getDesignAgentSessionMessages(apiKey, sessionId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/messages`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to fetch session messages: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function sendDesignAgentMessage(apiKey, sessionId, message, model = 'gpt-5-mini', messagesSnapshot = [], canvasState = {}) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/chat`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+            message,
+            model,
+            messages_snapshot: messagesSnapshot,
+            canvas_state: canvasState
+        })
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to send design agent message: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function getDesignAgentJobs(apiKey, sessionId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/jobs`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to fetch design agent jobs: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function createDesignAgentAsset(apiKey, sessionId, url, kind, sourceTool = 'upload', prompt = '') {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/assets`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+            url,
+            kind,
+            source_tool: sourceTool,
+            prompt
+        })
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to create design agent asset: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function getTemplateDesignAgents(apiKey) {
+    const response = await fetch(`${BASE_URL}/api/v1/agent-skills`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to fetch template design agents: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function runDesignAgentSkill(apiKey, sessionId, skillName, inputs, model = 'gpt-5-mini', messagesSnapshot = []) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/run-skill`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+            skill_name: skillName,
+            inputs,
+            model,
+            messages_snapshot: messagesSnapshot
+        })
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to run design agent skill: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
 
 class MuapiClient {
     async generateImage(params) {
