@@ -751,6 +751,13 @@ const muapi = {
     createDesignAgentAsset,
     getTemplateDesignAgents,
     runDesignAgentSkill,
+    getDesignAgentJobEvents,
+    approveDesignAgentJob,
+    rejectDesignAgentJob,
+    cancelDesignAgentJob,
+    getDesignAgentUploadUrl,
+    updateDesignAgentSessionMessages,
+    deleteDesignAgentSession,
 };
 
 // ─── Design Agent API ───────────────────────────────────────────────────────────
@@ -901,6 +908,113 @@ export async function runDesignAgentSkill(apiKey, sessionId, skillName, inputs, 
     if (!response.ok) {
         const errText = await response.text();
         throw new Error(`Failed to run design agent skill: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+// Job management for Design Agent
+export async function getDesignAgentJobEvents(apiKey, jobId, since = 0, limit = 200) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/jobs/${jobId}/events?since=${since}&limit=${limit}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to fetch job events: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function approveDesignAgentJob(apiKey, jobId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/jobs/${jobId}/approve`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to approve job: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function rejectDesignAgentJob(apiKey, jobId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/jobs/${jobId}/reject`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to reject job: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+export async function cancelDesignAgentJob(apiKey, jobId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/jobs/${jobId}/cancel`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to cancel job: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+// File upload URL for Design Agent
+export async function getDesignAgentUploadUrl(apiKey, filename) {
+    const response = await fetch(`/api/app/get_file_upload_url?filename=${encodeURIComponent(filename)}`, {
+        headers: {
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to get upload URL: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+// Update session messages
+export async function updateDesignAgentSessionMessages(apiKey, sessionId, messages) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}/messages`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        },
+        body: JSON.stringify({ messages })
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to update session messages: ${response.status} - ${errText.slice(0, 100)}`);
+    }
+    return await response.json();
+}
+
+// Delete session
+export async function deleteDesignAgentSession(apiKey, sessionId) {
+    const response = await fetch(`${DESIGN_AGENT_BASE}/sessions/${sessionId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to delete session: ${response.status} - ${errText.slice(0, 100)}`);
     }
     return await response.json();
 }

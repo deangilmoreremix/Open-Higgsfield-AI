@@ -7,7 +7,11 @@ export { default as CinemaStudio } from './src/components/CinemaStudio.jsx';
 export { default as MarketingStudio } from './src/components/MarketingStudio.jsx';
 export { default as WorkflowStudio } from './src/components/WorkflowStudio.jsx';
 export { default as AgentStudio } from './src/components/AgentStudio.jsx';
-export { default as DesignAgentStudio } from './src/components/DesignAgentStudio.jsx';
+// DesignAgentStudio requires external design-agent package
+// DesignAgentStudioFull is a standalone implementation using the Creative Agent API
+export { default as DesignAgentStudioFull } from './src/components/DesignAgentStudioFull.jsx';
+// Alias for backward compatibility - uses the full implementation
+export { default as DesignAgentStudio } from './src/components/DesignAgentStudioFull.jsx';
 export { default as AppsStudio } from './src/components/AppsStudio.jsx';
 export { default as McpCliStudio } from './src/components/McpCliStudio.jsx';
 export { default as AudioStudio } from './src/components/AudioStudio.jsx';
