@@ -1,15 +1,15 @@
 export const appManifest = {
   id: 'remix-go',
   name: 'Remix Go',
-  description: 'Quick AI video remix and editing tool',
+  description: 'Quick AI video remix tool',
   icon: 'Scissors',
   category: 'video',
   route: '/remix-go',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['projects', 'video-generation', 'quick-remix'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;
