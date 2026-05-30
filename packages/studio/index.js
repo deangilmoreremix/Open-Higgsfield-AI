@@ -10,4 +10,6 @@ export { default as AgentStudio } from './src/components/AgentStudio.jsx';
 export { default as DesignAgentStudio } from './src/components/DesignAgentStudio.jsx';
 export { default as AppsStudio } from './src/components/AppsStudio.jsx';
 export { default as McpCliStudio } from './src/components/McpCliStudio.jsx';
+export { default as AudioStudio } from './src/components/AudioStudio.jsx';
+export { default as AiClippingStudio } from './src/components/AiClippingStudio.jsx';
 export * from './src/muapi.js';
