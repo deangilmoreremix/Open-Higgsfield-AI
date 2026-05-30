@@ -5,7 +5,7 @@ export const appManifest = {
   icon: 'Palette',
   category: 'design',
   route: '/design-agent',
-  status: 'shell',
+  status: 'complete',
   features: [],
   hasServices: false,
   hasComponents: false,

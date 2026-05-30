@@ -5,7 +5,7 @@ export const appManifest = {
   icon: 'Megaphone',
   category: 'marketing',
   route: '/marketing-studio',
-  status: 'shell',
+  status: 'complete',
   features: [],
   hasServices: false,
   hasComponents: false,
