@@ -1,14 +1,11 @@
 "use client";
 
-import { WorkflowBuilder } from 'workflow-builder';
+import { WorkflowStudio } from 'studio';
 
 export default function WorkflowTabPage({ params }) {
   return (
     <div className="h-screen bg-black">
-      <WorkflowBuilder 
-        workflowId={params?.id} 
-        initialTab={params?.tab} 
-      />
+      <WorkflowStudio apiKey={null} />
     </div>
   );
 }

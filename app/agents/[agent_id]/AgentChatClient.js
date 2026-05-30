@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
+import { AgentStudio } from 'studio';
 
 const STORAGE_KEY = "muapi_key";
 
 export default function AgentChatClient({ agentDetails, initialHistory, userData }) {
+  const [apiKey, setApiKey] = useState(null);
   const interceptorRef = useRef(null);
-
+  
   useEffect(() => {
     const getKey = () => {
       if (typeof window === "undefined") return null;
@@ -16,48 +18,54 @@ export default function AgentChatClient({ agentDetails, initialHistory, userData
       const match = document.cookie.match(/muapi_key=([^;]+)/);
       return match ? match[1] : null;
     };
-
-    const apiKey = getKey();
-    if (!apiKey) return;
-
+    
+    const key = getKey();
+    if (key) setApiKey(key);
+  }, []);
+  
+  useEffect(() => {
+    const key = apiKey || (typeof window !== "undefined" && localStorage.getItem(STORAGE_KEY));
+    if (!key) return;
     interceptorRef.current = axios.interceptors.request.use((config) => {
       const isRelative = config.url.startsWith("/") || !config.url.startsWith("http");
       const isInternalProxy = config.url.includes('/api/app') || config.url.includes('/api/workflow') || config.url.includes('/api/agents') || config.url.includes('/api/api') || config.url.includes('/api/v1');
-      
       if (isRelative || isInternalProxy) {
-        config.headers["x-api-key"] = apiKey;
+        config.headers["x-api-key"] = key;
       }
       return config;
     });
-
     return () => {
       if (interceptorRef.current !== null) {
         axios.interceptors.request.eject(interceptorRef.current);
       }
     };
-  }, []);
+  }, [apiKey]);
 
-  const useUser = useCallback(
-    () => ({
-      user: {
-        username: userData?.email?.split("@")[0] || "Studio User",
-        name: userData?.email?.split("@")[0] || "Studio User",
-        email: userData?.email || null,
-        profile_photo: null,
-        balance: userData?.balance || 0,
-      },
-      isAuthorized: !!userData,
-    }),
-    [userData]
-  );
+  if (!apiKey) {
+    return (
+      <div className="h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-white mb-4">Please set your MuAPI key in localStorage</h2>
+          <button 
+            className="bg-white text-black px-4 py-2 rounded"
+            onClick={() => {
+              const key = prompt('Enter MuAPI Key:');
+              if (key) {
+                localStorage.setItem('muapi_key', key);
+                setApiKey(key);
+              }
+            }}
+          >
+            Enter API Key
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-black">
-      <div className="text-center">
-        <h2 className="text-white mb-4">Agent Chat</h2>
-        <p className="text-white/60">Agent: {agentDetails?.id || 'Unknown'}</p>
-        <p className="text-white/40 text-sm mt-2">The AI Agent library will be loaded here</p>
-      </div>
+    <div className="h-screen bg-[#030303] flex flex-col overflow-hidden text-white">
+      <AgentStudio apiKey={apiKey} />
     </div>
   );
 }

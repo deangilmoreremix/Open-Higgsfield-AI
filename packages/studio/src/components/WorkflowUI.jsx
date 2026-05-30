@@ -1,24 +1,23 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { WorkflowBuilder } from "workflow-builder";
-import "reactflow/dist/style.css";
-import "react-toastify/dist/ReactToastify.css";
-import "workflow-builder/dist/tailwind.css";
+import { WorkflowStudio, getWorkflowInputs, getAllNodeSchemas, getWorkflowData, getUserWorkflows } from "studio";
+import { useState } from "react";
 
-const WorkflowUI = ({ workflowId, initialNodeSchemas, initialWorkflowData }) => {
+const WorkflowUI = ({ workflowId }) => {
+  const [apiKey, setApiKey] = useState(null);
+  
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('muapi_key');
+      if (stored) setApiKey(stored);
+    }
     sessionStorage.setItem("fromWorkflowBuilder", "true");
   }, []);
 
   return (
     <div className="w-full h-full bg-black">
-      <WorkflowBuilder 
-        workflowId={workflowId}
-        initialNodeSchemas={initialNodeSchemas} 
-        initialWorkflowData={initialWorkflowData}
-        costType="dollars" 
-      />
+      <WorkflowStudio apiKey={apiKey} />
     </div>
   );
 };

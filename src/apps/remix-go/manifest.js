@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'Scissors',
   category: 'video',
   route: '/remix-go',
-  status: 'shell',
+  status: 'complete',
   features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

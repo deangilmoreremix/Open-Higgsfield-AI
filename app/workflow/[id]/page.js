@@ -1,11 +1,11 @@
 "use client";
 
-import { WorkflowBuilder } from 'workflow-builder';
+import { WorkflowStudio } from 'studio';
 
 export default function WorkflowPage({ params }) {
   return (
     <div className="h-screen bg-black">
-      <WorkflowBuilder workflowId={params?.id} />
+      <WorkflowStudio apiKey={null} />
     </div>
   );
 }
