@@ -13,6 +13,7 @@ const KNOWN_COMPLETE_APPS = [
   { id: 'agents', name: 'AI Agents', description: 'Autonomous agents with memory and tool use', category: 'ai', route: '/agents', status: 'complete', icon: '🤖' },
   { id: 'studio', name: 'Studio', description: 'Unified professional workspace', category: 'core', route: '/studio', status: 'complete', icon: '🎨' },
   { id: 'marketing-studio', name: 'Marketing Studio', description: 'Campaign generation and social content tools', category: 'marketing', route: '/marketing-studio', status: 'complete', icon: '📈' },
+  { id: 'lipsync', name: 'Lip Sync Studio', description: 'Animate portraits or sync lips to audio with AI', category: 'vfx', route: '/lipsync', status: 'complete', icon: '🎙️' },
 ];
 
 const SHELL_APP_DIRS = [
