@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 
-// Custom CORS middleware for strict origin validation
 function corsMiddleware() {
   const allowedOrigins = [
     'http://localhost:8080',
@@ -16,7 +15,6 @@ function corsMiddleware() {
       server.middlewares.use((req, res, next) => {
         const origin = req.headers.origin;
 
-        // Handle preflight requests
         if (req.method === 'OPTIONS') {
           if (allowedOrigins.includes(origin)) {
             res.setHeader('Access-Control-Allow-Origin', origin);
@@ -30,7 +28,6 @@ function corsMiddleware() {
           return;
         }
 
-        // Validate origin for actual requests
         if (origin && allowedOrigins.includes(origin)) {
           res.setHeader('Access-Control-Allow-Origin', origin);
           res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -41,12 +38,6 @@ function corsMiddleware() {
     }
   };
 }
-
-const SRI_HASHES = {
-  'framer-motion': 'sha384-y5ggJt9rA+5N/oXsznF6f0tNhMzQAj+8iyLHOC3WgdDyQ9dAb5OQcHvRl/bL/bu0',
-  'lucide-react': 'sha384-H/rlrUvAgLM+jJQDAG/lcGRGebjEnNb2IRTPJeX8bXCc8NoL/NOLpc2kUJp/FtGy',
-  'canvas-confetti': 'sha384-JSZXO0kKYHTylAsDYTb+7Kg2eUyalm19b8Pydcdf8sQ1cCKYZr9lLahoKT9+LFY5kQSGR'
-};
 
 const PRODUCTION_CSP = [
   "default-src 'self'",
@@ -83,17 +74,12 @@ export default defineConfig({
     root: './',
     publicDir: 'public',
     optimizeDeps: {
-        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent', 'design-agent'],
-        esbuildOptions: {
-          loader: {
-            '.js': 'js'
-          }
-        }
-    },
+        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent', 'design-agent', 'studio'],
+     },
     esbuild: {
-          include: ['src/**/*.{js,jsx,ts,tsx}'],
-          exclude: ['src/components/EffectsStudio.js', 'src/components/TimelineEditorPage.jsx', 'director/**/*', 'external-repos/**/*', 'modules/**/*', 'node_modules/workflow-builder/**/*', 'node_modules/ai-agent/**/*', 'node_modules/design-agent/**/*']
-      },
+        include: ['src/**/*.{js,jsx,ts,tsx}'],
+        exclude: ['src/components/EffectsStudio.js', 'src/components/TimelineEditorPage.jsx', 'director/**/*', 'external-repos/**/*', 'modules/**/*', 'node_modules/workflow-builder/**/*', 'node_modules/ai-agent/**/*', 'node_modules/design-agent/**/*']
+     },
     resolve: {
       alias: {
         studio: path.resolve(__dirname, './packages/studio')

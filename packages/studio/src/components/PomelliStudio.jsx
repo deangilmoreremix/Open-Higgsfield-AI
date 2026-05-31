@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { generateImage, generateI2V, uploadFile, generateI2I } from "../muapi.js";
 
 // Photo Studio presets (6 categories × 5 styles = 30 styles)
@@ -44,7 +44,7 @@ const PHOTO_STYLES = [
 ];
 
 export default function PomelliStudio({ apiKey, onGenerationComplete }) {
-  const [activeTab, setActiveTab] = useState("brand"); // 'brand' | 'campaign' | 'photo-studio' | 'animate'
+  const [activeTab, setActiveTab] = useState("brand");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [brandDNA, setBrandDNA] = useState(null);
@@ -59,6 +59,16 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
   const [animateError, setAnimateError] = useState(null);
   const [videoHistory, setVideoHistory] = useState([]);
 
+  // Campaign state
+  const [campaignGoal, setCampaignGoal] = useState('');
+  const [campaignDirection, setCampaignDirection] = useState('');
+  const [generatingCampaign, setGeneratingCampaign] = useState(false);
+  const [campaignConcepts, setCampaignConcepts] = useState([]);
+
+  // Creative state
+  const [generatingCreative, setGeneratingCreative] = useState(null);
+  const [creativeResults, setCreativeResults] = useState({});
+
   // Analyze website
   const handleAnalyzeWebsite = async () => {
     if (!websiteUrl.trim()) return;
@@ -66,7 +76,6 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
     setBrandDNA(null);
     
     try {
-      // This would normally use Playwright on the server side
       const response = await fetch('/api/analyze-website', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
@@ -78,6 +87,46 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
       console.error("Website analysis failed:", err);
     } finally {
       setAnalyzing(false);
+    }
+  };
+
+  // Generate campaign concepts
+  const handleGenerateCampaign = async () => {
+    if (!campaignGoal || !brandDNA) return;
+    setGeneratingCampaign(true);
+    setCampaignConcepts([]);
+    
+    try {
+      const response = await fetch('/api/pomelli/campaign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal: campaignGoal, direction: campaignDirection, brandDNA })
+      });
+      const concepts = await response.json();
+      setCampaignConcepts(concepts);
+    } catch (err) {
+      console.error("Campaign generation failed:", err);
+    } finally {
+      setGeneratingCampaign(false);
+    }
+  };
+
+  // Generate platform creative
+  const handleGenerateCreative = async (format, concept) => {
+    setGeneratingCreative(format);
+    
+    try {
+      const response = await fetch('/api/pomelli/creative', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ format, concept, brandDNA })
+      });
+      const result = await response.json();
+      setCreativeResults(prev => ({ ...prev, [format]: result }));
+    } catch (err) {
+      console.error("Creative generation failed:", err);
+    } finally {
+      setGeneratingCreative(null);
     }
   };
 
@@ -331,19 +380,66 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
         )}
 
         {activeTab === 'campaign' && (
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="max-w-7xl mx-auto space-y-6">
             <h2 className="text-2xl font-bold">Campaign Generator</h2>
             <p className="text-white/60">Generate on-brand marketing campaigns using extracted brand DNA</p>
             
             {brandDNA ? (
-              <div className="p-6 bg-white/5 rounded-xl border border-white/10">
-                <p className="text-sm text-white/80 mb-4">Campaign generation will use your extracted brand DNA from {brandDNA.url}</p>
+              <div className="space-y-6">
+                {/* Campaign Goal Selection */}
+                <div>
+                  <h3 className="text-xs font-bold text-primary uppercase mb-2">Campaign Goal</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      { id: 'product-launch', name: 'Product Launch', desc: 'Introduce new products' },
+                      { id: 'lead-gen', name: 'Lead Generation', desc: 'Capture potential customers' },
+                      { id: 'awareness', name: 'Awareness', desc: 'Build brand recognition' },
+                      { id: 'engagement', name: 'Engagement', desc: 'Drive interaction' },
+                      { id: 'thought-leadership', name: 'Thought Leadership', desc: 'Establish expertise' },
+                      { id: 'sales', name: 'Sales', desc: 'Direct selling' }
+                    ].map(goal => (
+                      <button
+                        key={goal.id}
+                        onClick={() => setCampaignGoal(goal.id)}
+                        className={`p-4 rounded-lg border transition-all ${
+                          campaignGoal === goal.id ? 'border-primary bg-primary/10' : 'border-white/10 bg-white/5'
+                        }`}
+                      >
+                        <div className="font-bold text-sm">{goal.name}</div>
+                        <div className="text-xs text-white/40">{goal.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <textarea
+                  value={campaignDirection}
+                  onChange={(e) => setCampaignDirection(e.target.value)}
+                  placeholder="Optional: Add campaign direction..."
+                  className="w-full h-20 bg-white/5 border border-white/10 rounded-lg p-3 text-white"
+                />
+
                 <button
-                  disabled
-                  className="px-6 py-2 bg-white/10 text-white/40 rounded-lg font-bold text-xs uppercase tracking-widest cursor-not-allowed"
+                  onClick={handleGenerateCampaign}
+                  disabled={generatingCampaign || !campaignGoal}
+                  className="px-6 py-3 bg-primary text-black rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-white disabled:opacity-50"
                 >
-                  Generate Campaign (Coming Soon)
+                  {generatingCampaign ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : 'Generate Campaign Concepts'}
                 </button>
+
+                {campaignConcepts.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-bold mb-4">Generated Concepts</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {campaignConcepts.map((concept, idx) => (
+                        <div key={idx} className="p-4 bg-white/5 rounded-lg border border-white/10">
+                          <div className="font-bold text-sm">{concept.title || `Concept ${idx + 1}`}</div>
+                          <div className="text-xs text-white/60 mt-1">{concept.angle}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <p className="text-white/40">Analyze a website first to enable campaign generation.</p>
