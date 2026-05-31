@@ -379,73 +379,129 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
           </div>
         )}
 
-        {activeTab === 'campaign' && (
-          <div className="max-w-7xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold">Campaign Generator</h2>
-            <p className="text-white/60">Generate on-brand marketing campaigns using extracted brand DNA</p>
-            
-            {brandDNA ? (
-              <div className="space-y-6">
-                {/* Campaign Goal Selection */}
-                <div>
-                  <h3 className="text-xs font-bold text-primary uppercase mb-2">Campaign Goal</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {[
-                      { id: 'product-launch', name: 'Product Launch', desc: 'Introduce new products' },
-                      { id: 'lead-gen', name: 'Lead Generation', desc: 'Capture potential customers' },
-                      { id: 'awareness', name: 'Awareness', desc: 'Build brand recognition' },
-                      { id: 'engagement', name: 'Engagement', desc: 'Drive interaction' },
-                      { id: 'thought-leadership', name: 'Thought Leadership', desc: 'Establish expertise' },
-                      { id: 'sales', name: 'Sales', desc: 'Direct selling' }
-                    ].map(goal => (
-                      <button
-                        key={goal.id}
-                        onClick={() => setCampaignGoal(goal.id)}
-                        className={`p-4 rounded-lg border transition-all ${
-                          campaignGoal === goal.id ? 'border-primary bg-primary/10' : 'border-white/10 bg-white/5'
-                        }`}
-                      >
-                        <div className="font-bold text-sm">{goal.name}</div>
-                        <div className="text-xs text-white/40">{goal.desc}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+{activeTab === 'campaign' && (
+           <div className="max-w-7xl mx-auto space-y-6">
+             <h2 className="text-2xl font-bold">Campaign Generator</h2>
+             <p className="text-white/60">Generate on-brand marketing campaigns using extracted brand DNA</p>
+             
+             {brandDNA ? (
+               <div className="space-y-6">
+                 {/* Campaign Goal Selection */}
+                 <div>
+                   <h3 className="text-xs font-bold text-primary uppercase mb-2">Campaign Goal</h3>
+                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                     {[
+                       { id: 'product-launch', name: 'Product Launch', desc: 'Introduce new products' },
+                       { id: 'lead-gen', name: 'Lead Generation', desc: 'Capture potential customers' },
+                       { id: 'awareness', name: 'Awareness', desc: 'Build brand recognition' },
+                       { id: 'engagement', name: 'Engagement', desc: 'Drive interaction' },
+                       { id: 'thought-leadership', name: 'Thought Leadership', desc: 'Establish expertise' },
+                       { id: 'sales', name: 'Sales', desc: 'Direct selling' }
+                     ].map(goal => (
+                       <button
+                         key={goal.id}
+                         onClick={() => setCampaignGoal(goal.id)}
+                         className={`p-4 rounded-lg border transition-all ${
+                           campaignGoal === goal.id ? 'border-primary bg-primary/10' : 'border-white/10 bg-white/5'
+                         }`}
+                       >
+                         <div className="font-bold text-sm">{goal.name}</div>
+                         <div className="text-xs text-white/40">{goal.desc}</div>
+                       </button>
+                     ))}
+                   </div>
+                 </div>
 
-                <textarea
-                  value={campaignDirection}
-                  onChange={(e) => setCampaignDirection(e.target.value)}
-                  placeholder="Optional: Add campaign direction..."
-                  className="w-full h-20 bg-white/5 border border-white/10 rounded-lg p-3 text-white"
-                />
+                 <textarea
+                   value={campaignDirection}
+                   onChange={(e) => setCampaignDirection(e.target.value)}
+                   placeholder="Optional: Add campaign direction..."
+                   className="w-full h-20 bg-white/5 border border-white/10 rounded-lg p-3 text-white"
+                 />
 
-                <button
-                  onClick={handleGenerateCampaign}
-                  disabled={generatingCampaign || !campaignGoal}
-                  className="px-6 py-3 bg-primary text-black rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-white disabled:opacity-50"
-                >
-                  {generatingCampaign ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : 'Generate Campaign Concepts'}
-                </button>
+                 <button
+                   onClick={handleGenerateCampaign}
+                   disabled={generatingCampaign || !campaignGoal}
+                   className="px-6 py-3 bg-primary text-black rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-white disabled:opacity-50"
+                 >
+                   {generatingCampaign ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : 'Generate Campaign Concepts'}
+                 </button>
 
-                {campaignConcepts.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-bold mb-4">Generated Concepts</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {campaignConcepts.map((concept, idx) => (
-                        <div key={idx} className="p-4 bg-white/5 rounded-lg border border-white/10">
-                          <div className="font-bold text-sm">{concept.title || `Concept ${idx + 1}`}</div>
-                          <div className="text-xs text-white/60 mt-1">{concept.angle}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <p className="text-white/40">Analyze a website first to enable campaign generation.</p>
-            )}
-          </div>
-        )}
+                 {campaignConcepts.length > 0 && (
+                   <div>
+                     <h3 className="text-lg font-bold mb-4">Generated Concepts</h3>
+                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                       {campaignConcepts.map((concept, idx) => (
+                         <div key={idx} className="p-4 bg-white/5 rounded-lg border border-white/10">
+                           <div className="font-bold text-sm">{concept.title || `Concept ${idx + 1}`}</div>
+                           <div className="text-xs text-white/60 mt-1">{concept.angle}</div>
+                         </div>
+                       ))}
+                     </div>
+                     
+                     {/* Platform Creative Generation - using first concept */}
+                     <div className="mt-8">
+                       <h3 className="text-lg font-bold mb-4">Platform Creatives</h3>
+                       <div className="space-y-4">
+                         <div className="text-xs font-bold text-white/60">
+                           Generate creatives for: {campaignConcepts[0]?.title || 'Selected Concept'}
+                         </div>
+                         
+                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                           {[
+                             { id: 'instagram', name: 'Instagram Post', ar: '1:1' },
+                             { id: 'linkedin', name: 'LinkedIn', ar: '16:9' },
+                             { id: 'facebook', name: 'Facebook', ar: '16:9' },
+                             { id: 'twitter', name: 'X/Twitter', ar: '16:9' },
+                             { id: 'youtube', name: 'YouTube', ar: '16:9' },
+                             { id: 'tiktok', name: 'TikTok', ar: '9:16' },
+                             { id: 'email', name: 'Email Header', ar: '2:1' },
+                             { id: 'web', name: 'Web Banner', ar: '728:90' },
+                           ].map(platform => (
+                             <div key={platform.id} className="space-y-2">
+                               <div className="aspect-square bg-white/5 rounded-lg border border-white/10 overflow-hidden flex items-center justify-center">
+                                 {creativeResults[platform.id] ? (
+                                   <img
+                                     src={creativeResults[platform.id].url}
+                                     alt={platform.name}
+                                     className="w-full h-full object-cover"
+                                   />
+                                 ) : (
+                                   <div className="text-center p-2">
+                                     <div className="text-xs font-bold text-white/60">{platform.name}</div>
+                                     <div className="text-[10px] text-white/40">{platform.ar}</div>
+                                   </div>
+                                 )}
+                               </div>
+                               
+                               <button
+                                 onClick={() => handleGenerateCreative(platform.id, campaignConcepts[0])}
+                                 disabled={generatingCreative === platform.id || !campaignConcepts[0]}
+                                 className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs font-bold hover:bg-white/10 transition-all disabled:opacity-50"
+                               >
+                                 {generatingCreative === platform.id ? (
+                                   <div className="flex items-center justify-center">
+                                     <div className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                   </div>
+                                 ) : creativeResults[platform.id] ? (
+                                   'Regenerate'
+                                 ) : (
+                                   'Generate'
+                                 )}
+                               </button>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 )}
+               </div>
+             ) : (
+               <p className="text-white/40">Analyze a website first to enable campaign generation.</p>
+             )}
+           </div>
+         )}
       </div>
     </div>
   );

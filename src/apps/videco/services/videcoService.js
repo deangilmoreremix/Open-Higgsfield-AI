@@ -1,5 +1,5 @@
 // src/apps/videco/services/videcoService.js
-import { supabase } from '../../../lib/supabase-client.ts';
+import { supabase } from '../../../lib/hybrid-supabase-lazy.js';
 
 export const videcoService = {
   async trackVideoView(videoId, metadata = {}) {

@@ -2518,3 +2518,66 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 COMMENT ON FUNCTION get_tenant_storage_usage IS 'Calculate total storage usage per bucket for a tenant';
 COMMENT ON FUNCTION check_storage_quota IS 'Check if tenant is within their storage quota limit';
 COMMENT ON FUNCTION cleanup_orphaned_storage_files IS 'Remove files that no longer have database records';
+
+-- ============================================================
+-- Videco AI Platform Tables
+-- ============================================================
+
+-- Videco video tracking table
+CREATE TABLE IF NOT EXISTS videco_videos (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_key text NOT NULL,
+  template_id text NOT NULL,
+  prompt text NOT NULL,
+  output_url text NOT NULL,
+  thumbnail_url text,
+  duration int,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE videco_videos ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own videco videos"
+  ON videco_videos FOR SELECT
+  TO anon
+  USING (user_key = current_setting('request.headers', true)::json->>'x-user-key');
+
+CREATE POLICY "Users can insert own videco videos"
+  ON videco_videos FOR INSERT
+  TO anon
+  WITH CHECK (user_key != '');
+
+CREATE INDEX IF NOT EXISTS idx_videco_videos_user_key ON videco_videos(user_key);
+CREATE INDEX IF NOT EXISTS idx_videco_videos_template_id ON videco_videos(template_id);
+CREATE INDEX IF NOT EXISTS idx_videco_videos_created_at ON videco_videos(created_at DESC);
+
+-- Videco video views analytics table
+CREATE TABLE IF NOT EXISTS videco_video_views (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  video_id uuid NOT NULL REFERENCES videco_videos(id) ON DELETE CASCADE,
+  viewed_at timestamptz DEFAULT now(),
+  ip_address text,
+  user_agent text,
+  referrer text,
+  metadata jsonb DEFAULT '{}'::jsonb
+);
+
+ALTER TABLE videco_video_views ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own video views"
+  ON videco_video_views FOR SELECT
+  TO anon
+  USING (
+    video_id IN (
+      SELECT id FROM videco_videos 
+      WHERE user_key = current_setting('request.headers', true)::json->>'x-user-key'
+    )
+  );
+
+CREATE POLICY "Users can insert video views"
+  ON videco_video_views FOR INSERT
+  TO anon
+  WITH CHECK (true);
+
+CREATE INDEX IF NOT EXISTS idx_videco_video_views_video_id ON videco_video_views(video_id);
+CREATE INDEX IF NOT EXISTS idx_videco_video_views_viewed_at ON videco_video_views(viewed_at DESC);

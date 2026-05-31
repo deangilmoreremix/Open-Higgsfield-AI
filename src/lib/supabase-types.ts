@@ -146,6 +146,28 @@ export interface MuapiWorkflow {
   created_at: string;
 }
 
+// Videco AI Platform types
+export interface VidecoVideo {
+  id: string;
+  user_key: string;
+  template_id: string;
+  prompt: string;
+  output_url: string;
+  thumbnail_url: string | null;
+  duration: number | null;
+  created_at: string;
+}
+
+export interface VidecoVideoView {
+  id: string;
+  video_id: string;
+  viewed_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  referrer: string | null;
+  metadata: Record<string, any>;
+}
+
 // Database schema type
 export interface Database {
   public: {
@@ -204,6 +226,16 @@ export interface Database {
         Row: MuapiWorkflow;
         Insert: MuapiWorkflow;
         Update: Partial<MuapiWorkflow>;
+      };
+      videco_videos: {
+        Row: VidecoVideo;
+        Insert: VidecoVideo;
+        Update: Partial<VidecoVideo>;
+      };
+      videco_video_views: {
+        Row: VidecoVideoView;
+        Insert: VidecoVideoView;
+        Update: Partial<VidecoVideoView>;
       };
     };
     Views: {};

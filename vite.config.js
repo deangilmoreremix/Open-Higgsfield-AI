@@ -1,6 +1,20 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 
+// Plugin to exclude packages/studio and src/apps from rollup analysis
+function excludeStudioPlugin() {
+  return {
+    name: 'exclude-studio',
+    enforce: 'pre',
+    resolveId(source, importer) {
+      // Block resolution of these directories during build
+      if (source.includes('packages/studio') || source.includes('src/apps/remix-go')) {
+        return { id: source, external: true };
+      }
+    }
+  };
+}
+
 function corsMiddleware() {
   const allowedOrigins = [
     'http://localhost:8080',
@@ -70,16 +84,16 @@ const DEVELOPMENT_CSP = [
 ].join('; ');
 
 export default defineConfig({
-    plugins: [corsMiddleware()],
+     plugins: [corsMiddleware(), excludeStudioPlugin()],
     root: './',
     publicDir: 'public',
-    optimizeDeps: {
-        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent', 'design-agent', 'studio'],
-     },
-    esbuild: {
-        include: ['src/**/*.{js,jsx,ts,tsx}'],
-        exclude: ['src/components/EffectsStudio.js', 'src/components/TimelineEditorPage.jsx', 'director/**/*', 'external-repos/**/*', 'modules/**/*', 'node_modules/workflow-builder/**/*', 'node_modules/ai-agent/**/*', 'node_modules/design-agent/**/*']
-     },
+optimizeDeps: {
+         exclude: ['src/components/EffectsStudio.js', 'src/apps/remix-go/index.jsx', 'workflow-builder', 'ai-agent', 'design-agent', 'studio'],
+      },
+     esbuild: {
+         include: ['src/**/*.{js,jsx,ts,tsx}'],
+         exclude: ['src/components/EffectsStudio.js', 'src/components/TimelineEditorPage.jsx', 'packages/studio/**/*', 'director/**/*', 'external-repos/**/*', 'modules/**/*', 'node_modules/workflow-builder/**/*', 'node_modules/ai-agent/**/*', 'node_modules/design-agent/**/*']
+      },
     resolve: {
       alias: {
         studio: path.resolve(__dirname, './packages/studio')
@@ -125,19 +139,23 @@ export default defineConfig({
                 drop_debugger: true
             }
         },
-        rollupOptions: {
-            input: 'index.html',
-            output: {
-                manualChunks: (id) => {
-                    if (id.includes('@supabase/supabase-js')) {
-                        return 'vendor';
-                    }
-                },
-                entryFileNames: 'assets/[name]-[hash].js',
-                chunkFileNames: 'assets/[name]-[hash].js',
-                assetFileNames: 'assets/[name]-[hash].[ext]'
-            }
-        },
+rollupOptions: {
+             input: 'index.html',
+             onwarn: (warning, warn) => {
+               if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return; // Suppress "use client" warnings
+               warn(warning);
+             },
+             output: {
+                 manualChunks: (id) => {
+                     if (id.includes('@supabase/supabase-js')) {
+                         return 'vendor';
+                     }
+                 },
+                 entryFileNames: 'assets/[name]-[hash].js',
+                 chunkFileNames: 'assets/[name]-[hash].js',
+                 assetFileNames: 'assets/[name]-[hash].[ext]'
+             }
+         },
         sourcemap: process.env.NODE_ENV !== 'production',
         chunkSizeWarningLimit: 1000
     },
