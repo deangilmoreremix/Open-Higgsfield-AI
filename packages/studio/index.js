@@ -18,4 +18,5 @@ export { default as AudioStudio } from './src/components/AudioStudio.jsx';
 export { default as AiClippingStudio } from './src/components/AiClippingStudio.jsx';
 export { default as HeadshotStudio } from './src/components/HeadshotStudio.jsx';
 export { default as PomelliStudio } from './src/components/PomelliStudio.jsx';
+export { default as VidecoStudio } from './src/components/VidecoStudio.jsx';
 export * from './src/muapi.js';

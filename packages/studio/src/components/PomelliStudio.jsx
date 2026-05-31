@@ -44,7 +44,7 @@ const PHOTO_STYLES = [
 ];
 
 export default function PomelliStudio({ apiKey, onGenerationComplete }) {
-  const [activeTab, setActiveTab] = useState("dna"); // 'dna' | 'photo-studio' | 'animate' | 'campaign'
+  const [activeTab, setActiveTab] = useState("brand"); // 'brand' | 'campaign' | 'photo-studio' | 'animate'
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [brandDNA, setBrandDNA] = useState(null);
@@ -175,7 +175,7 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
       
       {/* Header Tabs */}
       <div className="h-14 border-b border-white/10 flex items-center px-6 gap-6">
-        {['dna', 'photo-studio', 'animate', 'campaign'].map(tab => (
+        {['brand', 'campaign', 'photo-studio', 'animate'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -190,7 +190,7 @@ export default function PomelliStudio({ apiKey, onGenerationComplete }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-8">
-        {activeTab === 'dna' && (
+        {activeTab === 'brand' && (
           <div className="max-w-3xl mx-auto space-y-6">
             <h2 className="text-2xl font-bold">Brand DNA Extractor</h2>
             <p className="text-white/60">Paste a website URL to analyze its brand elements</p>

@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { VideoStudio } from 'studio';
+import { PomelliStudio } from 'studio';
 import { appManifest } from './manifest';
 
 export default function OpenPomelliApp({ apiKey }) {
-  return React.createElement(VideoStudio, { apiKey });
+  return React.createElement(PomelliStudio, { apiKey });
 }
 
 export { appManifest } from './manifest';

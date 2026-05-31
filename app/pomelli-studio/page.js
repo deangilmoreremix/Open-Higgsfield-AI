@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { VideoStudio } from 'studio';
+import { PomelliStudio } from 'studio';
 
 export default function PomelliStudioPage() {
   const [apiKey, setApiKey] = useState(null);
@@ -37,7 +37,7 @@ export default function PomelliStudioPage() {
 
   return (
     <div className="h-screen bg-[#030303] flex flex-col overflow-hidden text-white">
-      <VideoStudio apiKey={apiKey} />
+      <PomelliStudio apiKey={apiKey} />
     </div>
   );
 }
