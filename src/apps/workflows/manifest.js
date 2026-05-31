@@ -4,12 +4,12 @@ export const appManifest = {
   description: 'Create and execute AI workflows',
   icon: 'Workflow',
   category: 'workflow',
-  route: '/studio/workflows',
+  route: '/workflows',
   status: 'complete',
   features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

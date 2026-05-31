@@ -4,12 +4,12 @@ export const appManifest = {
   description: 'Create and manage AI agents for automated workflows',
   icon: 'Bot',
   category: 'ai',
-  route: '/studio/agents',
+  route: '/agents',
   status: 'complete',
   features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

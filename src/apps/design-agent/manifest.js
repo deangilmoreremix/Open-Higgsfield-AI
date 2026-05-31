@@ -7,9 +7,9 @@ export const appManifest = {
   route: '/design-agent',
   status: 'complete',
   features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;
