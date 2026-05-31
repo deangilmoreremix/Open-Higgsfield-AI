@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { ImageStudio } from 'studio';
+import { HeadshotStudio } from 'studio';
 
 export default function HeadshotsPage() {
   const [apiKey, setApiKey] = useState(null);
@@ -37,7 +37,7 @@ export default function HeadshotsPage() {
 
   return (
     <div className="h-screen bg-[#030303] flex flex-col overflow-hidden text-white">
-      <ImageStudio apiKey={apiKey} />
+      <HeadshotStudio apiKey={apiKey} />
     </div>
   );
 }

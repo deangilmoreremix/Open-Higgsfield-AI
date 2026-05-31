@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { ImageStudio } from 'studio';
+import { HeadshotStudio } from 'studio';
 import { appManifest } from './manifest';
 
 export default function AIHeadshotGeneratorApp({ apiKey }) {
-  return React.createElement(ImageStudio, { apiKey });
+  return React.createElement(HeadshotStudio, { apiKey });
 }
 
 export { appManifest } from './manifest';

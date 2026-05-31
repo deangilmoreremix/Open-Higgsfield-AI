@@ -16,4 +16,5 @@ export { default as AppsStudio } from './src/components/AppsStudio.jsx';
 export { default as McpCliStudio } from './src/components/McpCliStudio.jsx';
 export { default as AudioStudio } from './src/components/AudioStudio.jsx';
 export { default as AiClippingStudio } from './src/components/AiClippingStudio.jsx';
+export { default as HeadshotStudio } from './src/components/HeadshotStudio.jsx';
 export * from './src/muapi.js';
