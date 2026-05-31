@@ -97,6 +97,7 @@ const pageLoaders = {
   'open-pomelli-studio': () => import('../components/OpenPomelliStudio.js').then(m => m.OpenPomelliStudio()),
   'vibe-workflow': () => import('../components/VibeWorkflowStudio.js').then(m => m.VibeWorkflowStudio()),
   'videco-ai-platform': () => import('../components/VidecoAIPlatform.js').then(m => m.VidecoAIPlatform()),
+  videco: () => import('../components/VidecoStudioWrapper.js').then(m => m.default),
   'ai-headshot-generator': () => import('../components/AIHeadshotGenerator.js').then(m => m.AIHeadshotGenerator()),
   'tiktok-carousel': () => import('../components/TikTokCarouselStudio.js').then(m => m.TikTokCarouselStudio()),
   'advanced-dubbing': () => import('../components/AdvancedDubbingStudio.js').then(m => m.AdvancedDubbingStudio()),

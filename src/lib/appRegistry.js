@@ -26,6 +26,7 @@ const KNOWN_COMPLETE_APPS = [
 const SHELL_APP_DIRS = [
   'ai-headshot-generator',
   'open-pomelli',
+  'videco',
   'remix-go',
   'agents',
   'workflows',
