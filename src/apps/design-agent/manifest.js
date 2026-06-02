@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'Palette',
   category: 'design',
   route: '/design-agent',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['design-generation', 'style-presets', 'canvas-editor'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'Camera',
   category: 'image',
   route: '/headshots',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['source-photo-upload', 'style-presets', 'batch-generation', 'library-save'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

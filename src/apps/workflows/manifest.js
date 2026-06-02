@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'Workflow',
   category: 'workflow',
   route: '/workflows',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['workflow-builder', 'preset-library', 'generation'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

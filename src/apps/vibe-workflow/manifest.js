@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'GitBranch',
   category: 'workflow',
   route: '/workflows',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['workflow-builder', 'template-library', 'muapi-integration', 'supabase-persistence', 'output-handoff'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

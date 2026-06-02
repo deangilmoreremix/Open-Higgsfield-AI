@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'Video',
   category: 'video',
   route: '/pomelli-studio',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['website-analysis', 'brand-dna-analyzer'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;

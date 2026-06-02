@@ -5,11 +5,11 @@ export const appManifest = {
   icon: 'Megaphone',
   category: 'marketing',
   route: '/marketing-studio',
-  status: 'shell',
-  features: [],
-  hasServices: false,
-  hasComponents: false,
-  hasAssets: false,
+  status: 'complete',
+  features: ['campaign-ideas', 'copy-generation'],
+  hasServices: true,
+  hasComponents: true,
+  hasAssets: true,
 };
 
 export default appManifest;
