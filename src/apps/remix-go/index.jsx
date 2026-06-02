@@ -1,41 +1,54 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { appManifest } from './manifest';
+import Timeline from './components/Timeline.jsx';
+import useProjectEditor from './hooks/useProjectEditor.js';
 
 export default function RemixGoApp() {
+  const [project, setProject] = useState({ name: 'Untitled Project', clips: [] });
+  const { addClip, removeClip, exportProject } = useProjectEditor(project, setProject);
+
   return React.createElement(
     'div',
-    { className: 'w-full h-full flex items-center justify-center bg-[#030303] p-8' },
+    { className: 'w-full h-full flex flex-col bg-[#030303] text-white' },
     React.createElement(
       'div',
-      { className: 'max-w-md w-full text-center' },
+      { className: 'p-6 border-b border-white/10' },
+      React.createElement('h1', { className: 'text-2xl font-bold text-white mb-2' }, appManifest.name),
+      React.createElement('p', { className: 'text-white/60' }, appManifest.description)
+    ),
+    React.createElement(
+      'div',
+      { className: 'flex-1 flex flex-col p-6' },
       React.createElement(
         'div',
-        {
-          className: 'w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#d9ff00]/10 flex items-center justify-center',
-        },
+        { className: 'mb-4 flex gap-3' },
+        React.createElement('input', {
+          type: 'text',
+          value: project.name,
+          onChange: e => setProject({ ...project, name: e.target.value }),
+          placeholder: 'Project name',
+          className: 'px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white'
+        }),
         React.createElement(
-          'svg',
-          { className: 'w-10 h-10 text-[#d9ff00]', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' },
-          React.createElement('path', {
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round',
-            strokeWidth: 1.5,
-            d: 'M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z',
-          })
+          'button',
+          {
+            onClick: () => addClip({ duration: 5, effects: [] }),
+            className: 'px-4 py-2 bg-[#d9ff00] text-black rounded-lg font-medium hover:bg-[#d9ff00]/90'
+          },
+          'Add Clip'
+        ),
+        React.createElement(
+          'button',
+          {
+            onClick: exportProject,
+            className: 'px-4 py-2 bg-white/10 rounded-lg font-medium hover:bg-white/20'
+          },
+          'Export'
         )
       ),
-      React.createElement('h1', { className: 'text-2xl font-bold text-white mb-2' }, appManifest.name),
-      React.createElement('p', { className: 'text-white/60 mb-8' }, appManifest.description),
-      React.createElement(
-        'div',
-        {
-          className: 'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9ff00]/10 border border-[#d9ff00]/20',
-        },
-        React.createElement('span', { className: 'w-2 h-2 rounded-full bg-[#d9ff00] animate-pulse' }),
-        React.createElement('span', { className: 'text-sm text-[#d9ff00] font-medium' }, 'Coming Soon')
-      )
+      React.createElement(Timeline, { clips: project.clips })
     )
   );
 }
