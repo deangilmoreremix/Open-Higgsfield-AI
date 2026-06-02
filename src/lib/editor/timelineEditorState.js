@@ -20,7 +20,7 @@ export const createTimelineState = () => {
   const timelineState = new TimelineState({ autopersist: false });
   
   // Get the raw state and add legacy methods
-  const state = timelineState.getRawState();
+  const state = timelineState.getState();
   
   // Add legacy updateClipDuration method
   state.updateClipDuration = function(clipId, updates) {

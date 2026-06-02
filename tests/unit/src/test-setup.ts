@@ -5,6 +5,15 @@
  * and set up any global test utilities.
  */
 
+// Mock import.meta for Vite environment variables
+vi.mock('import.meta', () => ({
+  env: {
+    VITE_PEXELS_API_KEY: undefined,
+    VITE_PEXELS_ENABLED: undefined,
+    VITE_SUPABASE_URL: undefined
+  }
+}));
+
 // Set up global test environment
 beforeAll(() => {
   // Configure test environment variables
@@ -107,6 +116,19 @@ beforeAll(() => {
     warn: vi.fn(),
     error: vi.fn(),
     debug: vi.fn()
+  };
+
+  // Mock Web Crypto API for SecurityService
+  global.crypto = {
+    subtle: {
+      generateKey: vi.fn().mockResolvedValue({}),
+      exportKey: vi.fn().mockResolvedValue(new ArrayBuffer(32)),
+      importKey: vi.fn().mockResolvedValue({}),
+      encrypt: vi.fn().mockResolvedValue(new ArrayBuffer(64)),
+      decrypt: vi.fn().mockResolvedValue(new ArrayBuffer(32))
+    },
+    getRandomValues: vi.fn((arr) => arr),
+    randomUUID: vi.fn(() => 'mock-uuid')
   };
 });
 

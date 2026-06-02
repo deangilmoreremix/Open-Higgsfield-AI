@@ -33,6 +33,7 @@ vi.mock('../../../src/components/modals/BaseModal.jsx', () => ({
     restoreFocus() {}
     animateIn() {}
     animateOut() {}
+    setupEventListeners() {} // Added for PexelsMediaModal
   }
 }));
 
