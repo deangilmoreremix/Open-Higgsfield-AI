@@ -570,6 +570,11 @@ export default function LipSyncStudio({
     setVideoUrl(null);
     setVideoState(UPLOAD_STATE.IDLE);
     setVideoName("");
+    const first = imageLipSyncModels[0];
+    if (first) {
+      setSelectedModelId(first.id);
+      setSelectedResolution(first.inputs?.resolution?.default ?? "480p");
+    }
   };
 
   const switchToVideo = () => {
@@ -578,6 +583,11 @@ export default function LipSyncStudio({
     setImageUrl(null);
     setImageState(UPLOAD_STATE.IDLE);
     setImageName("");
+    const first = videoLipSyncModels[0];
+    if (first) {
+      setSelectedModelId(first.id);
+      setSelectedResolution(first.inputs?.resolution?.default ?? "480p");
+    }
   };
 
   // ── Model selection ─────────────────────────────────────────────────────
