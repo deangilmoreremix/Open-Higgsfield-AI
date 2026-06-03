@@ -1,5 +1,5 @@
 {
-  "name": "videco-ai-platform",
+  "name": "free-ai-social-media-scheduler",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4"
   }
 }

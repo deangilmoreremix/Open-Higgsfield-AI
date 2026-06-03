@@ -76,6 +76,21 @@ export function AppsHub() {
     onClick: () => { saveRecent(s.id, s.name); navigate(s.id); },
   })), true));
 
+  // New Apps Section
+  const NEW_APPS = [
+    { id: 'videco-ai-platform', name: 'Videco AI Platform', description: 'Professional AI video generation suite', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="5" width="15" height="14" rx="2"/><polygon points="23 7 16 12 23 17"/></svg>', badge: 'Video', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+    { id: 'free-social-scheduler', name: 'Social Scheduler', description: 'Schedule and auto-post to social platforms', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 22h8"/><path d="M5 12c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2H5z"/><path d="M2 18h20"/><path d="M2 14h20"/></svg>', badge: 'Social', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
+    { id: 'ai-influencer-generator', name: 'AI Influencer', description: 'Create AI influencers with avatars and lip-sync', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11v2"/><path d="M8 14c1 1 4 1 8 0"/></svg>', badge: 'Avatar', color: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
+    { id: 'ai-shorts-generator', name: 'YouTube Shorts', description: 'Turn long videos into viral vertical shorts', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>', badge: 'Shorts', color: 'bg-red-500/10 text-red-400 border-red-500/20' },
+    { id: 'open-ai-ugc', name: 'Open AI UGC', description: 'User-generated content creation platform', icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="10" y1="18" x2="14" y2="18"/><line x1="10" y1="14" x2="14" y2="14"/><line x1="10" y1="10" x2="14" y2="10"/></svg>', badge: 'UGC', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' },
+  ]
+
+  inner.appendChild(createSection('New Apps', NEW_APPS.map(s => ({
+    ...s,
+    thumbnail: getStudioThumbnail(s.id),
+    onClick: () => { saveRecent(s.id, s.name); navigate(s.id); },
+  })), true));
+
   container.appendChild(inner);
 
   searchInput.oninput = () => {

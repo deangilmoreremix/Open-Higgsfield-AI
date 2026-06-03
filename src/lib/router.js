@@ -25,6 +25,13 @@ const ROUTE_MAP = {
   'Video Outreach': 'video-outreach',
   'Assistant': 'assistant',
   'Studio': 'studio',
+  
+  // New apps
+  'Videco': 'videco-ai-platform',
+  'Social Scheduler': 'free-social-scheduler',
+  'AI Influencer': 'ai-influencer-generator',
+  'Shorts': 'ai-shorts-generator',
+  'UGC': 'open-ai-ugc',
 };
 
 export function getRouteForItem(item) {
@@ -95,9 +102,13 @@ const pageLoaders = {
   'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
   'sendspark': () => import('../components/SendsparkWorkflow.jsx').then(m => m.default()),
   'open-pomelli-studio': () => import('../components/OpenPomelliStudio.js').then(m => m.OpenPomelliStudio()),
-  'vibe-workflow': () => import('../components/VibeWorkflowStudio.js').then(m => m.VibeWorkflowStudio()),
+'vibe-workflow': () => import('../components/VibeWorkflowStudio.js').then(m => m.VibeWorkflowStudio()),
   'videco-ai-platform': () => import('../components/VidecoAIPlatform.js').then(m => m.VidecoAIPlatform()),
   'ai-headshot-generator': () => import('../components/AIHeadshotGenerator.js').then(m => m.AIHeadshotGenerator()),
+  'ai-influencer-generator': () => import('../components/AIInfluencerGenerator.js').then(m => m.AIInfluencerGenerator()),
+  'ai-shorts-generator': () => import('../components/AIShortsGenerator.js').then(m => m.AIShortsGenerator()),
+  'free-social-scheduler': () => import('../components/FreemSocialScheduler.js').then(m => m.FreemSocialScheduler()),
+  'open-ai-ugc': () => import('../components/OpenAIUGC.js').then(m => m.OpenAIUGC()),
   'tiktok-carousel': () => import('../components/TikTokCarouselStudio.js').then(m => m.TikTokCarouselStudio()),
   'advanced-dubbing': () => import('../components/AdvancedDubbingStudio.js').then(m => m.AdvancedDubbingStudio()),
   documentation: () => import('../components/DocumentationPage.js').then(m => m.DocumentationPage()),
