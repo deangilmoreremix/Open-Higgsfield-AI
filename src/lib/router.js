@@ -112,6 +112,17 @@ const pageLoaders = {
   'workflow-studio': () => import('../components/WorkflowStudioApp.js').then(m => m.WorkflowStudioApp()),
   'agents/create': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
   'agents/edit': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
+  'open-generative-ai': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai')),
+  'agents-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('agents-app')),
+  'assistant-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('assistant-app')),
+  'ai-video-outreach-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('ai-video-outreach')),
+  'ai-headshot-generator-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('ai-headshot-generator')),
+  'ai-influencer-generator-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('ai-influencer-generator')),
+  'ai-shorts-generator-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('ai-shorts-generator')),
+  'free-social-scheduler-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('free-social-scheduler')),
+  'open-ai-ugc-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-ai-ugc')),
+  'studio-app-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('studio-app')),
+  'vibe-workflow-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('vibe-workflow')),
 };
 
 let currentPage = null;

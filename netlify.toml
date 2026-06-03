@@ -90,6 +90,72 @@
   status = 200
   force = false
 
+[[redirects]]
+  from = "/apps/open-generative-ai/*"
+  to = "/apps/open-generative-ai/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/agents-app/*"
+  to = "/apps/agents-app/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/assistant-app/*"
+  to = "/apps/assistant-app/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/ai-video-outreach/*"
+  to = "/apps/ai-video-outreach/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/ai-headshot-generator/*"
+  to = "/apps/ai-headshot-generator/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/ai-influencer-generator/*"
+  to = "/apps/ai-influencer-generator/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/ai-shorts-generator/*"
+  to = "/apps/ai-shorts-generator/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/free-social-scheduler/*"
+  to = "/apps/free-social-scheduler/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/open-ai-ugc/*"
+  to = "/apps/open-ai-ugc/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/open-pomelli/*"
+  to = "/apps/open-pomelli/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/apps/studio-app/*"
+  to = "/apps/studio-app/index.html"
+  status = 200
+  force = false
+
 # Pomelli Studio - Supabase Edge Functions
 [[redirects]]
   from = "/api/pomelli-analyze-site"
@@ -121,7 +187,7 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-${NONCE}'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.muapi.ai https://supabase.co https://*.supabase.co https://api.openai.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-${NONCE}'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.muapi.ai https://supabase.co https://*.supabase.co https://api.openai.com; frame-src 'self' https://*.netlify.app; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;"
 
 # SPA fallback - must be LAST
 [[redirects]]
