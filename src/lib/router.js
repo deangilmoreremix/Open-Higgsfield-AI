@@ -29,7 +29,7 @@ const ROUTE_MAP = {
   // New apps
   'Videco': 'videco-ai-platform',
   'Social Scheduler': 'free-social-scheduler',
-  'AI Influencer': 'ai-influencer-generator',
+  'AI Influencer Gen': 'ai-influencer-generator',
   'Shorts': 'ai-shorts-generator',
   'UGC': 'open-ai-ugc',
 };

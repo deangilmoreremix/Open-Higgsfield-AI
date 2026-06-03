@@ -141,6 +141,7 @@ export default defineConfig({
         },
         rollupOptions: {
             input: 'index.html',
+            external: ['mobx'],
             output: {
                 manualChunks: (id) => {
                     if (id.includes('@supabase/supabase-js')) {
