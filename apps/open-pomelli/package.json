@@ -1,26 +1,37 @@
 {
   "name": "open-pomelli",
-  "private": true,
   "version": "1.0.0",
-  "type": "module",
+  "description": "Open-source alternative to Google Pomelli — brand DNA, campaigns, platform-specific assets, product photography, and short-form videos. Powered by MuAPI.",
+  "homepage": "https://github.com/SamurAIGPT/Open-Pomelli",
+  "repository": { "type": "git", "url": "git+https://github.com/SamurAIGPT/Open-Pomelli.git" },
+  "license": "MIT",
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@supabase/supabase-js": "^2.45.0",
-    "framer-motion": "^11.3.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@prisma/client": "^5.20.0",
+    "next": "16.1.6",
+    "playwright": "^1.58.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "sharp": "^0.34.5",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "vite": "^5.4.0"
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prisma": "^5.20.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.0"
   }
 }

@@ -1,0 +1,5 @@
+# AI Influencer Generator - Google Colab Notebook
+# This app runs as a Jupyter notebook in Google Colab
+# Local Python deps (minimal subset):
+jupyter>=1.0.0
+ipykernel>=6.0.0

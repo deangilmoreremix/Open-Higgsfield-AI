@@ -2,6 +2,12 @@ packages:
   - 'packages/*'
   - 'apps/*'
   - '!apps/vimax/**'
+  - '!apps/ai-shorts-generator/**'
+  - '!apps/ai-influencer-generator/**'
+  - '!apps/videoremixai-vfx/**'
+  - '!apps/deangil-ai-headshot/**'
+  - '!apps/faceless-video/**'
+  - '!apps/zapdigits-videco/**'
   - 'modules/*'
 allowBuilds:
   '@google/genai': true
