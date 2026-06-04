@@ -4,25 +4,22 @@ packages:
   - '!apps/vimax/**'
   - '!apps/ai-shorts-generator/**'
   - '!apps/ai-influencer-generator/**'
-  - '!apps/videoremixai-vfx/**'
-  - '!apps/deangil-ai-headshot/**'
-  - '!apps/faceless-video/**'
-  - '!apps/zapdigits-videco/**'
-  - 'modules/*'
+  - '!apps/ai-video-outreach/**'
+  - '!apps/studio-app/**'
 allowBuilds:
   '@google/genai': true
-  '@prisma/client': set this to true or false
-  '@prisma/engines': set this to true or false
-  aws-sdk: set this to true or false
+  '@prisma/client': true
+  '@prisma/engines': true
+  aws-sdk: true
   canvas: true
   core-js: true
   core-js-pure: true
-  es5-ext: set this to true or false
+  es5-ext: true
   esbuild: true
-  husky: set this to true or false
-  prisma: set this to true or false
+  husky: true
+  prisma: true
   protobufjs: true
   puppeteer: true
   sharp: true
-  unrs-resolver: set this to true or false
+  unrs-resolver: true
   workerd: true
