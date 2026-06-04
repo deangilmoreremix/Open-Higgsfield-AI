@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  // Netlify hosting: dist publish, SPA redirects, Supabase env via dashboard
+  plugins: [react()],
   root: '.',
   build: {
     outDir: 'dist',
@@ -9,7 +10,12 @@ export default defineConfig({
     target: 'esnext'
   },
   server: {
-    port: 5173,
-    open: true
+    port: 5173
+  },
+  css: {
+    postcss: false
+  },
+  define: {
+    'process.env': {}
   }
 })
