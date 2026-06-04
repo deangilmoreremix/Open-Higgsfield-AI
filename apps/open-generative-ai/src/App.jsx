@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box, Flex, VStack, HStack, Text, Button, Card, CardBody, CardHeader,
   Badge, SimpleGrid, Image, Input, Select, useToast, Progress, Tabs, TabList,
@@ -891,6 +891,14 @@ function GeneratedItems({ items }) {
 function App() {
   const [activeTab, setActiveTab] = useState('image')
   const [generatedItems, setGeneratedItems] = useState([])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const studio = params.get('studio')
+    if (studio && STUDIO_TABS.find(t => t.id === studio)) {
+      setActiveTab(studio)
+    }
+  }, [])
 
   const handleGenerated = (item) => {
     setGeneratedItems([item, ...generatedItems])

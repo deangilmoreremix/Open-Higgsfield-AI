@@ -138,6 +138,17 @@ const pageLoaders = {
   'studio-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('studio-app')),
   'vibe-workflow': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('vibe-workflow')),
   'ai-vfx-app': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('ai-vfx')),
+  'open-image-studio': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'image')),
+  'open-video-studio': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'video')),
+  'open-audio-studio': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'audio')),
+  'open-lip-sync': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'lipsync')),
+  'open-ai-clipping': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'clipping')),
+  'open-vibe-motion': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'vibe')),
+  'open-cinema': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'cinema')),
+  'open-marketing': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'marketing')),
+  'open-workflows': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'workflows')),
+  'open-agents': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'agents')),
+  'open-design-agent': () => import('../components/StandaloneAppPage.js').then(m => m.StandaloneAppPage('open-generative-ai', 'design')),
 };
 
 let currentPage = null;
