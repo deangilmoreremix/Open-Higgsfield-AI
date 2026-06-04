@@ -1,0 +1,70 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/api/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "apps/api"
+          target: "/opt/chocomotion"
+          rm: false
+
+      - name: Build and deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/chocomotion/apps/api
+
+            echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+            echo "R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}" >> .env
+            echo "R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}" >> .env
+            echo "R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}" >> .env
+            echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env
+            echo "R2_PUBLIC_URL=${{ secrets.R2_PUBLIC_URL }}" >> .env
+            echo "ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}" >> .env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+            echo "KOKORO_API_URL=${{ secrets.KOKORO_API_URL }}" >> .env
+            echo "SOCKS5_HOST=${{ secrets.SOCKS5_HOST }}" >> .env
+            echo "SOCKS5_PORT=${{ secrets.SOCKS5_PORT }}" >> .env
+            echo "SOCKS5_USER=${{ secrets.SOCKS5_USER }}" >> .env
+            echo "SOCKS5_PASS=${{ secrets.SOCKS5_PASS }}" >> .env
+            echo "SMTP_HELO_DOMAIN=${{ secrets.SMTP_HELO_DOMAIN }}" >> .env
+            echo "SMTP_MAIL_FROM=${{ secrets.SMTP_MAIL_FROM }}" >> .env
+
+            docker build -t chocomotion-api .
+
+            docker stop chocomotion-api || true
+            docker rm chocomotion-api || true
+
+            docker run -d \
+              --name chocomotion-api \
+              --restart unless-stopped \
+              --network="host" \
+              --env-file .env \
+              chocomotion-api

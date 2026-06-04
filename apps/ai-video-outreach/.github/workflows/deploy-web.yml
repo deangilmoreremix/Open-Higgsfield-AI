@@ -1,0 +1,49 @@
+name: Deploy Web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "apps/web"
+          target: "/opt/chocomotion"
+          rm: false
+
+      - name: Build and deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/chocomotion/apps/web
+
+            echo "API_URL=${{ secrets.API_URL }}" > .env
+            echo "SECRET=${{ secrets.SECRET }}" >> .env
+
+            docker build -t chocomotion-web .
+
+            docker stop chocomotion-web || true
+            docker rm chocomotion-web || true
+
+            docker run -d \
+              --name chocomotion-web \
+              --restart unless-stopped \
+              --network="host" \
+              --env-file .env \
+              chocomotion-web
