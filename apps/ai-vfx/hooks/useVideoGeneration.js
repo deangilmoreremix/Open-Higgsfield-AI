@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
 
 export const useVideoGeneration = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -36,13 +35,10 @@ export const useVideoGeneration = () => {
       const result = response.data;
       setGenerationId(result.id);
       setStatus(result);
-      toast.success('Video generation started!');
-      // Start polling for status
       pollStatus(result.id);
       return result;
     } catch (error) {
       console.error('Error generating video:', error);
-      toast.error('Failed to generate video');
       setIsGenerating(false);
       throw error;
     }
@@ -56,22 +52,18 @@ export const useVideoGeneration = () => {
         setStatus(newStatus);
         if (newStatus.status === 'completed') {
           setIsGenerating(false);
-          toast.success('Video generation completed!');
           return;
         }
         if (newStatus.status === 'failed') {
           setIsGenerating(false);
-          toast.error(newStatus.error_message || 'Video generation failed');
           return;
         }
-        // Continue polling if still processing
         if (newStatus.status === 'processing' || newStatus.status === 'pending') {
-          setTimeout(poll, 3000); // Poll every 3 seconds
+          setTimeout(poll, 3000);
         }
       } catch (error) {
         console.error('Error polling status:', error);
         setIsGenerating(false);
-        toast.error('Failed to check video status');
       }
     };
     poll();
@@ -84,7 +76,6 @@ export const useVideoGeneration = () => {
       return response.data;
     } catch (error) {
       console.error('Error fetching credits:', error);
-      toast.error('Failed to fetch credits');
     }
   }, []);
 

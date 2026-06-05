@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Influencer Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                AI Influencer Generator
+            </h1>
+            <p class="text-gray-400 text-center mt-2">Create virtual AI influencers with Stable Diffusion, gTTS, and SadTalker</p>
+        </header>
+
+        <main class="space-y-8">
+            <section id="generator" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-300">Influencer Generator</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Character Description</label>
+                        <textarea id="prompt" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., female Asian influencer, long black hair, wearing casual streetwear, smiling...">Enter character traits...</textarea>
+                        
+                        <label class="block text-sm font-medium mt-4 mb-2">Style</label>
+                        <select id="style" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500">
+                            <option value="realistic">Realistic</option>
+                            <option value="anime">Anime</option>
+                            <option value="cartoon">Cartoon</option>
+                            <option value="photorealistic">Photorealistic</option>
+                            <option value="fantasy">Fantasy</option>
+                        </select>
+                        
+                        <button id="generate-btn" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                            Generate Influencer
+                        </button>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Generated Image</label>
+                        <div id="image-preview" class="bg-gray-700 rounded-lg h-64 flex items-center justify-center overflow-hidden">
+                            <span class="text-gray-500">Generated image will appear here</span>
+                        </div>
+                        <button id="download-image" class="w-full mt-2 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition hidden">
+                            Download Image
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="voice" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-pink-300">Voice Studio</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Script for Voiceover</label>
+                        <textarea id="script" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Enter the script you want your AI influencer to speak...">Our planet is a masterpiece of life, a delicate balance of ecosystems...</textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Language</label>
+                            <select id="language" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-pink-500">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="ja">Japanese</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Accent</label>
+                            <select id="accent" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-pink-500">
+                                <option value="com">US English</option>
+                                <option value="co.uk">UK English</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="generate-voice" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        Generate Voiceover
+                    </button>
+                    <div id="audio-preview" class="mt-4 hidden">
+                        <label class="block text-sm font-medium mb-2">Audio Preview</label>
+                        <audio id="audio-player" controls class="w-full"></audio>
+                        <button id="download-audio" class="w-full mt-2 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition">
+                            Download Audio
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="animation" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-blue-300">Animation Studio</h2>
+                <div class="space-y-4">
+                    <p class="text-gray-400">Combine generated image and audio to create a talking video</p>
+                    <button id="animate-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition disabled:opacity-50" disabled>
+                        Create Talking Video
+                    </button>
+                    <div id="video-preview" class="bg-gray-700 rounded-lg h-64 flex items-center justify-center overflow-hidden hidden">
+                        <video id="video-player" controls class="max-h-full"></video>
+                    </div>
+                    <button id="download-video" class="w-full mt-2 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition hidden">
+                        Download Video
+                    </button>
+                </div>
+            </section>
+
+            <section id="history" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-green-300">History Gallery</h2>
+                <div id="gallery" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <p class="text-gray-500 col-span-full">No generated influencers yet. Generate your first one above!</p>
+                </div>
+            </section>
+        </main>
+
+        <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-gray-800 rounded-lg p-6 text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+                <p class="text-lg">Processing...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -3,21 +3,18 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Play,
-  Image,
-  Crown,
+  User,
   Home, 
-  User, 
+  FolderOpen, 
   Calendar, 
   Bot, 
   Video, 
-  FolderOpen, 
   Moon, 
   LogOut, 
   CreditCard, 
   HelpCircle, 
   Bell 
 } from 'lucide-react';
-import './globals.css'; // if not already imported
 import BottomInputBar from '../components/BottomInputBar';
 
 

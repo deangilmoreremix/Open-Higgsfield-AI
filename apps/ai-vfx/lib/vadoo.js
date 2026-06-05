@@ -6,7 +6,7 @@ class VadooAPI {
     this.client = axios.create({
       baseURL,
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey || ''}`,
         'Content-Type': 'application/json',
       },
     });
@@ -15,8 +15,7 @@ class VadooAPI {
   async generateVideo(request) {
     try {
       let formData;
-      // Use Node.js FormData if buffer is provided (backend)
-      if (request.image && request.image._isBuffer) {
+      if (request.image && (request.image._isBuffer || Buffer.isBuffer(request.image))) {
         formData = new FormData();
         if (request.prompt) formData.append('prompt', request.prompt);
         formData.append('image', request.image, {

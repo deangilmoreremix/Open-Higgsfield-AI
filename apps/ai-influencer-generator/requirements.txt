@@ -1,0 +1,21 @@
+# Flask web framework
+Flask==3.0.0
+flask-cors==4.0.0
+python-dotenv==1.0.0
+
+# AI/ML dependencies (from notebook)
+diffusers==0.24.0
+accelerate==0.25.0
+transformers==4.36.0
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# TTS
+gtts==0.4.0
+
+# Utilities
+requests==2.31.0
+openai==1.6.0
+pillow==10.1.0
+numpy==1.24.0
