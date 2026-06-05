@@ -196,14 +196,14 @@
         </div>
         
         <div class="controls">
-            <button class="btn btn-primary" onclick="startGeneration()">Generate All Thumbnails</button>
-            <button class="btn btn-secondary" onclick="downloadAll()">Download All</button>
-            <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
+            <button class="btn btn-primary" id="btnGenerate">Generate All Thumbnails</button>
+            <button class="btn btn-secondary" id="btnDownload">Download All</button>
+            <button class="btn btn-secondary" id="btnClear">Clear All</button>
         </div>
         
         <div class="grid" id="grid"></div>
         
-        <button class="download-all" id="downloadAllBtn" onclick="downloadAllAsZip()" disabled>Download All as ZIP</button>
+        <button class="download-all" id="downloadAllBtn" disabled>Download All as ZIP</button>
     </div>
 
     <script>
@@ -370,7 +370,13 @@
             document.getElementById('progressText').textContent = 'Ready to generate';
             document.getElementById('downloadAllBtn').disabled = true;
         }
-        
+
+        // Event listeners for CSP-compliant inline handlers
+        document.getElementById('btnGenerate').addEventListener('click', startGeneration);
+        document.getElementById('btnDownload').addEventListener('click', downloadAll);
+        document.getElementById('btnClear').addEventListener('click', clearAll);
+        document.getElementById('downloadAllBtn').addEventListener('click', downloadAllAsZip);
+
         init();
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
