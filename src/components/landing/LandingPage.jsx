@@ -141,13 +141,13 @@ export default async function LandingPage() {
   container.setAttribute('lang', document.documentElement.lang || 'en');
   container.setAttribute('dir', document.documentElement.dir || 'ltr');
 
-  try {
+try {
     const { LandingHeader } = await import('./common/Header.jsx');
     const headerEl = LandingHeader();
     container.appendChild(headerEl);
 
-    const { HeroSection } = await import('./sections/HeroSection.jsx');
-    const heroEl = HeroSection();
+    const { Hero } = await import('./sections/Hero.jsx');
+    const heroEl = Hero();
     heroEl.classList.add('animate-in');
     heroEl.classList.add('stagger-0');
     container.appendChild(heroEl);

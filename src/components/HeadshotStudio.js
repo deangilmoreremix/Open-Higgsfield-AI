@@ -1,4 +1,5 @@
-import * as headshotService from '../apps/ai-headshot-generator/services/headshotService.js';
+import { generateHeadshot } from '../lib/headshotApiClient.js';
+import { buildHeadshotPrompt } from '../lib/headshotPromptBuilder.js';
 
 const PRESETS = [
   { id: 'professional', name: 'Professional', prompt: 'professional headshot, crisp white shirt, confident smile, studio lighting' },
@@ -52,7 +53,7 @@ export function HeadshotStudio() {
       <p class="text-xs text-secondary">Click to upload photo</p>
       <input id="file-input" type="file" accept="image/*" class="hidden" />
     </div>
-    
+
     <p class="text-xs font-bold text-muted uppercase tracking-wider mb-3">Style Preset</p>
     <div id="presets" class="space-y-2">
       ${PRESETS.map(p => `
@@ -61,9 +62,6 @@ export function HeadshotStudio() {
         </button>
       `).join('')}
     </div>
-    
-    <p class="text-xs font-bold text-muted uppercase tracking-wider mt-6 mb-3">My Headshots</p>
-    <div id="headshot-history" class="space-y-2 max-h-48 overflow-y-auto"></div>
   `;
   main.appendChild(sidebar);
 
@@ -84,27 +82,20 @@ export function HeadshotStudio() {
   container.appendChild(main);
 
   // State
-  let sourcePhoto = null;
+  let sourceFile = null;
   let selectedPreset = PRESETS[0];
 
-  // Event handlers - query within container since elements aren't in document yet
+  // Event handlers
   container.querySelector('#upload-area')?.addEventListener('click', () => {
     container.querySelector('#file-input').click();
   });
 
-  container.querySelector('#file-input')?.addEventListener('change', async (e) => {
+  container.querySelector('#file-input')?.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
       const uploadBtn = container.querySelector('#upload-area');
-      uploadBtn.innerHTML = '<div class="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div><p class="text-xs text-secondary">Uploading...</p>';
-      
-      try {
-        const result = await headshotService.uploadSourcePhoto(file);
-        sourcePhoto = result;
-        uploadBtn.innerHTML = `<img src="${result.url}" class="w-full h-32 object-cover rounded mb-2" /><p class="text-xs text-secondary">Photo uploaded</p>`;
-      } catch (err) {
-        uploadBtn.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mx-auto mb-2"/><p class="text-xs text-red-400">Upload failed</p>`;
-      }
+      sourceFile = file;
+      uploadBtn.innerHTML = `<img src="${URL.createObjectURL(file)}" class="w-full h-32 object-cover rounded mb-2" /><p class="text-xs text-secondary">Photo selected</p>`;
     }
   });
 
@@ -117,22 +108,40 @@ export function HeadshotStudio() {
   });
 
   container.querySelector('#generate-btn')?.addEventListener('click', async () => {
-    if (!sourcePhoto) {
+    if (!sourceFile) {
       alert('Please upload a photo first');
       return;
     }
-    
+
     const preview = container.querySelector('#preview-container');
     preview.innerHTML = `<div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div><p class="text-center text-secondary mt-2">Generating...</p>`;
-    
+
     try {
-      const apiKey = import.meta.env.VITE_MUAPI_KEY;
-      const result = await headshotService.generateHeadshot(apiKey, sourcePhoto, selectedPreset);
-      const resultCopy = { ...result };
-      
+      const prompt = buildHeadshotPrompt({
+        presetSlug: selectedPreset.id === 'professional' ? 'linkedin-professional' : 'linkedin-professional',
+        description: 'Professional headshot transformation',
+        tone: 'professional',
+        realismLevel: 'high'
+      });
+
+      const result = await generateHeadshot({
+        image: sourceFile,
+        prompt,
+        preset: selectedPreset.id,
+        provider: 'muapi',
+        options: {
+          model: 'flux-dev',
+          aspectRatio: '1:1',
+          strength: 0.6
+        }
+      });
+
+      const outputUrl = result.images?.[0] || result.url;
+      const resultCopy = { url: outputUrl, prompt };
+
       preview.innerHTML = `
         <div class="space-y-3">
-          <img src="${result.url}" class="w-full aspect-[3/4] object-cover rounded-lg" />
+          <img src="${outputUrl}" class="w-full aspect-[3/4] object-cover rounded-lg" />
           <div class="flex gap-2">
             <button id="headshot-view-btn" class="flex-1 py-1 text-xs font-bold text-white bg-white/5 border border-white/10 rounded hover:bg-white/10">View</button>
             <button id="headshot-save-btn" class="flex-1 py-1 text-xs font-bold text-white bg-primary border-none rounded hover:bg-primary/80">Save to Library</button>
@@ -140,11 +149,21 @@ export function HeadshotStudio() {
         </div>
       `;
       preview.querySelector('#headshot-view-btn').onclick = () => window.open(resultCopy.url);
-      preview.querySelector('#headshot-save-btn').onclick = () => headshotService.saveOutputToLibrary(resultCopy);
+      preview.querySelector('#headshot-save-btn').onclick = () => {
+        window.dispatchEvent(new CustomEvent('headshot-saved', { detail: resultCopy }));
+      };
     } catch (err) {
       preview.innerHTML = `<p class="text-center text-red-400">Generation failed: ${err.message}</p>`;
     }
   });
+
+  // Select first preset by default
+  setTimeout(() => {
+    const firstPreset = main.querySelector('[data-preset]');
+    if (firstPreset) {
+      firstPreset.classList.add('ring-2', 'ring-primary');
+    }
+  }, 0);
 
   return container;
 }
