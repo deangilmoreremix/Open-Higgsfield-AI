@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { CreativeCanvas } from 'design-agent';
-import 'design-agent/dist/tailwind.css';
 import { getUserBalance } from '../muapi';
 
 export default function DesignAgentStudio({ apiKey, isHeaderVisible, onToggleHeader }) {
@@ -30,7 +28,6 @@ export default function DesignAgentStudio({ apiKey, isHeaderVisible, onToggleHea
   }, [apiKey]);
 
   return (
-    <div className="h-full w-full bg-black overflow-hidden design-agent-studio">
       <CreativeCanvas 
         user={userData}
         isAuthorized={!!userData}

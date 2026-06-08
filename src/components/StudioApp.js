@@ -16,12 +16,10 @@ export function StudioApp() {
     { id: 'video', name: 'Video Studio', description: 'Create AI videos from text and images', icon: '🎬', color: 'from-blue-500/20 to-cyan-500/20', models: MODELS.video },
     { id: 'cinema', name: 'Cinema Studio', description: 'Cinematic shots with camera controls', icon: '🎥', color: 'from-amber-500/20 to-orange-500/20', models: MODELS.cinema },
     { id: 'lipsync', name: 'Lip Sync Studio', description: 'AI lip sync and dubbing', icon: '🗣️', color: 'from-green-500/20 to-emerald-500/20' },
-    { id: 'marketing-studio', name: 'Marketing Studio', description: 'Brand campaigns and creatives', icon: '📈', color: 'from-indigo-500/20 to-violet-500/20' },
-    { id: 'apps', name: 'Apps Studio', description: 'All AI creative tools', icon: '🧩', color: 'from-pink-500/20 to-rose-500/20' },
+        { id: 'apps', name: 'Apps Studio', description: 'All AI creative tools', icon: '🧩', color: 'from-pink-500/20 to-rose-500/20' },
     { id: 'workflow-builder', name: 'Workflow Builder', description: 'Multi-step AI pipelines', icon: '🔗', color: 'from-teal-500/20 to-aqua-500/20' },
     { id: 'ai-agent', name: 'AI Agent', description: 'Creative AI assistants', icon: '🤖', color: 'from-yellow-500/20 to-orange-500/20' },
-    { id: 'design-agent', name: 'Design Agent', description: 'UI and brand design assistant', icon: '✨', color: 'from-fuchsia-500/20 to-purple-500/20' },
-    { id: 'render', name: 'Render Studio', description: 'Export and render final projects', icon: '📤', color: 'from-sky-500/20 to-blue-500/20' },
+        { id: 'render', name: 'Render Studio', description: 'Export and render final projects', icon: '📤', color: 'from-sky-500/20 to-blue-500/20' },
     { id: 'director', name: 'Director Studio', description: 'Cinematic scene planning', icon: '🎬', color: 'from-red-500/20 to-pink-500/20' },
     { id: 'templates', name: 'Templates', description: 'Pre-built project templates', icon: '📋', color: 'from-emerald-500/20 to-teal-500/20' },
     { id: 'library', name: 'Media Library', description: 'Your uploaded and generated assets', icon: '📚', color: 'from-cyan-500/20 to-teal-500/20' },
@@ -65,9 +63,7 @@ export function StudioApp() {
         navigate('workflow-builder');
       } else if (studio.id === 'ai-agent') {
         navigate('ai-agent');
-      } else if (studio.id === 'design-agent') {
-        navigate('design-agent');
-      } else {
+            } else {
         navigate(studio.id);
       }
     };

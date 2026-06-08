@@ -16,8 +16,8 @@ const templateApps = [
     description: "Launch a headshot SaaS in minutes. Charge $5–$20 per set, keep all profits. Stripe payments & user accounts included.",
     icon: FaUserTie,
     color: "blue",
-    repo: "https://github.com/SamurAIGPT/ai-headshot-generator",
-    hosted: "https://ai-headshot-generator-xi.vercel.app/",
+    repo: "https://github.com/SamurAIGPT/
+    hosted: "https://
     thumbnail: "https://cdn.muapi.ai/apps/d9c39378f60e48098f6b6ce657dc18b5.png",
     isTemplate: true
   },

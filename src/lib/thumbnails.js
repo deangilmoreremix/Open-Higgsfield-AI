@@ -21,14 +21,9 @@ const STUDIO_THUMBNAILS = {
   'unified-studio': '/thumbnails/studios/studio.png',
   'workflow-builder': '/thumbnails/studios/workflow-builder.png',
   'ai-agent': '/thumbnails/studios/ai-agent.png',
-  'design-agent': '/thumbnails/studios/design-agent.png',
-  'marketing-studio': '/thumbnails/studios/marketing-studio.png',
   'apps-studio': '/thumbnails/studios/apps-studio.png',
   'pomelli': '/thumbnails/studios/pomelli.webp.svg',
-  'remix-go': '/thumbnails/studios/remix-go.webp',
   'vibe-workflow': '/thumbnails/studios/vibe-workflow.webp',
-  'ai-headshot-generator': '/thumbnails/studios/headshots.webp',
-  'ai-headshot-studio': '/thumbnails/studios/headshots.webp',
 };
 
 const TOOL_THUMBNAILS = {
@@ -92,8 +87,6 @@ const HERO_THUMBNAILS = {
   'timeline': null,
   'lipsync': null,
   'director': null,
-  'marketing-studio': '/thumbnails/heroes/marketing-studio.webp',
-  'remix-go': null,
   'pomelli': '/thumbnails/heroes/pomelli.webp.svg',
 };
 

@@ -83,7 +83,7 @@ export default defineConfig({
     root: './',
     publicDir: 'public',
     optimizeDeps: {
-        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent', 'design-agent'],
+        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent'],
         esbuildOptions: {
           loader: {
             '.js': 'js'
@@ -123,11 +123,6 @@ export default defineConfig({
                      changeOrigin: true,
                      rewrite: (path) => path.replace(/^\/apps\/videco-ai-platform/, "")
                    },
-            "/apps/ai-headshot-generator": {
-                     target: "http://localhost:3003",
-                     changeOrigin: true,
-                     rewrite: (path) => path.replace(/^\/apps\/ai-headshot-generator/, "")
-                   }
           }
     },
     build: {

@@ -705,6 +705,35 @@ export async function getAppInterests(apiKey) {
     return await response.json();
 }
 
+export async function runClipping(apiKey, params) {
+    const payload = {
+        video_url: params.video_url,
+        num_highlights: params.num_highlights || 3,
+        aspect_ratio: params.aspect_ratio || "9:16",
+        return_coordinates_only: !!params.return_coordinates_only
+    };
+    return submitAndPoll("ai-clipping", payload, apiKey, params.onRequestId, 900);
+}
+
+export async function runMotionGraphics(apiKey, params) {
+    const payload = {
+        prompt: params.prompt,
+        aspect_ratio: params.aspect_ratio || "16:9",
+        duration_seconds: params.duration_seconds || 6,
+    };
+    return submitAndPoll("motion-graphics", payload, apiKey, params.onRequestId, 900);
+}
+
+export async function runMotionGraphicsEdit(apiKey, params) {
+    const payload = {
+        request_id: params.request_id,
+        edit_prompt: params.edit_prompt,
+        aspect_ratio: params.aspect_ratio || "16:9",
+        duration_seconds: params.duration_seconds || 6,
+    };
+    return submitAndPoll("motion-graphics-edit", payload, apiKey, params.onRequestId, 900);
+}
+
 const muapi = {
     generateImage,
     generateI2I,
@@ -740,7 +769,10 @@ const muapi = {
     handleServerSideProxy,
     calculateDynamicCost,
     registerAppInterest,
-    getAppInterests
+    getAppInterests,
+    runClipping,
+    runMotionGraphics,
+    runMotionGraphicsEdit
 };
 
 class MuapiClient {
@@ -761,6 +793,15 @@ class MuapiClient {
     }
     async processLipSync(params) {
         return processLipSync(null, params);
+    }
+    async runClipping(params) {
+        return runClipping(null, params);
+    }
+    async runMotionGraphics(params) {
+        return runMotionGraphics(null, params);
+    }
+    async runMotionGraphicsEdit(params) {
+        return runMotionGraphicsEdit(null, params);
     }
 }
 

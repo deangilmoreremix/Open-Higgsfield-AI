@@ -73,18 +73,6 @@
   force = false
 
 [[redirects]]
-  from = "/apps/remix-go/*"
-  to = "/apps/remix-go/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/apps/open-pomelli/*"
-  to = "/apps/open-pomelli/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
   from = "/apps/ai-vfx/*"
   to = "/apps/ai-vfx/index.html"
   status = 200
@@ -93,12 +81,6 @@
 [[redirects]]
   from = "/apps/open-generative-ai/*"
   to = "/apps/open-generative-ai/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/apps/agents-app/*"
-  to = "/apps/agents-app/index.html"
   status = 200
   force = false
 
@@ -115,38 +97,8 @@
   force = false
 
 [[redirects]]
-  from = "/apps/ai-headshot-generator/*"
-  to = "/apps/ai-headshot-generator/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
   from = "/apps/ai-influencer-generator/*"
   to = "/apps/ai-influencer-generator/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/apps/ai-shorts-generator/*"
-  to = "/apps/ai-shorts-generator/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/apps/free-social-scheduler/*"
-  to = "/apps/free-social-scheduler/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/apps/open-ai-ugc/*"
-  to = "/apps/open-ai-ugc/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/apps/open-pomelli/*"
-  to = "/apps/open-pomelli/index.html"
   status = 200
   force = false
 

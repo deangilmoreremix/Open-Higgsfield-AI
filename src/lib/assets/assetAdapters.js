@@ -65,7 +65,6 @@ export class AIVFXAdapter extends AssetAdapter {
 
 export class HeadshotAdapter extends AssetAdapter {
   constructor() {
-    super('ai-headshot-generator');
   }
 
   async saveFromGeneration(result, prompt, options = {}) {

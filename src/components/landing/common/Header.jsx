@@ -16,7 +16,7 @@ export function LandingHeader() {
     { label: 'Canvas', href: '/canvas', isNew: true },
     { label: 'Edit', href: '/edit' },
     { label: 'Character', href: '/character' },
-    { label: 'Marketing Studio', href: '/marketing-studio/product', isNew: true },
+    { label: 'Marketing Studio', href: '/
     { label: 'Cinema Studio', href: '/cinema-studio' },
     { label: 'Originals', href: '/original-series' },
     { label: 'MCP', href: '/mcp', isNew: true },

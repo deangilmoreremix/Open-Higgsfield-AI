@@ -49,10 +49,8 @@ export function DocumentationPage() {
         <h3 class="text-lg font-bold text-white mb-2">Completed Tasks</h3>
         <ul class="space-y-2 text-sm text-secondary">
           <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>WorkflowBuilderApp.js - Native workflow builder with drag-drop canvas</span></li>
-          <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>Router updated for /workflows, /agents, /ai-agent, /design-agent routes</span></li>
           <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>AIAgentApp.js - Added Send to Director and Send to Library buttons</span></li>
-          <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>DesignAgentApp.js - Added Send to Library button</span></li>
-          <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>MarketingStudioApp.js - Added Save to Library in fullscreen modal</span></li>
+          <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>
           <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>Build verified - all changes compile successfully</span></li>
           <li class="flex items-start gap-2"><span class="text-green-400">✓</span> <span>Changes pushed to main branch</span></li>
         </ul>
@@ -64,7 +62,7 @@ export function DocumentationPage() {
             <div class="text-secondary">Node palette (Text, Image, Video, OpenAI, Output) • Drag-drop canvas • Properties panel • MuAPI integration</div>
           </div>
           <div class="border-l-2 border-green-400 pl-3">
-            <div class="font-bold text-white">MarketingStudioApp.js</div>
+            <div class="font-bold text-white">
             <div class="text-secondary">Video ad generation • Asset upload • Avatar presets • Library handoff</div>
           </div>
           <div class="border-l-2 border-yellow-400 pl-3">
@@ -72,7 +70,6 @@ export function DocumentationPage() {
             <div class="text-secondary">10 agent roles • OpenAI chat • Tool selection • Workflow/Design/Marketing/Director/Library handoffs</div>
           </div>
           <div class="border-l-2 border-purple-400 pl-3">
-            <div class="font-bold text-white">DesignAgentApp.js</div>
             <div class="text-secondary">20 design types • 8 style options • 6 output formats • Image/Workflow/Library handoffs</div>
           </div>
         </div>

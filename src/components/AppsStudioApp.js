@@ -30,9 +30,7 @@ const NEW_APPS = [
   { id: 'studio', name: 'Unified Studio', description: 'Launch all creative tools from one dashboard', category: 'AI Command Center', icon: '🎥' },
   { id: 'workflow-builder', name: 'Workflow Builder', description: 'Build multi-step AI pipelines', category: 'AI Command Center', icon: '🔗' },
   { id: 'ai-agent', name: 'AI Agent', description: 'Create and run AI agents for production', category: 'AI Command Center', icon: '🤖' },
-  { id: 'design-agent', name: 'Design Agent', description: 'AI design assistant for layouts', category: 'AI Command Center', icon: '✨' },
-  { id: 'marketing-studio', name: 'Marketing Studio', description: 'Brand campaigns and creatives', category: 'AI Command Center', icon: '📈' },
-];
+    ];
 
 function safeReadStorage(key, fallback) {
   try {

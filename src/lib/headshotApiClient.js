@@ -1,4 +1,4 @@
-import { MuapiClient } from './muapi.js';
+import { MuapiClient, uploadFile } from './muapi.js';
 
 const DEFAULT_PROVIDER = import.meta.env.VITE_HEADSHOT_PROVIDER || 'muapi';
 const PROXY_URL = import.meta.env.VITE_HEADSHOT_PROXY_URL || '';
@@ -23,7 +23,8 @@ export async function generateHeadshot({ image, prompt, preset, apiKey, provider
     }
 
     const client = new MuapiClient();
-    const imageUrl = await client.uploadFile(image);
+    const effectiveApiKey = apiKey || localStorage.getItem('muapi_key') || '';
+    const imageUrl = await uploadFile(effectiveApiKey, image);
     const result = await client.generateImage({
       model: options.model || 'flux-dev',
       prompt,
