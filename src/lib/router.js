@@ -105,7 +105,7 @@ const pageLoaders = {
   'headshots-history': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-settings': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   personalizer: () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Personalizer')),
-  'pomelli-studio': () => import('../components/PomelliStudio.js').then(m => m.PomelliStudio()),
+  'pomelli-studio': () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Pomelli Studio')),
 };
 
 let currentPage = null;
