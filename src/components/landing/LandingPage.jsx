@@ -97,7 +97,7 @@ function createLazySection(importFn, sectionId, props = {}, index = 0) {
 
   // Immediate load in test environments or for critical sections
   const isTestEnv = typeof navigator !== 'undefined' && navigator.webdriver === true;
-  
+
   const loadSection = () => {
     importFn().then(module => {
       let section;
@@ -127,8 +127,8 @@ function createLazySection(importFn, sectionId, props = {}, index = 0) {
     });
   };
 
-  if (isTestEnv) {
-    // In tests, load immediately to avoid IntersectionObserver issues
+  // Load immediately in test env or for first few sections (above the fold)
+  if (isTestEnv || index <= 2) {
     loadSection();
   } else {
     const observer = new IntersectionObserver((entries) => {
@@ -138,11 +138,11 @@ function createLazySection(importFn, sectionId, props = {}, index = 0) {
           loadSection();
         }
       });
-    }, { rootMargin: '200px' });
+    }, { rootMargin: '500px' }); // Increased rootMargin to trigger earlier
 
     observer.observe(placeholder);
   }
-  
+
   return placeholder;
 }
 
