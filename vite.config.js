@@ -65,8 +65,8 @@ const PRODUCTION_CSP = [
 ].join('; ');
 
 const DEVELOPMENT_CSP = [
-  "default-src 'self'",
-  "script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'",
+  "default-src 'self' blob:",
+  "script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline' blob:",
   "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'",
   "img-src 'self' data: https: blob:",
   "font-src 'self' https://fonts.gstatic.com",
@@ -75,6 +75,7 @@ const DEVELOPMENT_CSP = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
+  "worker-src 'self' blob:",
   "referrer-policy 'strict-origin-when-cross-origin'"
 ].join('; ');
 
