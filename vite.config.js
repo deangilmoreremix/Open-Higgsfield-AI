@@ -84,12 +84,7 @@ export default defineConfig({
     root: './',
     publicDir: 'public',
     optimizeDeps: {
-        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent'],
-        esbuildOptions: {
-          loader: {
-            '.js': 'js'
-          }
-        }
+        exclude: ['src/components/EffectsStudio.js', 'workflow-builder', 'ai-agent']
     },
     esbuild: {
           include: ['src/**/*.{js,jsx,ts,tsx}'],
