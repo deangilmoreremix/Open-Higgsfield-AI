@@ -76,7 +76,7 @@ const DEVELOPMENT_CSP = [
   "base-uri 'self'",
   "form-action 'self'",
   "worker-src 'self' blob:",
-  "referrer-policy 'strict-origin-when-cross-origin'"
+  "referrer 'strict-origin-when-cross-origin'"
 ].join('; ');
 
 export default defineConfig({
