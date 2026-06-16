@@ -95,9 +95,6 @@ function createLazySection(importFn, sectionId, props = {}, index = 0) {
   placeholder.className = 'min-h-[200px] flex items-center justify-center';
   placeholder.innerHTML = '<div class="animate-spin w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full"></div>';
 
-  // Immediate load in test environments or for critical sections
-  const isTestEnv = typeof navigator !== 'undefined' && navigator.webdriver === true;
-
   const loadSection = () => {
     importFn().then(module => {
       let section;
@@ -127,22 +124,7 @@ function createLazySection(importFn, sectionId, props = {}, index = 0) {
     });
   };
 
-  // Load immediately in test env or for first few sections (above the fold)
-  if (isTestEnv || index <= 2) {
-    loadSection();
-  } else {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          observer.unobserve(placeholder);
-          loadSection();
-        }
-      });
-    }, { rootMargin: '500px' }); // Increased rootMargin to trigger earlier
-
-    observer.observe(placeholder);
-  }
-
+  loadSection();
   return placeholder;
 }
 

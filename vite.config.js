@@ -60,7 +60,6 @@ const PRODUCTION_CSP = [
   "base-uri 'self'",
   "form-action 'self'",
   "upgrade-insecure-requests",
-  "referrer 'strict-origin-when-cross-origin'",
   "block-all-mixed-content"
 ].join('; ');
 
@@ -75,8 +74,7 @@ const DEVELOPMENT_CSP = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "worker-src 'self' blob:",
-  "referrer 'strict-origin-when-cross-origin'"
+  "worker-src 'self' blob:"
 ].join('; ');
 
 export default defineConfig({
