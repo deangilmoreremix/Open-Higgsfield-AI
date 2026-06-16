@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
 
 // Custom CORS middleware for strict origin validation
 function corsMiddleware() {
@@ -78,7 +79,7 @@ const DEVELOPMENT_CSP = [
 ].join('; ');
 
 export default defineConfig({
-    plugins: [corsMiddleware()],
+    plugins: [tailwindcss(), corsMiddleware()],
     root: './',
     publicDir: 'public',
     optimizeDeps: {
