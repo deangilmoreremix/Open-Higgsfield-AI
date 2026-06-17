@@ -89,7 +89,7 @@ const pageLoaders = {
   render: () => import('../components/RenderPage.js').then(m => m.RenderPage()),
   'video-agent': () => import('../components/VideoAgentPage.js').then(m => m.VideoAgentPage()),
   director: () => import('../components/DirectorPage.js').then(m => m.DirectorPage()),
-  timeline: () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Timeline')),
+  timeline: () => import('../components/RealTimelinePage.js').then(m => m.RealTimelinePage()),
   'timeline-test': () => import('../components/TimelineTestPage.jsx').then(m => m.TimelineTestPage),
   'ai-video-outreach': () => import('../components/AIVideoOutreachPage.js').then(m => m.AIVideoOutreachPage()),
   'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
@@ -104,8 +104,12 @@ const pageLoaders = {
   'headshots-generate': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-history': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-settings': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
-  personalizer: () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Personalizer')),
-  'pomelli-studio': () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Pomelli Studio')),
+  personalizer: () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Personalizer')),
+  'pomelli-studio': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Pomelli Studio')),
+  'shorts-generator': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Shorts Generator')),
+  'social-scheduler': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Social Scheduler')),
+  'ugc': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('UGC Generator')),
+  'music': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Music Studio')),
 };
 
 let currentPage = null;
