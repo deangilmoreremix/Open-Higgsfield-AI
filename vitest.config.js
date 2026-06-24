@@ -42,8 +42,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/workspaces/Open-Higgsfield-AI',
-      '@test': '/workspaces/Open-Higgsfield-AI/tests'
+      '@': '/workspace/0c85e0dc-1244-40ab-8f84-e11668f857da/sessions/agent_9a89a665-46bc-478e-a120-000038198ef7',
+      '@test': '/workspace/0c85e0dc-1244-40ab-8f84-e11668f857da/sessions/agent_9a89a665-46bc-478e-a120-000038198ef7/tests'
     }
   }
 });

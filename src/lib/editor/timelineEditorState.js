@@ -22,6 +22,10 @@ export const createTimelineState = () => {
   // Get the raw state and add legacy methods
   const state = timelineState.getRawState();
   
+  // Backward compatibility: expose project.tracks at top-level as 'tracks'
+  // to match the legacy API expected by existing editors and tests.
+  state.tracks = state.project.tracks;
+  
   // Add legacy updateClipDuration method
   state.updateClipDuration = function(clipId, updates) {
     // Find the track and clip

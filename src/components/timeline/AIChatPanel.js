@@ -345,12 +345,6 @@ Example: "split the clip at the current time" -> {"command": "split_clip", "para
     return { response: 'Trim feature not available.', success: false };
   }
 
-    return {
-      response: 'Trim clip feature not available.',
-      success: false
-    };
-  }
-
   async addTransition(params) {
     if (params?.useServer) {
       try {
