@@ -42,3 +42,5 @@ package-lock.json
 # Coverage directory
 coverage/
 .next
+external-repos/
+modules/
