@@ -144,7 +144,7 @@ describe('State Management', () => {
 
     it('should handle large project serialization efficiently', () => {
       // Add many clips to simulate large project
-      const largeTrack = { ...state.tracks[0], items: [] };
+      const largeTrack = { ...state.project.tracks[0], items: [] };
       for (let i = 0; i < 1000; i++) {
         largeTrack.items.push({
           id: i,
@@ -166,7 +166,7 @@ describe('State Management', () => {
         });
       }
 
-      state.tracks = [largeTrack];
+      state.project.tracks = [largeTrack];
 
       const startTime = Date.now();
       const serialized = JSON.stringify(state);
@@ -179,7 +179,7 @@ describe('State Management', () => {
 
   describe('State Validation', () => {
     it('should validate track structure', () => {
-      const validTrack = state.tracks[0];
+      const validTrack = state.project.tracks[0];
       expect(validTrack).toHaveProperty('id');
       expect(validTrack).toHaveProperty('type');
       expect(validTrack).toHaveProperty('name');
@@ -188,7 +188,7 @@ describe('State Management', () => {
     });
 
     it('should validate clip structure', () => {
-      const clip = state.tracks[0].items[0];
+      const clip = state.project.tracks[0].items[0];
       const requiredClipFields = ['id', 'assetId', 'type', 'start', 'end', 'sourceStart', 'sourceEnd'];
 
       requiredClipFields.forEach(field => {
@@ -222,7 +222,7 @@ describe('State Management', () => {
     });
 
     it('should detect orphaned clips', () => {
-      const clip = state.tracks[0].items[0];
+      const clip = state.project.tracks[0].items[0];
       const assetExists = state.project.assets.some(asset => asset.id === clip.assetId);
 
       // In this mock state, assets are empty, so clips are "orphaned"
@@ -265,10 +265,10 @@ describe('State Management', () => {
     });
 
     it('should maintain state consistency during bulk operations', () => {
-      const initialClipCount = state.tracks.reduce((sum, track) => sum + track.items.length, 0);
+      const initialClipCount = state.project.tracks.reduce((sum, track) => sum + track.items.length, 0);
 
       // Simulate bulk clip addition
-      state.tracks[0].items.push({
+      state.project.tracks[0].items.push({
         id: 999,
         assetId: 'bulk-asset',
         type: 'video',
@@ -287,7 +287,7 @@ describe('State Management', () => {
         name: 'Bulk Clip'
       });
 
-      const finalClipCount = state.tracks.reduce((sum, track) => sum + track.items.length, 0);
+      const finalClipCount = state.project.tracks.reduce((sum, track) => sum + track.items.length, 0);
       expect(finalClipCount).toBe(initialClipCount + 1);
     });
   });
@@ -298,7 +298,7 @@ describe('State Management', () => {
 
       // Compare serializable properties only (functions are not included in JSON)
       expect(snapshot.project).toEqual(state.project);
-      expect(snapshot.tracks).toEqual(state.tracks);
+      expect(snapshot.project.tracks).toEqual(state.project.tracks);
       expect(snapshot.playheadPercent).toBe(state.playheadPercent);
       expect(snapshot.zoom).toBe(state.zoom);
       expect(snapshot.pan).toBe(state.pan);
@@ -349,7 +349,7 @@ describe('State Management', () => {
     });
 
     it('should handle clipboard operations', () => {
-      const clipData = state.tracks[0].items[0];
+      const clipData = state.project.tracks[0].items[0];
       state.clipboard = { type: 'clip', data: clipData };
 
       expect(state.clipboard.type).toBe('clip');

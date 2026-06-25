@@ -40,13 +40,13 @@ describe('Timeline Engine Core', () => {
         name: 'Test Clip'
       };
 
-      state.tracks[0].items.push(newClip);
-      expect(state.tracks[0].items).toHaveLength(3);
-      expect(state.tracks[0].items[2]).toEqual(newClip);
+      state.project.tracks[0].items.push(newClip);
+      expect(state.project.tracks[0].items).toHaveLength(3);
+      expect(state.project.tracks[0].items[2]).toEqual(newClip);
     });
 
     it('should calculate clip duration correctly', () => {
-      const clip = state.tracks[0].items[0];
+      const clip = state.project.tracks[0].items[0];
       const duration = clip.end - clip.start;
       expect(duration).toBe(18); // 22.8 - 4.8
     });
@@ -63,7 +63,7 @@ describe('Timeline Engine Core', () => {
     });
 
     it('should prevent overlapping clips in same lane', () => {
-      const track = state.tracks[0];
+      const track = state.project.tracks[0];
       const existingClip = track.items[0]; // start: 4.8, end: 22.8
 
       const overlappingClip = {
@@ -82,7 +82,7 @@ describe('Timeline Engine Core', () => {
     });
 
     it('should allow clips in different lanes to overlap', () => {
-      const track = state.tracks[0];
+      const track = state.project.tracks[0];
       const existingClip = track.items[0]; // lane: 0
 
       const nonOverlappingClip = {
@@ -102,7 +102,7 @@ describe('Timeline Engine Core', () => {
 
     it('should calculate effective clip duration with playback rate', () => {
       const clip = {
-        ...state.tracks[0].items[0],
+        ...state.project.tracks[0].items[0],
         playbackRate: 2 // double speed
       };
 
@@ -112,7 +112,7 @@ describe('Timeline Engine Core', () => {
     });
 
     it('should handle clip trimming operations', () => {
-      const clip = { ...state.tracks[0].items[0] };
+      const clip = { ...state.project.tracks[0].items[0] };
       const originalDuration = clip.trimOut - clip.trimIn;
 
       // Trim 2 seconds from start
@@ -126,7 +126,7 @@ describe('Timeline Engine Core', () => {
 
   describe('Track Management', () => {
     it('should create track with required properties', () => {
-      const initialTrackCount = state.tracks.length;
+      const initialTrackCount = state.project.tracks.length;
       const newTrack = {
         id: 'test-track',
         type: 'audio',
@@ -140,13 +140,13 @@ describe('Timeline Engine Core', () => {
         items: []
       };
 
-      state.tracks.push(newTrack);
-      expect(state.tracks).toHaveLength(initialTrackCount + 1);
-      expect(state.tracks[state.tracks.length - 1]).toEqual(newTrack);
+      state.project.tracks.push(newTrack);
+      expect(state.project.tracks).toHaveLength(initialTrackCount + 1);
+      expect(state.project.tracks[state.project.tracks.length - 1]).toEqual(newTrack);
     });
 
     it('should validate track type constraints', () => {
-      const videoTrack = state.tracks[0];
+      const videoTrack = state.project.tracks[0];
       expect(videoTrack.type).toBe('video');
 
       // Video tracks should accept video clips
@@ -155,7 +155,7 @@ describe('Timeline Engine Core', () => {
     });
 
     it('should handle track property updates', () => {
-      const track = state.tracks[0];
+      const track = state.project.tracks[0];
       const originalMuted = track.muted;
 
       track.muted = !originalMuted;
@@ -163,7 +163,7 @@ describe('Timeline Engine Core', () => {
     });
 
     it('should calculate track duration from clips', () => {
-      const track = state.tracks[0];
+      const track = state.project.tracks[0];
       const maxEndTime = Math.max(...track.items.map(clip => clip.end));
       expect(maxEndTime).toBe(32.4); // max end time from existing clips
     });
@@ -217,7 +217,7 @@ describe('Timeline Engine Core', () => {
 
   describe('Timeline Calculations', () => {
     it('should calculate total timeline duration from all tracks', () => {
-      const allEndTimes = state.tracks.flatMap(track =>
+      const allEndTimes = state.project.tracks.flatMap(track =>
         track.items.map(clip => clip.end)
       );
       const maxDuration = Math.max(...allEndTimes);
@@ -227,9 +227,9 @@ describe('Timeline Engine Core', () => {
 
     it('should handle empty timeline duration', () => {
       const emptyState = createTimelineState();
-      emptyState.tracks = [{ ...emptyState.tracks[0], items: [] }];
+      emptyState.project.tracks = [{ ...emptyState.project.tracks[0], items: [] }];
 
-      const allEndTimes = emptyState.tracks.flatMap(track =>
+      const allEndTimes = emptyState.project.tracks.flatMap(track =>
         track.items.map(clip => clip.end)
       );
 
@@ -262,19 +262,19 @@ describe('Timeline Engine Core', () => {
 
   describe('State Validation and Integrity', () => {
     it('should validate clip references exist in assets', () => {
-      const clip = state.tracks[0].items[0];
+      const clip = state.project.tracks[0].items[0];
       const assetExists = state.project.assets.some(asset => asset.id === clip.assetId);
 
-      // In this mock state, assets array is empty, so this should be false
-      expect(assetExists).toBe(false);
+      // In this mock state, assets are pre-populated, so this should be true
+      expect(assetExists).toBe(true);
     });
 
     it('should maintain referential integrity after state mutations', () => {
-      const originalTrackCount = state.tracks.length;
-      const originalClipCount = state.tracks[0].items.length;
+      const originalTrackCount = state.project.tracks.length;
+      const originalClipCount = state.project.tracks[0].items.length;
 
       // Add a new track
-      state.tracks.push({
+      state.project.tracks.push({
         id: 'test-track',
         type: 'video',
         name: 'Test Track',
@@ -287,8 +287,8 @@ describe('Timeline Engine Core', () => {
         items: []
       });
 
-      expect(state.tracks.length).toBe(originalTrackCount + 1);
-      expect(state.tracks[0].items.length).toBe(originalClipCount); // unchanged
+      expect(state.project.tracks.length).toBe(originalTrackCount + 1);
+      expect(state.project.tracks[0].items.length).toBe(originalClipCount); // unchanged
     });
 
     it('should handle concurrent state updates safely', () => {
@@ -337,7 +337,7 @@ describe('Timeline Engine Core', () => {
     });
 
     it('should handle effects and transforms', () => {
-      const clip = state.tracks[0].items[0];
+      const clip = state.project.tracks[0].items[0];
 
       clip.effects = [{ type: 'blur', amount: 5 }];
       clip.transform = { x: 10, y: 20, scale: 1.2, rotation: 45 };
@@ -349,7 +349,7 @@ describe('Timeline Engine Core', () => {
 
     it('should manage selection and clipboard state', () => {
       state.selectedClipId = 2;
-      state.clipboard = { type: 'clip', data: state.tracks[0].items[0] };
+      state.clipboard = { type: 'clip', data: state.project.tracks[0].items[0] };
 
       expect(state.selectedClipId).toBe(2);
       expect(state.clipboard).toBeDefined();

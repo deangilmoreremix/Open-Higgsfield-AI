@@ -1,5 +1,4 @@
 import { supabase, uploadFileToStorage } from '../lib/hybrid-supabase.js';
-import { initializeTimelineDragDrop, createEnhancedClipElement, renderCompositingOverlay, renderTimelineControls, renderLayerManagement, renderPopcornElements, showTimelineContextMenu } from '../lib/editor/timelineRendererEnhanced.js';
 import { initializeMediaLibraryDragDrop, setupEnhancedTooltips } from '../lib/editor/dragDrop.js';
 import { renderMediaGrid, addMediaToTimeline } from '../lib/editor/mediaLibrary.js';
 import { assetStore } from '../lib/assets/assetStore.js';
@@ -1996,7 +1995,22 @@ button, input, textarea, select { font: inherit; }
        });
      }
 
-    function renderTracks() {
+     function renderTracks() {
+      function createBasicClipElement(clip, trackMeta, options) {
+        const clipEl = document.createElement('button');
+        clipEl.className = `clip ${options.selectedClipId === clip.id ? 'active' : ''}`;
+        const leftPercent = (clip.start / (options.timelineSeconds || 60)) * 100;
+        const widthPercent = ((clip.end - clip.start) / (options.timelineSeconds || 60)) * 100;
+        clipEl.style.left = `${leftPercent}%`;
+        clipEl.style.width = `${widthPercent}%`;
+        clipEl.innerHTML = `
+          <span class="clip-label">${clip.text || clip.name}</span>
+          <div class="clip-handle left" data-handle="left"></div>
+          <div class="clip-handle right" data-handle="right"></div>
+        `;
+        return clipEl;
+      }
+
       // Convert tracks to enhanced format
       const enhancedState = {
         tracks: (state.tracks || []).map(track => ({
@@ -2145,10 +2159,15 @@ button, input, textarea, select { font: inherit; }
             waveformData: clip.waveformData
           };
 
-          const clipEl = createEnhancedClipElement(enhancedClip, { id: track.id, name: track.name }, {
-            selectedClipId: state.selectedClipId,
-            timelineSeconds: state.timelineSeconds
-          }, state.zoom || 1);
+          const clipEl = (createEnhancedClipElement && typeof createEnhancedClipElement === 'function')
+            ? createEnhancedClipElement(enhancedClip, { id: track.id, name: track.name }, {
+                selectedClipId: state.selectedClipId,
+                timelineSeconds: state.timelineSeconds
+              }, state.zoom || 1)
+            : createBasicClipElement(enhancedClip, { id: track.id, name: track.name }, {
+                selectedClipId: state.selectedClipId,
+                timelineSeconds: state.timelineSeconds
+              });
 
           // Extend clip with enhancement context menus
           extendClipContextMenu(clipEl, clip, track, state, showToast);
@@ -3004,8 +3023,7 @@ button, input, textarea, select { font: inherit; }
     }
 
     async function generateSubtitles(language = 'en') {
-      try {
-        console.log(`Generating subtitles (${language})...`);
+      console.log(`Generating subtitles (${language})...`);
       try {
         
 

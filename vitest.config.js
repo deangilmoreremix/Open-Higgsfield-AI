@@ -42,8 +42,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/workspaces/Open-Higgsfield-AI',
-      '@test': '/workspaces/Open-Higgsfield-AI/tests'
+      '@': '/Users/shasheemoore/Downloads/Higgsfield',
+      '@test': '/Users/shasheemoore/Downloads/Higgsfield/tests'
     }
   }
 });

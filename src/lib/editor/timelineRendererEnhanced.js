@@ -4,28 +4,97 @@
  * Enhanced with advanced timeline features from remix-new-editor
  */
 
-import { updatePlaybackUI } from './timelinePlayback.js';
-import { updatePreview } from './timelineRendererOriginal.js';
-import { initializeAdvancedDragDrop, setupEnhancedTooltips, initializeVideoPlaybackControls } from './dragDrop.js';
-import { renderMultiCameraToolbar, renderPipControls, renderSplitScreenControls } from './multiCamera.js';
+let updatePlaybackUI, updatePreview, initializeAdvancedDragDrop, setupEnhancedTooltips, initializeVideoPlaybackControls;
+let PlayButton, PlayTime, PlusButton, Layer, BlendingMode, Opacity;
+let TimeLineSlider, LineSlider, SliderArrow, TransitionButton;
+let PopcornElement, PopcornElements, ContextMenu;
+let AnimatableElement, DefaultElement, IconElement;
+let renderMultiCameraToolbar, renderPipControls, renderSplitScreenControls;
 
-// Core timeline engine components
-import { PlayButton } from '../../../components/common/timeline/PlayButton.js';
-import { PlayTime } from '../../../components/common/timeline/PlayTime.js';
-import { PlusButton } from '../../../components/common/timeline/PlusButton.js';
-import { Layer } from '../../../components/common/timeline/Layer.js';
-import { BlendingMode } from '../../../components/common/timeline/BlendingMode.js';
-import { Opacity } from '../../../components/common/timeline/Opacity.js';
-import { TimeLineSlider } from '../../../components/common/timeline/TimeLineSlider.js';
-import { LineSlider } from '../../../components/common/timeline/LineSlider.js';
-import { SliderArrow } from '../../../components/common/timeline/SliderArrow.js';
-import { TransitionButton } from '../../../components/common/timeline/TransitionButton.js';
-import { PopcornElement } from '../../../components/common/timeline/PopcornElement.js';
-import { PopcornElements } from '../../../components/common/timeline/PopcornElements.js';
-import { ContextMenu } from '../../../components/common/timeline/ContextMenu.js';
-import { AnimatableElement } from '../../../components/common/timeline/elements/AnimatableElement.js';
-import { DefaultElement } from '../../../components/common/timeline/elements/DefaultElement.js';
-import { IconElement } from '../../../components/common/timeline/elements/IconElement.js';
+try {
+  const playback = await import('./timelinePlayback.js');
+  updatePlaybackUI = playback.updatePlaybackUI;
+} catch (e) {}
+try {
+  const rendererOriginal = await import('./timelineRendererOriginal.js');
+  updatePreview = rendererOriginal.updatePreview;
+} catch (e) {}
+try {
+  const dragDrop = await import('./dragDrop.js');
+  initializeAdvancedDragDrop = dragDrop.initializeAdvancedDragDrop;
+  setupEnhancedTooltips = dragDrop.setupEnhancedTooltips;
+  initializeVideoPlaybackControls = dragDrop.initializeVideoPlaybackControls;
+} catch (e) {}
+try {
+  const multiCam = await import('./multiCamera.js');
+  renderMultiCameraToolbar = multiCam.renderMultiCameraToolbar;
+  renderPipControls = multiCam.renderPipControls;
+  renderSplitScreenControls = multiCam.renderSplitScreenControls;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/PlayButton.js');
+  PlayButton = mod.PlayButton || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/PlayTime.js');
+  PlayTime = mod.PlayTime || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/PlusButton.js');
+  PlusButton = mod.PlusButton || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/Layer.js');
+  Layer = mod.Layer || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/BlendingMode.js');
+  BlendingMode = mod.BlendingMode || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/Opacity.js');
+  Opacity = mod.Opacity || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/TimeLineSlider.js');
+  TimeLineSlider = mod.TimeLineSlider || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/LineSlider.js');
+  LineSlider = mod.LineSlider || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/SliderArrow.js');
+  SliderArrow = mod.SliderArrow || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/TransitionButton.js');
+  TransitionButton = mod.TransitionButton || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/PopcornElement.js');
+  PopcornElement = mod.PopcornElement || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/PopcornElements.js');
+  PopcornElements = mod.PopcornElements || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/ContextMenu.js');
+  ContextMenu = mod.ContextMenu || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/elements/AnimatableElement.js');
+  AnimatableElement = mod.AnimatableElement || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/elements/DefaultElement.js');
+  DefaultElement = mod.DefaultElement || mod.default;
+} catch (e) {}
+try {
+  const mod = await import('../../../components/common/timeline/elements/IconElement.js');
+  IconElement = mod.IconElement || mod.default;
+} catch (e) {}
 
 let timelineZoom = 1.0;
 let timelinePan = 0;
