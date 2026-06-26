@@ -2,7 +2,7 @@
 # This file consolidates all Netlify-specific configuration for the Open-Higgsfield-AI monorepo
 
 [build]
-  publish = ".next"
+  publish = "dist"
   # Use pnpm for consistent monorepo workspace support
   # Build wrapper: install deps and run monorepo build tasks
   command = "pnpm install && pnpm run build"

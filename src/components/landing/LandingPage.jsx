@@ -33,7 +33,6 @@ const ALL_APPS = [
   { id: 'workflows', title: 'Workflows', description: 'Run repeatable AI creative workflows for generating, editing, enhancing, rendering, and packaging content faster.', icon: '⚙️', link: '/workflows' },
   { id: 'agents', title: 'Agents', description: 'Use specialized AI agents for creative direction, editing, storyboarding, video creation, pitch improvement, and production planning.', icon: '🤖', link: '/agents' },
   { id: 'mcp-cli', title: 'MCP & CLI', description: 'Control advanced workflows, connect tools, automate tasks, and extend the platform with agent-ready command and integration support.', icon: '💻', link: '/mcp-cli' },
-  { id: 'open-generative-ai', title: 'Open Generative AI', description: 'Open-source generative AI tools for image and video creation.', icon: '🔓', link: '/open-generative-ai' },
 ];
 
 let globalStylesAdded = false;

@@ -254,8 +254,6 @@ Example: "split the clip at the current time" -> {"command": "split_clip", "para
       case 'extend_clip':
         return await this.runCineGenTool(command, parameters);
 
-      case 'stabilize_video':
-        return await this.stabilizeVideo(parameters);
 
       case 'find_related_footage':
         return await this.findRelatedFootage(parameters);
@@ -345,11 +343,6 @@ Example: "split the clip at the current time" -> {"command": "split_clip", "para
     return { response: 'Trim feature not available.', success: false };
   }
 
-    return {
-      response: 'Trim clip feature not available.',
-      success: false
-    };
-  }
 
   async addTransition(params) {
     if (params?.useServer) {
@@ -373,11 +366,6 @@ Example: "split the clip at the current time" -> {"command": "split_clip", "para
     return { response: 'Transition feature not available.', success: false };
   }
 
-    return {
-      response: 'Add transition feature not available.',
-      success: false
-    };
-  }
 
   async addText(params) {
     const text = params.text || 'Sample Text';
@@ -495,11 +483,6 @@ Example: "split the clip at the current time" -> {"command": "split_clip", "para
     }
   }
 
-    return {
-      response: 'Speed ramp feature not available.',
-      success: false
-    };
-  }
 
   async stabilizeVideo(params) {
     if (this.actions.stabilizeVideo) {

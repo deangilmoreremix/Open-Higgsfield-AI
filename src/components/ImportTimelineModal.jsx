@@ -30,7 +30,7 @@ export function ImportTimelineModal({ onImport, onClose }) {
           </label>
         </div>
         
-        <button class="w-full mt-4 px-4 py-2 bg-white/10 rounded text-sm hover:bg-white/20" onclick="${onClose?.}">
+        <button class="w-full mt-4 px-4 py-2 bg-white/10 rounded text-sm hover:bg-white/20" onclick="${onClose}">
           Cancel
         </button>
       </div>

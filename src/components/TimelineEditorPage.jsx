@@ -4801,7 +4801,7 @@ button, input, textarea, select { font: inherit; }
         maskBtn.addEventListener('click', async () => {
           const result = await runCineGenTool('mask_tool', { clipId: state.selectedClipId });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4810,7 +4810,7 @@ button, input, textarea, select { font: inherit; }
         elementBtn.addEventListener('click', async () => {
           const result = await runCineGenTool('element_create', { clipId: state.selectedClipId });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4884,7 +4884,7 @@ button, input, textarea, select { font: inherit; }
             clipId: state.selectedClipId
           });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4893,7 +4893,7 @@ button, input, textarea, select { font: inherit; }
         layerBtn.addEventListener('click', async () => {
           const result = await runCineGenTool('layer_decompose', { clipId: state.selectedClipId });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4902,7 +4902,7 @@ button, input, textarea, select { font: inherit; }
         shotBtn.addEventListener('click', async () => {
           const result = await runCineGenTool('shot_board', { clipId: state.selectedClipId });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4911,7 +4911,7 @@ button, input, textarea, select { font: inherit; }
         proxyBtn.addEventListener('click', async () => {
           const result = await runCineGenTool('proxy_playback', { enabled: true });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4920,7 +4920,7 @@ button, input, textarea, select { font: inherit; }
         planBtn.addEventListener('click', async () => {
           const result = await runCineGenTool('composition_plan', { clipId: state.selectedClipId });
           updateCineGenResults(result);
-          if (result.success) 
+          if (result.success) {}
         });
       }
 
@@ -4936,7 +4936,7 @@ button, input, textarea, select { font: inherit; }
 
           applyCameraEffect(effect);
         });
-      }
+      });
     }
 
       const clearBtn = root.querySelector('#clearCineGenResults');
@@ -4947,10 +4947,8 @@ button, input, textarea, select { font: inherit; }
             container.innerHTML = 'No CineGen tools used yet';
           }
           cinegenHistory = [];
-          
         });
       }
-    }
 
     function renderAll() {
       initializeDefaultTracks();

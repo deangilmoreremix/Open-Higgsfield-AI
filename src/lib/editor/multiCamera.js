@@ -269,11 +269,3 @@ function showModal(title, content) {
   modal.querySelector('.modal-body').appendChild(content);
   document.body.appendChild(modal);
 }
-
-function console.log(message) {
-  // Use existing toast system
-  if (window.showToast) {
-    window.
-  } else {
-  }
-}

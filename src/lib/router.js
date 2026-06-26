@@ -25,10 +25,6 @@ const ROUTE_MAP = {
   'Video Outreach': 'video-outreach',
   'Assistant': 'assistant',
   'Studio': 'studio',
-  'Open Generative AI': 'open-generative-ai',
-  'Studio App': 'studio-app',
-  'Vibe Workflow': 'vibe-workflow',
-  'AI VFX': 'ai-vfx-app',
 };
 
 export function getRouteForItem(item) {

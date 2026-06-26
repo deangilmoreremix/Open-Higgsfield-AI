@@ -40,7 +40,7 @@ export function RetakePanel({ clip, onRetake, onClose }) {
         </div>
         
         <div class="flex gap-2 mt-6">
-          <button class="flex-1 px-4 py-2 bg-white/10 rounded text-sm hover:bg-white/20" onclick="${onClose?.}">Cancel</button>
+          <button class="flex-1 px-4 py-2 bg-white/10 rounded text-sm hover:bg-white/20" onclick="${onClose}">Cancel</button>
           <button class="flex-1 px-4 py-2 bg-primary rounded text-sm font-semibold hover:opacity-90" id="retakeConfirmBtn">
             ${isGenerating ? 'Generating...' : 'Retake'}
           </button>
