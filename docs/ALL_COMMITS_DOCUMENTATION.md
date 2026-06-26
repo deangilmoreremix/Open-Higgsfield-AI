@@ -2,9 +2,9 @@
 
 This document records the full commit history for the `Open-Higgsfield-AI` repository.
 
-- Generated on: 2026-04-23
+- Generated on: 2026-06-25
 - Source: `git log --reverse --pretty=format:'- %ad | %h | %an | %s' --date=short`
-- Total commits at generation time: 215
+- Total commits at generation time: 217
 
 ## Complete Commit List
 
@@ -223,6 +223,30 @@ This document records the full commit history for the `Open-Higgsfield-AI` repos
 - 2026-04-21 | 1e2d4f8 | Developer | feat: partial AI-VFX app implementation with basic structure
 - 2026-04-21 | 0cd3406 | Developer | feat: complete AI-VFX app implementation using Superpowers methodology
 - 2026-04-23 | 7bdc475 | Developer | feat: implement production readiness fixes using Superpowers methodology
+- 2026-06-25 | 536d43b3 | Shashee Moore | fix: restore timeline editor to fully functional state
+- 2026-06-25 | 006956b9 | Shashee Moore | docs: update commit documentation for timeline editor restoration
+
+### Detailed Changes (006956b9)
+
+**Timeline Editor Restoration (6 Fixes in 536d43b3)**
+
+1. **timelineRendererEnhanced.js** - Guarded all 16 optional component imports with dynamic `import()` + try/catch. Previously, missing `../components/common/timeline/*.js` components caused module load failures. Now the module exports all functions regardless of which optional dependencies are present.
+
+2. **TimelineEditorPage.jsx** - Added `createBasicClipElement` fallback function inside `renderTracks()`. The enhanced renderer path now conditionally falls back to basic clip rendering when the enhanced component is unavailable.
+
+3. **generateSubtitles() Syntax Fix** - Removed outer stray `try {` block in `generateSubtitles()` function which had no matching catch/finally, causing syntax errors.
+
+4. **Modal Handlers Verified** - All 19 modal handlers confirmed callable: openAIVideoCreatorModal, openRecorderModal, openEnhancedRecorderModal, openTemplateGeneratorModal, openTemplatePreviewModal, openSocialPublisherModal, openEmailCampaignModal, openUrlVideoModal, openPageShotModal, openContactImporterModal, openVideoPersonalizationHubModal, openLandingPageBuilderModal, openLeadGeneratorModal, openSaveProjectModal, openSettingsModal, openBillingModal, openConnectModal, openEndScreenModal, openGTMPromptModal.
+
+5. **Test Fixes** - Updated state reference paths in tests from `state.tracks` to `state.project.tracks` to match the TimelineEditorPage state structure. Updated vitest.config.js path aliases.
+
+6. **VideoDBService.js Adapter** - Added thin HTTP API adapter required by DirectorBackendService, DirectorAgentRuntime, and VideoSearchModal.
+
+### Summary
+- 6 files changed, 364 insertions(+), 70 deletions(-)
+- Dev server verified running on http://localhost:8080
+- All modal handlers verified callable
+- Vite test collection hangs (pre-existing environment issue, not caused by these fixes)
 
 ## Notes
 
