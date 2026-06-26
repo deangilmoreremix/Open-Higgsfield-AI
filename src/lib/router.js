@@ -103,11 +103,16 @@ const pageLoaders = {
   'headshots-generate': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-history': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-settings': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
-  personalizer: () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Personalizer')),
+  personalizer: () => import('../components/personalizer/PersonalizerDialog.tsx').then(m => m.default()),
+  // TODO: not yet implemented — build component or remove
   'pomelli-studio': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Pomelli Studio')),
+  // TODO: not yet implemented — build component or remove
   'shorts-generator': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Shorts Generator')),
+  // TODO: not yet implemented — build component or remove
   'social-scheduler': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Social Scheduler')),
+  // TODO: not yet implemented — build component or remove
   'ugc': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('UGC Generator')),
+  // TODO: not yet implemented — build component or remove
   'music': () => import('../components/PlaceholderPage.js').then(m => m.PlaceholderPage('Music Studio')),
 };
 
