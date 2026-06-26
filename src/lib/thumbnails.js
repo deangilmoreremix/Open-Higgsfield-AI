@@ -82,7 +82,6 @@ const HERO_THUMBNAILS = {
   'headshots': '/thumbnails/heroes/headshots.webp',
   'apps': '/thumbnails/heroes/apps.webp',
   'explore': '/thumbnails/heroes/explore.webp',
-  'ai-video-outreach': '/thumbnails/heroes/ai-video-outreach.webp.png',
   'video-outreach': null,
   'timeline': null,
   'lipsync': null,

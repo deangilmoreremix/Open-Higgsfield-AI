@@ -91,7 +91,6 @@ const pageLoaders = {
   director: () => import('../components/DirectorPage.js').then(m => m.DirectorPage()),
   timeline: () => import('../components/RealTimelinePage.js').then(m => m.RealTimelinePage()),
   'timeline-test': () => import('../components/TimelineTestPage.jsx').then(m => m.TimelineTestPage),
-  'ai-video-outreach': () => import('../components/AIVideoOutreachPage.js').then(m => m.AIVideoOutreachPage()),
   'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
   'sendspark': () => import('../components/SendsparkWorkflow.jsx').then(m => m.default()),
   'videco-ai-platform': () => import('../components/VidecoAIPlatform.js').then(m => m.VidecoAIPlatform()),

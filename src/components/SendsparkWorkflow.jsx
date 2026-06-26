@@ -423,7 +423,7 @@ const SendsparkWorkflow = ({
   );
 
   return (
-    <div className="ai-video-outreach-workflow" style={{
+    <div style={{
       backgroundColor: '#111827',
       border: '1px solid #374151',
       borderRadius: '12px',

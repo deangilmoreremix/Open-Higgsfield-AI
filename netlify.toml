@@ -91,12 +91,6 @@
   force = false
 
 [[redirects]]
-  from = "/apps/ai-video-outreach/*"
-  to = "/apps/ai-video-outreach/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
   from = "/apps/ai-influencer-generator/*"
   to = "/apps/ai-influencer-generator/index.html"
   status = 200
