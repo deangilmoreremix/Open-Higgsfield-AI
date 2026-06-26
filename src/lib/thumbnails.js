@@ -78,7 +78,7 @@ const HERO_THUMBNAILS = {
   'advanced-dubbing': '/thumbnails/heroes/advanced-dubbing.webp',
   'runway-motion': '/thumbnails/heroes/runway-motion.webp',
   'tiktok-carousel': '/thumbnails/heroes/tiktok-carousel.webp',
-  'templates': null,
+  'templates': '/thumbnails/heroes/templates.webp',
   'headshots': '/thumbnails/heroes/headshots.webp',
   'apps': '/thumbnails/heroes/apps.webp',
   'explore': '/thumbnails/heroes/explore.webp',

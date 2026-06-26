@@ -111,7 +111,7 @@
     50% { opacity: 0.4; }
 }
 
-.thumb-fallback .thumb-hero {
+.thumb-fallback.thumb-hero {
     display: none;
 }
 
