@@ -41,6 +41,7 @@ const pageLoaders = {
   cinema: () => import('../components/CinemaStudio.js').then(m => m.CinemaStudio()),
   apps: () => import('../components/AppsHub.js').then(m => m.AppsHub()),
   templates: () => import('../components/TemplatesPage.js').then(m => m.TemplatesPage()),
+  // ALIAS: /effects loads the same component as /vfx
   effects: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
   vfx: () => import('../components/EffectsStudio.js').then(m => m.EffectsStudio()),
   'ai-vfx': () => import('../components/AIVFXStudio.js').then(m => m.AIVFXStudio()),
@@ -57,6 +58,7 @@ const pageLoaders = {
   videotools: () => import('../components/VideoToolsStudio.js').then(m => m.VideoToolsStudio()),
   chat: () => import('../components/ChatStudio.js').then(m => m.ChatStudio()),
   lipsync: () => import('../components/LipSyncStudio.js').then(m => m.LipSyncStudio()),
+  // ALIASES: all load WorkflowBuilderApp.js
   workflows: () => import('../components/WorkflowBuilderApp.js').then(m => m.WorkflowBuilderApp()),
   'workflows/editor': () => import('../components/WorkflowBuilderApp.js').then(m => m.WorkflowBuilderApp()),
   'workflows/history': () => import('../components/WorkflowBuilderApp.js').then(m => m.WorkflowBuilderApp()),
@@ -99,6 +101,7 @@ const pageLoaders = {
   documentation: () => import('../components/DocumentationPage.js').then(m => m.DocumentationPage()),
   landing: () => import('../components/landing/LandingPage.jsx').then(m => m.LandingPage()),
   signin: () => import('../components/landing/SignInPage.jsx').then(m => m.SignInPage()),
+  // ALIASES: all load HeadshotStudio.js
   headshots: () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-generate': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-history': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
