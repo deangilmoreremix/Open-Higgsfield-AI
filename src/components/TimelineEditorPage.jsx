@@ -1218,6 +1218,7 @@ button, input, textarea, select { font: inherit; }
       toolGroup: root.querySelector('#toolGroup'),
       pillRow: root.querySelector('#pillRow'),
       trackRows: root.querySelector('#trackRows'),
+      timelineBody: root.querySelector('#timelineBody'),
       mediaGrid: root.querySelector('#mediaGrid'),
       generateTypes: root.querySelector('#generateTypes'),
       aiChatContainer: root.querySelector('#aiChatContainer'),
@@ -1282,6 +1283,17 @@ button, input, textarea, select { font: inherit; }
       modalBody: root.querySelector('#modalBody'),
       modalClose: root.querySelector('#modalClose')
     };
+
+    function showToast(message, type = 'info') {
+      if (!els.toast) return;
+      els.toast.textContent = message;
+      els.toast.className = `toast toast-${type}`;
+      els.toast.style.display = 'block';
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        if (els.toast) els.toast.style.display = 'none';
+      }, 3000);
+    }
 
     function findSelectedClip() {
       return state.tracks.flatMap((track) => track.clips).find((item) => item.id === state.selectedClipId);
@@ -1747,7 +1759,17 @@ button, input, textarea, select { font: inherit; }
         Zoom: 'Zoom tool - Click to zoom in, Alt+click to zoom out (Z)',
         Hand: 'Hand tool - Click and drag to pan across the timeline (H)'
       };
-      state.tools.forEach(([icon, label]) => {
+      const tools = state.tools || [
+        ['🔍', 'Select'],
+        ['✂️', 'Blade'],
+        ['↗️', 'Ripple'],
+        ['↔️', 'Roll'],
+        ['↕️', 'Slip'],
+        ['↔️', 'Slide'],
+        ['🔍', 'Zoom'],
+        ['✋', 'Hand']
+      ];
+      tools.forEach(([icon, label]) => {
         const button = document.createElement('button');
         button.className = `tool-btn ${state.selectedTool === label ? 'active' : ''}`;
         button.textContent = icon;
@@ -2035,6 +2057,16 @@ button, input, textarea, select { font: inherit; }
             waveformData: clip.waveformData,
             opacity: clip.opacity || 1,
             blendMode: clip.blendMode || 'normal'
+          })),
+          clips: (track.items || track.clips || []).map(clip => ({
+            id: clip.id,
+            name: clip.name,
+            text: clip.heading || clip.name || '',
+            start: clip.start || (clip.left / 100) * state.timelineSeconds,
+            end: clip.end || ((clip.left + (clip.width || 0)) / 100) * state.timelineSeconds,
+            type: clip.type,
+            src: clip.src,
+            metadata: clip.metadata || {}
           }))
         })),
         selectedClipId: state.selectedClipId,
@@ -2047,6 +2079,8 @@ button, input, textarea, select { font: inherit; }
 
       // Add enhanced drag and drop handlers
       els.trackRows.querySelectorAll('.track-lane').forEach(lane => {
+        const track = state.tracks.find(t => t.id === lane.dataset.trackId);
+
         lane.addEventListener('click', (event) => {
           if (event.target !== lane) return;
           const rect = lane.getBoundingClientRect();
@@ -2064,7 +2098,6 @@ button, input, textarea, select { font: inherit; }
           e.preventDefault();
           const rect = lane.getBoundingClientRect();
           const percent = ((e.clientX - rect.left) / rect.width) * 100;
-          const track = state.tracks.find(t => t.id === parseInt(lane.dataset.trackId));
           
           // Handle CutAI storyboard shots/scenes (production-ready drag-drop)
           let cutaiData = null;
@@ -2159,7 +2192,7 @@ button, input, textarea, select { font: inherit; }
             waveformData: clip.waveformData
           };
 
-          const clipEl = (createEnhancedClipElement && typeof createEnhancedClipElement === 'function')
+          const clipEl = (typeof createEnhancedClipElement !== 'undefined' && createEnhancedClipElement)
             ? createEnhancedClipElement(enhancedClip, { id: track.id, name: track.name }, {
                 selectedClipId: state.selectedClipId,
                 timelineSeconds: state.timelineSeconds
@@ -2184,8 +2217,6 @@ button, input, textarea, select { font: inherit; }
 
           lane.appendChild(clipEl);
         });
-        row.append(meta, lane);
-        els.trackRows.appendChild(row);
       });
     }
 
@@ -4970,7 +5001,6 @@ button, input, textarea, select { font: inherit; }
       renderMultiCameraToolbar(state, els.multiCameraToolbar);
       renderPipControls(state, els.pipControls);
       renderSplitScreenControls(state, els.splitControls);
-      renderCompositingOverlay(state, els.compositingOverlay);
     }
 
      // Color correction system not implemented
@@ -5010,14 +5040,11 @@ button, input, textarea, select { font: inherit; }
        }
      })();
 
-     renderAll();
-    bindEvents();
+      renderAll();
+      bindEvents();
+      setupEnhancedTooltips();
 
-    // Initialize enhanced drag and drop functionality
-    initializeTimelineDragDrop(state, els);
-    setupEnhancedTooltips();
-
-    // Initialize media ingest components
+      // Initialize media ingest components
     integrateMediaIngest();
 
     // Render enhanced timeline controls

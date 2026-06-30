@@ -9,6 +9,8 @@ export { CharacterExtractorAgent, characterExtractorAgent } from './characterExt
 export { DirectorAgent, directorAgent } from './directorAgent.js';
 export { CameraOperatorAgent, cameraOperatorAgent } from './cameraOperatorAgent.js';
 export { EditorAgent, editorAgent } from './editorAgent.js';
+import { runCineGenTool, CINEGEN_TOOLS } from '../cinegenIntegration.js';
+
 export { runCineGenTool, CINEGEN_TOOLS } from '../cinegenIntegration.js';
 
 import { agentOrchestrator } from './baseAgent.js';
