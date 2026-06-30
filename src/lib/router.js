@@ -87,7 +87,7 @@ const pageLoaders = {
   render: () => import('../components/RenderPage.js').then(m => m.RenderPage()),
   'video-agent': () => import('../components/VideoAgentPage.js').then(m => m.VideoAgentPage()),
   director: () => import('../components/DirectorPage.js').then(m => m.DirectorPage()),
-  timeline: () => import('../components/RealTimelinePage.js').then(m => m.RealTimelinePage()),
+  timeline: () => import('../components/TimelineEditorPage.jsx').then(m => m.TimelineEditorPage()),
   'timeline-test': () => import('../components/TimelineTestPage.jsx').then(m => m.TimelineTestPage),
   'runway-motion': () => import('../components/RunwayMotionStudio.js').then(m => m.RunwayMotionStudio()),
   'sendspark': () => import('../components/SendsparkWorkflow.jsx').then(m => m.default()),

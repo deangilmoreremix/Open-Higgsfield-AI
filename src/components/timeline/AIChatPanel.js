@@ -485,12 +485,6 @@ Example: "split the clip at the current time" -> {"command": "split_clip", "para
     }
   }
 
-    return {
-      response: 'Speed ramp feature not available.',
-      success: false
-    };
-  }
-
   async stabilizeVideo(params) {
     if (this.actions.stabilizeVideo) {
       await this.actions.stabilizeVideo();
