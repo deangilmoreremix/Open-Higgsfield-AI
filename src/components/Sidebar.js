@@ -36,7 +36,7 @@ export function Sidebar(navigate) {
 
 
 
-    { id: 'pomelli-studio', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v14H3z"/><path d="M7 9h10"/><path d="M7 13h6"/></svg>', label: 'Pomelli', tooltip: 'Pomelli Studio — Full AI marketing studio for brand DNA, campaigns, photo studio, and animation' },
+
     { id: 'assist', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.09 3.26L16 6l-2.91.74L12 10l-1.09-3.26L8 6l2.91-.74L12 2z"/><path d="M5 15l.54 1.63L7 17.17l-1.46.37L5 19.17l-.54-1.63L3 17.17l1.46-.37L5 15z"/><path d="M19 11l.54 1.63L21 13.17l-1.46.37L19 15.17l-.54-1.63L17 13.17l1.46-.37L19 11z"/></svg>', label: 'Assist', tooltip: 'Assist — Get AI-powered suggestions and automated help for your creative tasks' },
     { id: 'commits', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="M8 3v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3"/><path d="M14 9h-4"/><path d="M14 12h-2"/><path d="M14 15h-4"/></svg>', label: 'Commits (0)', tooltip: 'Commits — View version history and saved snapshots of your project' },
 
