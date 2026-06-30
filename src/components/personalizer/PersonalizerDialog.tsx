@@ -40,7 +40,7 @@ const APPS = [
   { id: 'video-studio', label: 'Video Studio' }, { id: 'cinema-studio', label: 'Cinema Studio' },
   { id: 'effects-studio', label: 'Effects Studio' }, { id: 'character-studio', label: 'Character Studio' },
   { id: 'influencer-studio', label: 'Influencer Studio' }, { id: 'audio-studio', label: 'Audio Studio' },
-  { id: 'timeline-editor', label: 'Timeline Editor' }, { id: 'video-outreach', label: 'Video Outreach' }
+  { id: 'timeline-editor', label: 'Timeline Editor' }
 ];
 
 const REPORT_FORMATS = [

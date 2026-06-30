@@ -30,8 +30,6 @@ const ALL_APPS = [
   { id: 'library', title: 'Library', description: 'Store, organize, reuse, and manage generated assets, projects, videos, images, templates, and campaign materials.', icon: '📚', link: '/library' },
   { id: 'community', title: 'Community', description: 'Showcase examples, discover creative workflows, highlight user creations, and build a community around AI video creation.', icon: '👥', link: '/community' },
   { id: 'assist', title: 'Assist', description: 'Use guided AI help for prompts, workflows, studio selection, creative improvement, and project completion.', icon: '🧠', link: '/assist' },
-  { id: 'workflows', title: 'Workflows', description: 'Run repeatable AI creative workflows for generating, editing, enhancing, rendering, and packaging content faster.', icon: '⚙️', link: '/workflows' },
-  { id: 'agents', title: 'Agents', description: 'Use specialized AI agents for creative direction, editing, storyboarding, video creation, pitch improvement, and production planning.', icon: '🤖', link: '/agents' },
   { id: 'mcp-cli', title: 'MCP & CLI', description: 'Control advanced workflows, connect tools, automate tasks, and extend the platform with agent-ready command and integration support.', icon: '💻', link: '/mcp-cli' },
   { id: 'open-generative-ai', title: 'Open Generative AI', description: 'Open-source generative AI tools for image and video creation.', icon: '🔓', link: '/open-generative-ai' },
 ];
