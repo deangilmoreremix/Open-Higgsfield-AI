@@ -7,6 +7,7 @@
  */
 
 import { createCameraState } from './cameraState';
+import { EditorStateSchema, validateOrPass } from './schemas.js';
 
 export class TimelineState {
   /**
@@ -58,6 +59,12 @@ export class TimelineState {
     } else {
       this._state = defaultState;
     }
+
+    // Validate loaded/default state with zod. Permissive mode: on failure,
+    // we log a warning and keep the data (legacy/demo data may not fully
+    // conform but we don't want to drop the user's project). Schemas apply
+    // safe defaults for missing fields on the next setState.
+    this._state = validateOrPass(EditorStateSchema, this._state, 'TimelineState.init');
 
     // Normalize to ensure track.clips === track.items alias is active on
     // the initial state (not just after setState).
@@ -337,7 +344,7 @@ export class TimelineState {
 
     // Filter updates to only allow known top-level keys (prevent adding arbitrary properties)
     const allowedKeys = Object.keys(this._state);
-    const filteredUpdates = {};
+    let filteredUpdates = {};
     Object.keys(updates).forEach(key => {
       if (allowedKeys.includes(key)) {
         filteredUpdates[key] = updates[key];
@@ -351,6 +358,16 @@ export class TimelineState {
     if (!hasChanges) {
       return; // No changes, skip merge and notification
     }
+
+    // Validate incoming updates with zod. Permissive mode: applies safe
+    // defaults for missing fields, warns on invalid data but doesn't block.
+    const validated = validateOrPass(EditorStateSchema, { ...this._state, ...filteredUpdates }, 'TimelineState.setState');
+    // Extract only the keys that were in filteredUpdates, re-validated.
+    const safeUpdates = {};
+    for (const k of Object.keys(filteredUpdates)) {
+      if (k in validated) safeUpdates[k] = validated[k];
+    }
+    filteredUpdates = safeUpdates;
 
     // Capture previous state before modification
     const previousState = this.getState();
