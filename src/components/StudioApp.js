@@ -25,19 +25,7 @@ export function StudioApp() {
     { id: 'library', name: 'Media Library', description: 'Your uploaded and generated assets', icon: '📚', color: 'from-cyan-500/20 to-teal-500/20' },
   ];
 
-  const header = document.createElement('div');
-  header.className = 'flex items-center justify-between p-6 border-b border-white/10';
-  header.innerHTML = `
-    <div>
-      <p class="text-xs font-bold text-muted uppercase tracking-wider mb-1">VideoRemix AI Studio</p>
-      <h1 class="text-2xl font-bold text-white">Unified Creative Studio</h1>
-      <p class="text-secondary text-sm mt-1">Launch every generation, editing, workflow, and agent tool from one cinematic workspace.</p>
-    </div>
-    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-white/5 border border-white/10 flex items-center justify-center">
-      <span class="text-3xl">🎥</span>
-    </div>
-  `;
-  container.appendChild(header);
+
 
   const grid = document.createElement('div');
   grid.className = 'p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4';
