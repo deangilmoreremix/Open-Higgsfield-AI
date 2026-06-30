@@ -306,65 +306,121 @@ export function EffectsStudio() {
   }
 
   // Tabs whose thumbnail directories map cleanly to /public/thumbnails/effects/<dir>/.
-  // The on-disk file order (01-foo.svg, 02-bar.svg, ...) matches the order of the
-  // `inputs.name.enum` array in src/lib/models.js, so the numeric prefix is the
-  // 1-based index of the effect in that enum.
+  // The on-disk file format is .webp.png. Some dirs use a zero-padded numeric
+  // prefix matching the 1-based index of the effect in the model enum
+  // (ai-video); others use a bare slug (motion-controls, video-effects/vfx,
+  // image-effects, nano-banana, kontext-effects).
   const THUMBNAIL_DIR_TABS = {
     'ai-video-effects': 'ai-video',
     'motion-controls': 'motion-controls',
+    'image-effects': 'image-effects',
+    'nano-banana-effects': 'nano-banana',
+    'flux-kontext-effects': 'kontext-effects',
   };
 
   // Tabs that don't (yet) have a thumbnail directory on disk. Returning null here
   // causes renderEffects() to fall back to the inline icon placeholder.
   const NO_THUMBNAIL_TABS = new Set([
-    'image-effects',
-    'nano-banana-effects',
-    'flux-kontext-effects',
     'pixverse-advanced-effects',
   ]);
 
-  // video-effects -> vfx/ directory, but the file order on disk does NOT match
-  // the enum order in models.js, so we maintain a small explicit map for the
-  // effects that actually have thumbnails.
-  const VFX_INDEX_MAP = {
-    'building explosion': '01',
-    'car explosion': '02',
-    'decay time lapse': '03',
-    'disintegration': '04',
-    'electricity': '05',
-    'flying': '06',
-    'huge explosion': '07',
-    'levitate': '08',
-    'tornado': '09',
+  // video-effects -> vfx/ directory (no numeric prefix on .webp.png files).
+  const VFX_DIR = 'vfx';
+
+  // Local overrides for effect-name -> file-slug mismatches discovered when
+  // cross-checking the model enums against the actual files in
+  // public/thumbnails/effects/<dir>/. The slug is the basename (without
+  // extension) of the .webp.png file in the directory.
+  const SLUG_OVERRIDES = {
+    'image-effects': {
+      'acryclic ornaments': 'acrylic-ornaments',
+    },
+    'motion-controls': {
+      'lens crac': 'lens-crack',
+    },
   };
 
   // Helper to get thumbnail URL for an effect
   function getEffectThumbnail(effectName, tabId, tabType) {
-    const slug = effectName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
-
     if (NO_THUMBNAIL_TABS.has(tabId)) {
       return null;
     }
 
+    const key = effectName.toLowerCase();
+    const overrideSlug = SLUG_OVERRIDES[tabId]?.[key];
+    const derivedSlug = key.replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    const slug = overrideSlug || derivedSlug;
+
     if (tabId === 'video-effects') {
-      const index = VFX_INDEX_MAP[effectName.toLowerCase()];
-      return index ? `/thumbnails/effects/vfx/${index}-${slug}.svg` : null;
+      return `/thumbnails/effects/${VFX_DIR}/${slug}.webp.png`;
     }
 
     const dir = THUMBNAIL_DIR_TABS[tabId];
-    if (dir) {
+    if (!dir) {
+      return null;
+    }
+
+    if (tabId === 'ai-video-effects') {
       const allModels = [...i2iModels, ...i2vModels];
       const model = allModels.find(m => m.id === tabId);
       const enumList = model?.inputs?.name?.enum || [];
       const idx = enumList.indexOf(effectName);
-      if (idx >= 0) {
-        const index = String(idx + 1).padStart(2, '0');
-        return `/thumbnails/effects/${dir}/${index}-${slug}.svg`;
-      }
-      return null;
+      if (idx < 0) return null;
+      const index = String(idx + 1).padStart(2, '0');
+      return `/thumbnails/effects/${dir}/${index}-${slug}.webp.png`;
     }
 
-    return null;
+    return `/thumbnails/effects/${dir}/${slug}.webp.png`;
+  }
+
+  // Build a neutral SVG icon placeholder used both when no thumbnailUrl is
+  // available and when a thumbnail <img> fails to load.
+  function buildIconPlaceholder(isVideo) {
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'w-full h-full flex items-center justify-center';
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', isVideo ? 'w-8 h-8 text-blue-400' : 'w-8 h-8 text-primary');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('viewBox', '0 0 24 24');
+
+    if (isVideo) {
+      const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      polygon.setAttribute('points', '23 7 16 12 23 17 23 7');
+      svg.appendChild(polygon);
+
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', '1');
+      rect.setAttribute('y', '5');
+      rect.setAttribute('width', '15');
+      rect.setAttribute('height', '14');
+      rect.setAttribute('rx', '2');
+      rect.setAttribute('ry', '2');
+      svg.appendChild(rect);
+    } else {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', '3');
+      rect.setAttribute('y', '3');
+      rect.setAttribute('width', '18');
+      rect.setAttribute('height', '18');
+      rect.setAttribute('rx', '2');
+      rect.setAttribute('ry', '2');
+      svg.appendChild(rect);
+
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', '8.5');
+      circle.setAttribute('cy', '8.5');
+      circle.setAttribute('r', '1.5');
+      svg.appendChild(circle);
+
+      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      polyline.setAttribute('points', '21 15 16 10 5 21');
+      svg.appendChild(polyline);
+    }
+
+    iconContainer.appendChild(svg);
+    return iconContainer;
   }
 
   function renderEffects(filter = '') {
@@ -415,62 +471,15 @@ export function EffectsStudio() {
         img.loading = 'lazy';
         img.decoding = 'async';
         // Graceful fallback: if the asset is missing or the URL is wrong,
-        // hide the broken-image glyph and show a neutral placeholder.
+        // remove the broken-image glyph and replace it with the same SVG
+        // icon placeholder used when no thumbnailUrl is available.
         img.onerror = () => {
-          img.style.display = 'none';
-          const placeholder = document.createElement('div');
-          placeholder.className = 'w-full h-full flex items-center justify-center text-muted';
-          placeholder.textContent = isVideo ? '\u25B6' : '\u25A3';
-          placeholder.style.fontSize = '1.5rem';
-          thumbnailDiv.appendChild(placeholder);
+          img.remove();
+          thumbnailDiv.appendChild(buildIconPlaceholder(isVideo));
         };
         thumbnailDiv.appendChild(img);
       } else {
-        const iconContainer = document.createElement('div');
-        iconContainer.className = 'w-full h-full flex items-center justify-center';
-
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('class', isVideo ? 'w-8 h-8 text-blue-400' : 'w-8 h-8 text-primary');
-        svg.setAttribute('fill', 'none');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('viewBox', '0 0 24 24');
-
-        if (isVideo) {
-          const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-          polygon.setAttribute('points', '23 7 16 12 23 17 23 7');
-          svg.appendChild(polygon);
-
-          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-          rect.setAttribute('x', '1');
-          rect.setAttribute('y', '5');
-          rect.setAttribute('width', '15');
-          rect.setAttribute('height', '14');
-          rect.setAttribute('rx', '2');
-          rect.setAttribute('ry', '2');
-          svg.appendChild(rect);
-        } else {
-          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-          rect.setAttribute('x', '3');
-          rect.setAttribute('y', '3');
-          rect.setAttribute('width', '18');
-          rect.setAttribute('height', '18');
-          rect.setAttribute('rx', '2');
-          rect.setAttribute('ry', '2');
-          svg.appendChild(rect);
-
-          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          circle.setAttribute('cx', '8.5');
-          circle.setAttribute('cy', '8.5');
-          circle.setAttribute('r', '1.5');
-          svg.appendChild(circle);
-
-          const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-          polyline.setAttribute('points', '21 15 16 10 5 21');
-          svg.appendChild(polyline);
-        }
-
-        iconContainer.appendChild(svg);
-        thumbnailDiv.appendChild(iconContainer);
+        thumbnailDiv.appendChild(buildIconPlaceholder(isVideo));
       }
 
       const contentDiv = document.createElement('div');
