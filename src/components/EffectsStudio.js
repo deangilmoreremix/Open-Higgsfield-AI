@@ -320,6 +320,15 @@ export function EffectsStudio() {
 
   // Tabs that don't (yet) have a thumbnail directory on disk. Returning null here
   // causes renderEffects() to fall back to the inline icon placeholder.
+  //
+  // 'pixverse-advanced-effects' is a stopgap: the 12 effects in
+  // PIXVERSE_ADVANCED_EFFECTS (src/lib/muapiConfig.js) — hyper-realistic,
+  // cinematic-depth, motion-blur, color-grading, hdr-tonemapping, film-grain,
+  // super-resolution, denoising, sharpness-enhancement, particle-effects,
+  // lightning-simulation, water-simulation — have no on-disk thumbnails and
+  // a full git history search confirmed public/thumbnails/effects/pixverse-advanced/
+  // has never existed in this repo. Once real thumbnails are generated and
+  // added there, drop this tab from the set and wire a directory mapping.
   const NO_THUMBNAIL_TABS = new Set([
     'pixverse-advanced-effects',
   ]);
