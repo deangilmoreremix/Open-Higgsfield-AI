@@ -58,6 +58,10 @@ export class TimelineState {
     } else {
       this._state = defaultState;
     }
+
+    // Normalize to ensure track.clips === track.items alias is active on
+    // the initial state (not just after setState).
+    this._normalizeState();
   }
 
   /**
@@ -433,6 +437,22 @@ export class TimelineState {
     if (!Array.isArray(this._state.project.assets)) {
       this._state.project.assets = [];
     }
+
+    // Unify track.clips and track.items into a single array reference.
+    // track.items is the canonical production model. track.clips is a
+    // compatibility alias for legacy code (58+ call sites). They reference
+    // the SAME array so writes via either name are visible through both.
+    this._state.project.tracks.forEach(track => {
+      if (!track || typeof track !== 'object') return;
+      if (Array.isArray(track.items)) {
+        track.clips = track.items;
+      } else if (Array.isArray(track.clips)) {
+        track.items = track.clips;
+      } else {
+        track.items = [];
+        track.clips = track.items;
+      }
+    });
   }
 
   /**
