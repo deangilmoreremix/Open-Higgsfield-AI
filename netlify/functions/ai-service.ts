@@ -367,5 +367,3 @@ class AIService {
 }
 
 export default AIService;
-</content>
-<parameter name="filePath">netlify/functions/ai-service.ts

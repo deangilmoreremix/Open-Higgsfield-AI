@@ -4,6 +4,44 @@ import { navigate } from '../lib/router.js';
 import { getTemplateThumbnail, createThumbnailImg, createHeroSection } from '../lib/thumbnails.js';
 import { createInlineInstructions } from './InlineInstructions.js';
 
+const CATEGORY_GRADIENTS = {
+  'Social Media': 'from-pink-500/60 via-fuchsia-500/40 to-purple-600/60',
+  'Style Transfer': 'from-sky-500/60 via-blue-500/40 to-indigo-600/60',
+  'Entertainment': 'from-amber-500/60 via-orange-500/40 to-rose-600/60',
+  'Commercial': 'from-emerald-500/60 via-teal-500/40 to-cyan-600/60',
+  'VFX & Action': 'from-red-500/60 via-rose-500/40 to-orange-600/60',
+  'Portrait & Creator': 'from-violet-500/60 via-purple-500/40 to-fuchsia-600/60',
+  'Decade & Era': 'from-yellow-500/60 via-amber-500/40 to-orange-600/60',
+  'Camera & Cinematic': 'from-slate-500/60 via-blue-500/40 to-indigo-600/60',
+};
+
+const NICHE_GRADIENT = 'from-cyan-500/60 via-sky-500/40 to-blue-600/60';
+
+function getGradientForCategory(category, isNiche) {
+  if (isNiche) return NICHE_GRADIENT;
+  return CATEGORY_GRADIENTS[category] || 'from-white/10 via-white/5 to-white/10';
+}
+
+function createTemplateThumbnailFallback(template) {
+  const isNiche = !!template.niche;
+  const gradient = getGradientForCategory(template.category, isNiche);
+  const fallback = document.createElement('div');
+  fallback.className = `absolute inset-0 bg-gradient-to-br ${gradient} flex items-center justify-center thumb-fallback-content`;
+  fallback.setAttribute('aria-hidden', 'true');
+  const iconWrap = document.createElement('div');
+  iconWrap.className = 'flex flex-col items-center gap-1 select-none';
+  const icon = document.createElement('span');
+  icon.className = 'text-4xl drop-shadow-lg';
+  icon.textContent = template.icon || '✨';
+  const label = document.createElement('span');
+  label.className = `text-[10px] font-bold uppercase tracking-wider ${isNiche ? 'text-cyan-100/80' : 'text-white/70'}`;
+  label.textContent = (template.category || 'Template').toString();
+  iconWrap.appendChild(icon);
+  iconWrap.appendChild(label);
+  fallback.appendChild(iconWrap);
+  return fallback;
+}
+
 export function TemplatesPage() {
   const container = document.createElement('div');
   container.className = 'w-full h-full flex flex-col overflow-hidden bg-app-bg';
@@ -223,7 +261,8 @@ function createTemplateSection(category, catTemplates, isNiche) {
       skeleton.className = 'thumb-skeleton absolute inset-0';
       heroWrapper.appendChild(skeleton);
 
-      const img = createThumbnailImg(thumbnail, t.name, 'absolute inset-0');
+      const fallback = createTemplateThumbnailFallback(t);
+      const img = createThumbnailImg(thumbnail, t.name, 'absolute inset-0', fallback);
       heroWrapper.appendChild(img);
       card.appendChild(heroWrapper);
     }

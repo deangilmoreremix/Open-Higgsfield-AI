@@ -121,52 +121,44 @@ export function getTemplateThumbnailWithFallback(templateId) {
   return { webpPath, pngPath };
 }
 
-export function createThumbnailImg(src, alt, className = '') {
+export function createThumbnailImg(src, alt, className = '', fallbackContent = null) {
   const img = document.createElement('img');
   img.src = src;
   img.alt = alt;
   img.loading = 'lazy';
   img.className = className;
+  const handleFinalFailure = () => {
+    if (fallbackContent && img.parentElement) {
+      img.replaceWith(fallbackContent);
+      const skeleton = fallbackContent.parentElement?.querySelector('.thumb-skeleton');
+      if (skeleton) skeleton.remove();
+      return;
+    }
+    img.style.display = 'none';
+    const parent = img.parentElement;
+    if (parent) parent.classList.add('thumb-fallback');
+  };
   img.onerror = () => {
-    // Try fallback for template thumbnails (some are .webp.png format)
+    // Try fallback for template thumbnails (some are .webp.png or .webp.svg)
     if (src.includes('/thumbnails/templates/') && src.endsWith('.webp')) {
       img.src = src + '.png';
       img.onerror = () => {
-        img.style.display = 'none';
-        const parent = img.parentElement;
-        if (parent) parent.classList.add('thumb-fallback');
+        img.src = src + '.svg';
+        img.onerror = handleFinalFailure;
       };
     } else if ((src.includes('/thumbnails/heroes/') || src.includes('/thumbnails/pages/') || src.includes('/thumbnails/videoagent/')) && src.endsWith('.webp')) {
       // Try fallback for hero, page, videoagent thumbnails (generated as .webp.png)
       img.src = src + '.png';
-      img.onerror = () => {
-        img.style.display = 'none';
-        const parent = img.parentElement;
-        if (parent) parent.classList.add('thumb-fallback');
-      };
+      img.onerror = handleFinalFailure;
     } else if (src.includes('/thumbnails/studios/') && (src.endsWith('.webp') || src.endsWith('.svg'))) {
       if (src.endsWith('.webp')) {
         img.src = src + '.png';
-        img.onerror = () => {
-          img.style.display = 'none';
-          const parent = img.parentElement;
-          if (parent) parent.classList.add('thumb-fallback');
-        };
-      } else if (src.endsWith('.svg')) {
-        img.onerror = () => {
-          img.style.display = 'none';
-          const parent = img.parentElement;
-          if (parent) parent.classList.add('thumb-fallback');
-        };
+        img.onerror = handleFinalFailure;
       } else {
-        img.style.display = 'none';
-        const parent = img.parentElement;
-        if (parent) parent.classList.add('thumb-fallback');
+        handleFinalFailure();
       }
     } else {
-      img.style.display = 'none';
-      const parent = img.parentElement;
-      if (parent) parent.classList.add('thumb-fallback');
+      handleFinalFailure();
     }
   };
   img.onload = () => {

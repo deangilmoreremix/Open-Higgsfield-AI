@@ -4947,6 +4947,7 @@ button, input, textarea, select { font: inherit; }
             container.innerHTML = 'No CineGen tools used yet';
           }
           cinegenHistory = [];
+          
         });
       }
 

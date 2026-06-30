@@ -116,5 +116,4 @@ export function getAIConfig(environment: string = process.env.NODE_ENV || 'devel
     default:
       return developmentConfig;
   }
-}</content>
-<parameter name="filePath">netlify/functions/ai-config.ts
+}

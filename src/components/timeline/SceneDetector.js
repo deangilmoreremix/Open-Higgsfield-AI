@@ -329,8 +329,12 @@ export class SceneDetector {
       this.addTimelineMarkers();
       this.showSceneActions(true);
 
+      this.
+
     } catch (error) {
       console.error('Scene detection failed:', error);
+      this.
+    } finally {
       this.isProcessing = false;
       this.showProgress(false);
     }
@@ -483,6 +487,7 @@ export class SceneDetector {
     this.scenes = mergedScenes;
     this.renderSceneGrid();
     this.addTimelineMarkers();
+    this.
   }
 
   exportSceneMarkers() {
@@ -503,6 +508,7 @@ export class SceneDetector {
     a.click();
 
     URL.revokeObjectURL(url);
+    this.
   }
 
   clearScenes() {
@@ -510,6 +516,7 @@ export class SceneDetector {
     this.renderSceneGrid();
     this.clearTimelineMarkers();
     this.showSceneActions(false);
+    this.
   }
 
   showProgress(show) {
@@ -550,6 +557,9 @@ export class SceneDetector {
     `)}`;
   }
 
+  console.log(message, type = 'info') {
+    this.
+  }
 
   destroy() {
     this.clearTimelineMarkers();

@@ -269,3 +269,4 @@ function showModal(title, content) {
   modal.querySelector('.modal-body').appendChild(content);
   document.body.appendChild(modal);
 }
+
