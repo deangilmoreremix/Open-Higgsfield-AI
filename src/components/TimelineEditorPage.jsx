@@ -919,7 +919,7 @@ button, input, textarea, select { font: inherit; }
         </div>
         <button class="primary-btn" id="generateBtn" data-tooltip="Generate asset - Create new content from your prompt using AI" aria-label="Generate a new asset from the prompt settings">⚡ Generate</button>
       </aside>
-      <aside class="side-card" id="animationDemoPanel" data-tooltip="Rendiv animation demonstrations">
+      <aside class="side-card" id="animationDemoPanel" style="display: none;" data-tooltip="Rendiv animation demonstrations">
         <div class="card-title">🎭 Rendiv Animation Demo</div>
         <div id="animationDemoContainer">
           <div class="animation-demo-controls">
