@@ -1064,7 +1064,25 @@ button, input, textarea, select { font: inherit; }
       isProcessing: false
     };
 
-    return { ...baseState, ...demoState };
+    const merged = { ...baseState, ...demoState };
+
+    // Unify track.clips and track.items on the merged state.
+    // track.items is the canonical model; track.clips is a compatibility
+    // alias for the 58+ legacy call sites. They reference the SAME array
+    // so writes via either name are visible through both.
+    (merged.tracks || []).forEach(track => {
+      if (!track || typeof track !== 'object') return;
+      if (Array.isArray(track.items)) {
+        track.clips = track.items;
+      } else if (Array.isArray(track.clips)) {
+        track.items = track.clips;
+      } else {
+        track.items = [];
+        track.clips = track.items;
+      }
+    });
+
+    return merged;
   }
 
   // Enhanced state management with local storage persistence
