@@ -6,7 +6,7 @@ import { createMediaPreview, createFullscreenPreview } from './MediaPreview.js';
 import { createInlineInstructions } from './InlineInstructions.js';
 import { i2iModels, i2vModels } from '../lib/models.js';
 import { PIXVERSE_ADVANCED_EFFECTS } from '../lib/muapiConfig.js';
-import { createHeroSection } from '../lib/thumbnails.js';
+import { createHeroSection, getTemplateThumbnail, createThumbnailImg } from '../lib/thumbnails.js';
 import { securityService } from '../lib/services/SecurityService.js';
 import { templates } from '../lib/templates.js';
 import { navigate } from '../lib/router.js';
@@ -544,11 +544,21 @@ export function EffectsStudio() {
       const thumbnailDiv = document.createElement('div');
       thumbnailDiv.className = 'relative w-full aspect-square mb-2 rounded-lg overflow-hidden bg-white/5';
 
-      // Use template icon or default
-      const iconContainer = document.createElement('div');
-      iconContainer.className = 'w-full h-full flex items-center justify-center';
-      iconContainer.innerHTML = `<span class="text-2xl">${template.icon || '🎬'}</span>`;
-      thumbnailDiv.appendChild(iconContainer);
+      // Try to load the real template thumbnail (createThumbnailImg handles the
+      // .webp -> .webp.png -> .webp.png.svg fallback chain and adds
+      // .thumb-fallback to the parent on final failure). If the image fails
+      // to load entirely, swap in the template's emoji icon as the fallback.
+      const emojiFallback = document.createElement('div');
+      emojiFallback.className = 'w-full h-full flex items-center justify-center';
+      emojiFallback.innerHTML = `<span class="text-2xl">${template.icon || '🎬'}</span>`;
+
+      const templateImg = createThumbnailImg(
+        getTemplateThumbnail(template.id),
+        template.name,
+        'w-full h-full object-cover',
+        emojiFallback
+      );
+      thumbnailDiv.appendChild(templateImg);
 
       // Template content
       const contentDiv = document.createElement('div');
