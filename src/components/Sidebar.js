@@ -43,14 +43,6 @@ export function Sidebar(navigate) {
     { id: 'open-generative-ai', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.5 4.5L18 8l-4 1.5L12 14l-1.5-4.5L6 8l4-1.5L12 2z"/><path d="M5 16l.75 2.25L8 19l-2 .75L5 22l-.75-2.25L2 19l2-.75L5 16z"/><path d="M19 10l.75 2.25L22 13l-2 .75L19 16l-.75-2.25L16 13l2-.75L19 10z"/></svg>', label: 'Gen AI', tooltip: 'Open Generative AI — All 11 studios: Image, Video, Audio, Lip Sync, Clipping, Vibe Motion, Cinema, Marketing, Workflows, Agents, Design' },
 
     { id: 'assistant-app', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>', label: 'Assist', tooltip: 'Assistant App — AI-powered assistant for creative workflows and support' },
-
-
-    { id: 'ai-influencer-generator', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', label: 'Influencer', tooltip: 'AI Influencer Generator — Create influencer-style content and avatars' },
-
-
-
-
-    { id: 'studio-app', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/><rect x="14" y="14" width="4" height="4" rx="1"/></svg>', label: 'Studio', tooltip: 'Studio App — Creative studio with AI-powered tools and templates' },
     { id: 'vibe-workflow', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9"/></svg>', label: 'Vibe', tooltip: 'Vibe Workflow — Build AI-powered workflows and automation pipelines' },
     { id: 'ai-vfx-app', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/><circle cx="12" cy="12" r="3"/></svg>', label: 'VFX', tooltip: 'AI VFX — Visual effects and compositing with AI' },
     { id: 'open-image-studio', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>', label: 'Image', tooltip: 'Image Studio — Generate images with 20+ AI models including Flux, Midjourney, HiDream' },

@@ -6,8 +6,6 @@ import './App.css'
 const modules = [
   { id: 'image', name: 'Image Studio', icon: Image, color: '#6366f1' },
   { id: 'video', name: 'Video Studio', icon: Video, color: '#10b981' },
-  { id: 'workflow', name: 'Workflow Studio', icon: Workflow, color: '#f59e0b' },
-  { id: 'agents', name: 'Agents Studio', icon: Bot, color: '#ec4899' },
 ]
 
 function StudioApp() {
@@ -55,8 +53,6 @@ function StudioApp() {
               <p>
                 {activeModule === 'image' && 'Create stunning images with AI'}
                 {activeModule === 'video' && 'Produce professional videos with AI'}
-                {activeModule === 'workflow' && 'Build powerful workflows'}
-                {activeModule === 'agents' && 'Manage your AI agents'}
               </p>
               <div className="placeholder">
                 <Settings className="placeholder-icon" />
