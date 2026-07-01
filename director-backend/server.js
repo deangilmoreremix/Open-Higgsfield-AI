@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler.js';
 import agentsRouter from './routes/agents.js';
+import integrationsRouter from './routes/integrations.js';
+import jobsRouter from './routes/jobs.js';
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ export function createApp() {
   });
 
   app.use('/api/agents', agentsRouter);
+  app.use('/api/integrations', integrationsRouter);
+  app.use('/api/jobs', jobsRouter);
 
   app.use(errorHandler);
 
