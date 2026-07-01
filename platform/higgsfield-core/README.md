@@ -1,0 +1,1 @@
+# Higgsfield Core 2.0 — DO NOT DELETE THIS DIRECTORY

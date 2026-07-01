@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --loader-color: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0c0d0f;
+  color: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.nowheel {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.nowheel * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.loader-border {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--loader-color, #3b82f6) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: loader-spin 1.5s linear infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes loader-spin {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fade-in 0.5s ease-out;
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.react-flow__node {
+  cursor: grab;
+}
+
+.react-flow__node:active {
+  cursor: grabbing;
+}
+
+.react-flow__edge-path {
+  stroke-width: 2;
+}
+
+.react-flow__handle {
+  cursor: crosshair;
+}
+
+.node-preview {
+  transition: all 0.3s ease;
+}
+
+.node-preview:hover {
+  transform: scale(1.02);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1c1e21;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
