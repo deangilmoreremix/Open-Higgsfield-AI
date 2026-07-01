@@ -3,7 +3,7 @@ import { generateScript } from '../services/llm.js';
 import { createJob, updateJob } from '../services/jobTracker.js';
 import { AppError, ErrorCodes } from '../lib/errors.js';
 
-export { AppError, ErrorCodes };
+export { AppError, ErrorCodes, generateScript, withVideoDB, getOrCreateCollection, createJob, updateJob };
 
 export async function runAgent(userId, agentId, handler, input) {
   const job = await createJob(userId, agentId, input);
