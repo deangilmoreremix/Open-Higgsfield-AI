@@ -1126,6 +1126,47 @@ export function VideoStudio() {
         }
     };
 
+    // --- Wan AI Effect Application ---
+    async function applySelectedWanEffect() {
+        const effectType = document.getElementById('wan-ai-effect').value;
+        if (!effectType) {
+            alert('Please select a Wan AI effect first');
+            return;
+        }
+
+        const currentVideo = resultVideo.src;
+        if (!currentVideo) {
+            alert('Please generate or upload a video first');
+            return;
+        }
+
+        const button = document.getElementById('apply-wan-effect');
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Applying Effect...';
+
+        try {
+            showProcessingIndicator('Applying Wan AI Effect...');
+
+            const result = await muapi.applyWanAIEffect(currentVideo, effectType, {
+                prompt: `Apply ${effectType} style transformation`
+            });
+
+            if (result.success) {
+                resultVideo.src = result.url;
+                showToast(`Wan AI ${effectType} effect applied successfully`, 'success');
+            } else {
+                showWanEffectError(new Error(result.error || 'Unknown error'), effectType);
+            }
+        } catch (error) {
+            showWanEffectError(error, effectType);
+        } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+            hideProcessingIndicator();
+        }
+    };
+
     // --- Load history from localStorage ---
     try {
         const saved = JSON.parse(localStorage.getItem('video_history') || '[]');

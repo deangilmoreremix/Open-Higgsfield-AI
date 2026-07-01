@@ -3,15 +3,13 @@
 
 [build]
   publish = "dist"
-  command = "npx vite build"
-  functions = "netlify/functions/dist"
+  # Use pnpm for consistent monorepo workspace support
+  command = "pnpm install && pnpm run build:all"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
   NODE_PACKAGE_MANAGER = "pnpm"
-  NODE_OPTIONS = "--max-old-space-size=4096"
-  COREPACK_INTEGRITY_KEYS = "0"
-  PNPM_FLAGS = "--no-frozen-lockfile"
 
 [functions]
   # Serverless functions directory
