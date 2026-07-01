@@ -10,6 +10,7 @@ import { ENHANCE_TAGS, QUICK_PROMPTS } from '../lib/promptUtils.js';
 import { AuthModal } from './AuthModal.js';
 import { createUploadPicker } from './UploadPicker.js';
 import { savePendingJob, removePendingJob, getPendingJobs } from '../lib/pendingJobs.js';
+import { apiKeyManager } from '../lib/apiKeyManager.js';
 
 function createInlineInstructions(type) {
     const el = document.createElement('div');
@@ -1205,7 +1206,7 @@ export function ImageStudio() {
         const pending = getPendingJobs('image');
         if (!pending.length) return;
 
-        const apiKey = localStorage.getItem('muapi_key');
+        const apiKey = await apiKeyManager.getKey('muapi');
         if (!apiKey) return; // can't poll without key; jobs remain for next time
 
         const banner = document.createElement('div');
@@ -1362,7 +1363,7 @@ export function ImageStudio() {
         }
 
         // ── Remote API path ───────────────────────────────────────────────────
-        const apiKey = localStorage.getItem('muapi_key');
+        const apiKey = await apiKeyManager.getKey('muapi');
         if (!apiKey) {
             AuthModal(() => generateBtn.click());
             return;

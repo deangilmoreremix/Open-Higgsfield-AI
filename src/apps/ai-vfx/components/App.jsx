@@ -7,9 +7,10 @@ import GenerationProgress from './GenerationProgress.jsx';
 import VideoPlayer from './VideoPlayer.jsx';
 import { muAPIClient } from '../lib/muapi.js';
 import { saveGeneratedAsset } from '../../../lib/assets/assetActions.js';
+import { apiKeyManager } from '../../lib/apiKeyManager.js';
 
 function App() {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('muapi_key') || '');
+  const [apiKey, setApiKey] = useState('');
   const [showApiKeyModal, setShowApiKeyModal] = useState(!apiKey);
   const [uploadedImage, setUploadedImage] = useState(null);
   const [selectedEffect, setSelectedEffect] = useState(null);
@@ -25,6 +26,12 @@ function App() {
   const [generatedAssetId, setGeneratedAssetId] = useState(null);
   const [error, setError] = useState(null);
   const assetActionsRef = useRef(null);
+
+  useEffect(() => {
+    apiKeyManager.getKey('muapi').then(k => {
+      setApiKey(k || '');
+    });
+  }, []);
 
   useEffect(() => {
     if (apiKey) {

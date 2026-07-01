@@ -5,11 +5,19 @@ import WorkflowSettings from './WorkflowSettings.jsx';
 import WorkflowProgress from './WorkflowProgress.jsx';
 import WorkflowResults from './WorkflowResults.jsx';
 import { muAPIClient } from '../lib/muapi.js';
+import { apiKeyManager } from '../../../lib/apiKeyManager.js';
 import { saveGeneratedAsset } from '../../../lib/assets/assetActions.js';
 
 function App() {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('muapi_key') || '');
-  const [showApiKeyModal, setShowApiKeyModal] = useState(!apiKey);
+  const [apiKey, setApiKey] = useState('');
+  const [showApiKeyModal, setShowApiKeyModal] = useState(true);
+  useEffect(() => {
+    apiKeyManager.getKey('muapi').then(k => {
+      setApiKey(k || '');
+      setShowApiKeyModal(!k);
+      if (k) muAPIClient.setApiKey(k);
+    });
+  }, []);
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
   const [workflowConfig, setWorkflowConfig] = useState({
     inputType: 'text', // text, image, video
@@ -22,17 +30,10 @@ function App() {
   const [workflowResults, setWorkflowResults] = useState(null);
   const [error, setError] = useState(null);
 
-  // Initialize API client on mount
-  useEffect(() => {
-    if (apiKey) {
-      muAPIClient.setApiKey(apiKey);
-    }
-  }, [apiKey]);
-
-  const handleApiKeySubmit = (key) => {
+  const handleApiKeySubmit = async (key) => {
+    await apiKeyManager.setKey(key, 'muapi');
     setApiKey(key);
     muAPIClient.setApiKey(key);
-    muAPIClient.saveApiKey();
     setShowApiKeyModal(false);
   };
 

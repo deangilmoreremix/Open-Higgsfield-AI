@@ -1,3 +1,4 @@
+import { apiKeyManager } from '../lib/apiKeyManager.js';
 import { muapi } from '../lib/muapi.js';
 import * as outputHandoff from '../lib/outputHandoff.js';
 import { orchestrationEngine } from '../lib/orchestration-engine.js';
@@ -95,7 +96,7 @@ export function VideoOutreachStudio() {
   let generatedVideo = null;
   let executionId = null;
   let settings = { duration: 30, aspectRatio: '16:9', quality: '1080p' };
-  let apiKey = localStorage.getItem('muapi_key') || '';
+  let apiKey = '';
 
   const updateExecutionState = (state, context = {}) => {
     const event = new CustomEvent('execution:state', { 
@@ -121,6 +122,7 @@ export function VideoOutreachStudio() {
   };
 
   const handleGenerate = async () => {
+    apiKey = await apiKeyManager.getKey('muapi') || '';
     if (scenes.length === 0) { alert('Please add at least one scene'); return; }
     if (!apiKey) { alert('Please configure your MuAPI key'); return; }
 

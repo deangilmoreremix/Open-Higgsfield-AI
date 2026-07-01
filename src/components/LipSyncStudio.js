@@ -3,6 +3,7 @@ import { lipsyncModels, imageLipSyncModels, videoLipSyncModels, getLipSyncModelB
 import { AuthModal } from './AuthModal.js';
 import { createUploadPicker } from './UploadPicker.js';
 import { savePendingJob, removePendingJob, getPendingJobs } from '../lib/pendingJobs.js';
+import { apiKeyManager } from '../lib/apiKeyManager.js';
 
 export function LipSyncStudio() {
     const container = document.createElement('div');
@@ -168,7 +169,7 @@ export function LipSyncStudio() {
     videoFileInput.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const apiKey = localStorage.getItem('muapi_key');
+        const apiKey = await apiKeyManager.getKey('muapi');
         if (!apiKey) { AuthModal(() => videoFileInput.click()); return; }
         showVideoSpinner();
         try {
@@ -236,7 +237,7 @@ export function LipSyncStudio() {
     audioFileInput.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const apiKey = localStorage.getItem('muapi_key');
+        const apiKey = await apiKeyManager.getKey('muapi');
         if (!apiKey) { AuthModal(() => audioFileInput.click()); return; }
         showAudioSpinner();
         try {
@@ -587,7 +588,7 @@ export function LipSyncStudio() {
     (async () => {
         const pending = getPendingJobs('lipsync');
         if (!pending.length) return;
-        const apiKey = localStorage.getItem('muapi_key');
+        const apiKey = await apiKeyManager.getKey('muapi');
         if (!apiKey) return;
         const banner = document.createElement('div');
         banner.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-[#111] border border-white/10 text-white text-sm px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3';
@@ -667,7 +668,7 @@ export function LipSyncStudio() {
             return;
         }
 
-        const apiKey = localStorage.getItem('muapi_key');
+        const apiKey = await apiKeyManager.getKey('muapi');
         if (!apiKey) { AuthModal(() => generateBtn.click()); return; }
 
         hero.classList.add('opacity-0', 'scale-95', '-translate-y-10', 'pointer-events-none');

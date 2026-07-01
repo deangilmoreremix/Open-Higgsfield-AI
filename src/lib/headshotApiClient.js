@@ -1,4 +1,5 @@
 import { MuapiClient, uploadFile } from './muapi.js';
+import { apiKeyManager } from './apiKeyManager.js';
 
 const DEFAULT_PROVIDER = import.meta.env.VITE_HEADSHOT_PROVIDER || 'muapi';
 const PROXY_URL = import.meta.env.VITE_HEADSHOT_PROXY_URL || '';
@@ -7,11 +8,11 @@ export async function generateHeadshot({ image, prompt, preset, apiKey, provider
   if (!image) throw new Error('Please upload a source portrait first.');
 
   if (provider === 'muapi') {
-    if (!apiKey && !localStorage.getItem('muapi_key') && !PROXY_URL) {
+    if (!apiKey && !await apiKeyManager.getKey('muapi') && !PROXY_URL) {
       throw new Error('Missing MUAPI key. Add your key in Headshot Settings.');
     }
 
-    if (apiKey) localStorage.setItem('muapi_key', apiKey);
+    if (apiKey) await apiKeyManager.setKey(apiKey, 'muapi');
 
     if (PROXY_URL) {
       const res = await fetch(PROXY_URL, {
@@ -23,7 +24,7 @@ export async function generateHeadshot({ image, prompt, preset, apiKey, provider
     }
 
     const client = new MuapiClient();
-    const effectiveApiKey = apiKey || localStorage.getItem('muapi_key') || '';
+    const effectiveApiKey = apiKey || await apiKeyManager.getKey('muapi') || '';
     const imageUrl = await uploadFile(effectiveApiKey, image);
     const result = await client.generateImage({
       model: options.model || 'flux-dev',

@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from 'react';
+import { apiKeyManager } from '../../lib/apiKeyManager.js';
 
 const AuthContext = createContext(null);
 
@@ -8,21 +9,27 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored auth
-    const storedKey = typeof window !== 'undefined' ? localStorage.getItem('muapi_key') : null;
-    if (storedKey) {
-      setUser({ apiKey: storedKey });
+    let cancelled = false;
+    async function checkStoredKey() {
+      const storedKey = await apiKeyManager.getKey('muapi');
+      if (!cancelled && storedKey) {
+        setUser({ apiKey: storedKey });
+      }
+      if (!cancelled) {
+        setIsLoading(false);
+      }
     }
-    setIsLoading(false);
+    checkStoredKey();
+    return () => { cancelled = true; };
   }, []);
 
-  const login = (apiKey) => {
-    localStorage.setItem('muapi_key', apiKey);
+  const login = async (apiKey) => {
+    await apiKeyManager.setKey(apiKey, 'muapi');
     setUser({ apiKey });
   };
 
-  const logout = () => {
-    localStorage.removeItem('muapi_key');
+  const logout = async () => {
+    await apiKeyManager.clearKey('muapi');
     setUser(null);
   };
 

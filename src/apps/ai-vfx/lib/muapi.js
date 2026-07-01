@@ -5,6 +5,8 @@ const MUAPI_VFX_ENDPOINT = `${MUAPI_BASE_URL}/vfx`;
  * MuAPI Client for AI-VFX Application
  * Handles authentication, request generation, and polling
  */
+import { apiKeyManager } from '../../lib/apiKeyManager.js';
+
 class MuAPIClient {
   constructor() {
     this.apiKey = null;
@@ -23,62 +25,16 @@ class MuAPIClient {
   /**
    * Get stored API key from localStorage
    */
-  loadApiKey() {
+   loadApiKey: async function loadApiKey() {
     try {
-      const stored = localStorage.getItem('muapi_key');
+      const stored = await apiKeyManager.getKey('muapi');
       if (stored) {
         this.setApiKey(stored);
       }
     } catch (error) {
-      console.warn('Failed to load API key from localStorage:', error);
+      console.warn('Failed to load API key:', error);
     }
-  }
-
-  /**
-   * Save API key to localStorage
-   */
-  saveApiKey() {
-    try {
-      if (this.apiKey) {
-        localStorage.setItem('muapi_key', this.apiKey);
-      }
-    } catch (error) {
-      console.warn('Failed to save API key to localStorage:', error);
-    }
-  }
-
-  /**
-   * Generate VFX video from image
-   * @param {Object} params - Generation parameters
-   * @param {string} params.imageUrl - Source image URL
-   * @param {string} params.effect - Effect ID to apply
-   * @param {number} params.duration - Video duration in seconds (2-10)
-   * @param {string} params.resolution - Video resolution (720p, 1080p, 4k)
-   * @param {string} params.aspectRatio - Aspect ratio (16:9, 9:16, 1:1)
-   * @param {string} params.quality - Quality setting (standard, premium, ultra)
-   * @returns {Promise<Object>} - Generation request response
-   */
-  async generateVFX(params) {
-    if (!this.isAuthenticated || !this.apiKey) {
-      throw new Error('API key not set. Please configure your MuAPI key first.');
-    }
-
-    const requestBody = {
-      image_url: params.imageUrl,
-      effect: params.effect,
-      duration: Math.max(2, Math.min(10, params.duration || 5)), // 2-10 seconds
-      resolution: params.resolution || '1080p',
-      aspect_ratio: params.aspectRatio || '16:9',
-      quality: params.quality || 'premium'
-    };
-
-    try {
-      const response = await fetch(`${MUAPI_VFX_ENDPOINT}/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': this.apiKey
-        },
+  },
         body: JSON.stringify(requestBody)
       });
 
@@ -252,11 +208,7 @@ class MuAPIClient {
   clearApiKey() {
     this.apiKey = null;
     this.isAuthenticated = false;
-    try {
-      localStorage.removeItem('muapi_key');
-    } catch (error) {
-      console.warn('Failed to clear API key from localStorage:', error);
-    }
+    apiKeyManager.clearKey('muapi').catch(() => {});
   }
 }
 

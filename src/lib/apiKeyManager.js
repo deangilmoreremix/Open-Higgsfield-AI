@@ -112,6 +112,7 @@ export class ApiKeyManager {
         sessionStorage.removeItem(hashStorageKey(name));
         localStorage.removeItem(storageKey(name));
         localStorage.removeItem(hashStorageKey(name));
+        localStorage.removeItem('muapi_key');
         this._notifyListeners();
     }
 
@@ -178,11 +179,17 @@ export class ApiKeyManager {
     migrateFromLegacy() {
         const legacyKey = localStorage.getItem('muapi_key');
         if (legacyKey && !localStorage.getItem(storageKey('muapi'))) {
-            localStorage.removeItem('muapi_key');
-            this.setKey(legacyKey, 'muapi').catch(console.error);
-            return true;
+            return this.setKey(legacyKey, 'muapi')
+                .then(() => {
+                    localStorage.removeItem('muapi_key');
+                    return true;
+                })
+                .catch((e) => {
+                    console.error('[ApiKeyManager] Legacy migration failed, keeping muapi_key intact:', e);
+                    return false;
+                });
         }
-        return false;
+        return Promise.resolve(false);
     }
 }
 

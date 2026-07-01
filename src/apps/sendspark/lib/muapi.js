@@ -1,3 +1,5 @@
+import { apiKeyManager } from '../../../lib/apiKeyManager.js';
+
 const MUAPI_BASE_URL = 'https://api.muapi.ai/api/v1';
 const MUAPI_VFX_ENDPOINT = `${MUAPI_BASE_URL}/vfx`;
 
@@ -21,29 +23,29 @@ class MuAPIClient {
   }
 
   /**
-   * Get stored API key from localStorage
+   * Get stored API key from apiKeyManager
    */
-  loadApiKey() {
+  async loadApiKey() {
     try {
-      const stored = localStorage.getItem('muapi_key');
+      const stored = await apiKeyManager.getKey('muapi');
       if (stored) {
         this.setApiKey(stored);
       }
     } catch (error) {
-      console.warn('Failed to load API key from localStorage:', error);
+      console.warn('Failed to load API key:', error);
     }
   }
 
   /**
-   * Save API key to localStorage
+   * Save API key via apiKeyManager
    */
-  saveApiKey() {
+  async saveApiKey() {
     try {
       if (this.apiKey) {
-        localStorage.setItem('muapi_key', this.apiKey);
+        await apiKeyManager.setKey(this.apiKey, 'muapi');
       }
     } catch (error) {
-      console.warn('Failed to save API key to localStorage:', error);
+      console.warn('Failed to save API key:', error);
     }
   }
 
@@ -252,11 +254,7 @@ class MuAPIClient {
   clearApiKey() {
     this.apiKey = null;
     this.isAuthenticated = false;
-    try {
-      localStorage.removeItem('muapi_key');
-    } catch (error) {
-      console.warn('Failed to clear API key from localStorage:', error);
-    }
+    apiKeyManager.clearKey('muapi').catch(() => {});
   }
 
   /**

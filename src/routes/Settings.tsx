@@ -612,15 +612,39 @@ export function Settings() {
 
               <button
                 onClick={async () => {
-                  const openaiKey = (document.getElementById('openai-key') as HTMLInputElement)?.value;
-                  const muapiKey = (document.getElementById('muapi-key') as HTMLInputElement)?.value;
-                  const videodbKey = (document.getElementById('videodb-key') as HTMLInputElement)?.value;
+                  const openaiKey = (document.getElementById('openai-key') as HTMLInputElement)?.value?.trim();
+                  const muapiKey = (document.getElementById('muapi-key') as HTMLInputElement)?.value?.trim();
+                  const videodbKey = (document.getElementById('videodb-key') as HTMLInputElement)?.value?.trim();
 
-                  if (openaiKey) await apiKeyManager.setKey(openaiKey, 'openai');
-                  if (muapiKey) await apiKeyManager.setKey(muapiKey, 'muapi');
-                  if (videodbKey) await apiKeyManager.setKey(videodbKey, 'videodb');
+                  const errors: string[] = [];
 
-                  alert('API keys saved successfully!');
+                  if (openaiKey) {
+                    try {
+                      await apiKeyManager.setKey(openaiKey, 'openai');
+                    } catch (error) {
+                      errors.push(`OpenAI key: ${error instanceof Error ? error.message : String(error)}`);
+                    }
+                  }
+                  if (muapiKey) {
+                    try {
+                      await apiKeyManager.setKey(muapiKey, 'muapi');
+                    } catch (error) {
+                      errors.push(`MuAPI key: ${error instanceof Error ? error.message : String(error)}`);
+                    }
+                  }
+                  if (videodbKey) {
+                    try {
+                      await apiKeyManager.setKey(videodbKey, 'videodb');
+                    } catch (error) {
+                      errors.push(`VideoDB key: ${error instanceof Error ? error.message : String(error)}`);
+                    }
+                  }
+
+                  if (errors.length > 0) {
+                    alert(`Failed to save API keys:\n${errors.join('\n')}`);
+                  } else {
+                    alert('API keys saved successfully!');
+                  }
                 }}
                 className="px-6 py-2 bg-cyan-400 text-slate-900 rounded-lg font-medium hover:bg-cyan-300 transition"
               >

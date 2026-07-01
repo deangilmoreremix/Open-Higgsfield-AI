@@ -1,5 +1,6 @@
 import { LocalModelManager } from './LocalModelManager.js';
 import { isLocalAIAvailable } from '../lib/localInferenceClient.js';
+import { apiKeyManager } from '../lib/apiKeyManager.js';
 
 export function SettingsModal(onClose) {
     const overlay = document.createElement('div');
@@ -54,8 +55,7 @@ export function SettingsModal(onClose) {
                 <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;font-weight:600;">Muapi API Key</label>
                 <input id="settings-api-key" type="password"
                     style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;padding:0.6rem 0.9rem;color:#fff;font-size:0.875rem;outline:none;"
-                    placeholder="Enter your Muapi API key..."
-                    value="${localStorage.getItem('muapi_key') || ''}">
+                    placeholder="Enter your Muapi API key...">
             </div>
             <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin:0;">
                 Your API key is stored locally and never sent anywhere except api.muapi.ai.
@@ -99,13 +99,21 @@ export function SettingsModal(onClose) {
     };
 
     apiPanel.querySelector('#settings-cancel-btn').onclick = close;
-    apiPanel.querySelector('#settings-save-btn').onclick = () => {
+    apiPanel.querySelector('#settings-save-btn').onclick = async () => {
         const key = apiPanel.querySelector('#settings-api-key').value.trim();
-        if (key) {
-            localStorage.setItem('muapi_key', key);
+        const input = apiPanel.querySelector('#settings-api-key');
+        if (!key) {
+            alert('Please enter an API key.');
+            input.style.borderColor = '#ef4444';
+            return;
+        }
+        try {
+            await apiKeyManager.setKey(key, 'muapi');
             close();
-        } else {
-            
+        } catch (err) {
+            console.error('[SettingsModal] Failed to save API key:', err);
+            input.style.borderColor = '#ef4444';
+            alert('Failed to save API key. Please try again.');
         }
     };
 
@@ -113,5 +121,16 @@ export function SettingsModal(onClose) {
     overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
 
     overlay.appendChild(modal);
+
+    (async () => {
+        try {
+            const key = await apiKeyManager.getKey('muapi');
+            const input = overlay.querySelector('#settings-api-key');
+            if (key != null && input) input.value = key;
+        } catch {
+            // input remains empty on error
+        }
+    })();
+
     return overlay;
 }
