@@ -1767,4 +1767,66 @@ function findAssetById(assetId) {
   return null;
 }
 
+// ============================================================================
+// MEDIA LIBRARY DROP ZONE (Desktop → Library)
+// ============================================================================
+
+/**
+ * Wire the media library container as a drop zone for OS files.
+ * Files dropped on the library are uploaded via processFileUpload
+ * and added to state.mediaLibrary (and state.assets). This complements
+ * the existing mouse-based drag (media-item → timeline).
+ *
+ * Usage:
+ *   setupMediaLibraryDropZone(mediaContainer, { state, showToast });
+ *
+ * @param {HTMLElement} container - The media library container element
+ * @param {Object} options
+ * @param {Object} options.state - Editor state
+ * @param {Function} options.showToast - Toast callback
+ * @returns {Function} Cleanup function to remove listeners
+ */
+export function setupMediaLibraryDropZone(container, options = {}) {
+  if (!container || typeof container.addEventListener !== 'function') return () => {};
+  const { state, showToast } = options;
+
+  const onDragOver = (e) => {
+    if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files')) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      container.classList.add('drop-highlight');
+    }
+  };
+
+  const onDragLeave = (e) => {
+    if (e.target === container) {
+      container.classList.remove('drop-highlight');
+    }
+  };
+
+  const onDrop = async (e) => {
+    e.preventDefault();
+    container.classList.remove('drop-highlight');
+    if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+    const { processFileUpload } = await import('./uploadPipeline.js');
+    const files = Array.from(e.dataTransfer.files);
+    for (const file of files) {
+      await processFileUpload(file, { state, showToast });
+    }
+    if (typeof showToast === 'function') {
+      showToast(`Added ${files.length} file${files.length === 1 ? '' : 's'} to library`, 'success');
+    }
+  };
+
+  container.addEventListener('dragover', onDragOver);
+  container.addEventListener('dragleave', onDragLeave);
+  container.addEventListener('drop', onDrop);
+
+  return () => {
+    container.removeEventListener('dragover', onDragOver);
+    container.removeEventListener('dragleave', onDragLeave);
+    container.removeEventListener('drop', onDrop);
+  };
+}
+
 export { dragState };
