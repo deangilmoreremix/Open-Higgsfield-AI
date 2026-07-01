@@ -57,7 +57,10 @@ export function Settings() {
     const muapiEl = document.getElementById('muapi-key') as HTMLInputElement;
     const videodbEl = document.getElementById('videodb-key') as HTMLInputElement;
     if (openaiEl && openaiKey) openaiEl.value = openaiKey;
-    if (muapiEl && muapiKey) muapiEl.value = muapiKey;
+    if (muapiEl && muapiKey) {
+      // Show a masked preview so the user knows a key is saved
+      muapiEl.value = '••••••••' + muapiKey.slice(-4);
+    }
     if (videodbEl && videodbKey) videodbEl.value = videodbKey;
   }
 
@@ -580,18 +583,32 @@ export function Settings() {
                 <p className="text-xs text-slate-400 mt-1">Get your key at <a href="https://platform.openai.com/api-keys" target="_blank" className="text-cyan-400">platform.openai.com/api-keys</a></p>
               </div>
 
-              {/* MUAPI Key */}
+              {/* MUAPI Key - opens the centralized API Key Center */}
               <div>
                 <label className="block text-sm font-medium text-white mb-2">
                   MUAPI Key
                   <span className="text-xs text-slate-400 ml-2">(for video and image models)</span>
                 </label>
-                <input
-                  type="password"
-                  id="muapi-key"
-                  placeholder="muapi_..."
-                  className="w-full px-4 py-2 bg-slate-800 border border-white/10 rounded-lg text-white focus:outline-none focus:border-cyan-400/50"
-                />
+                <div className="flex items-center gap-3">
+                  <input
+                    type="password"
+                    id="muapi-key"
+                    placeholder="muapi_..."
+                    readOnly
+                    className="flex-1 px-4 py-2 bg-slate-800 border border-white/10 rounded-lg text-white focus:outline-none focus:border-cyan-400/50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      import('../components/modals/ApiKeyCenterModal.jsx').then(({ openApiKeyCenterModal }) => {
+                        openApiKeyCenterModal({ name: 'muapi' });
+                      });
+                    }}
+                    className="px-4 py-2 bg-cyan-400 text-slate-900 rounded-lg font-medium hover:bg-cyan-300 transition"
+                  >
+                    Manage
+                  </button>
+                </div>
                 <p className="text-xs text-slate-400 mt-1">Get your key at <a href="https://muapi.ai" target="_blank" className="text-cyan-400">muapi.ai</a></p>
               </div>
 
@@ -613,7 +630,6 @@ export function Settings() {
               <button
                 onClick={async () => {
                   const openaiKey = (document.getElementById('openai-key') as HTMLInputElement)?.value?.trim();
-                  const muapiKey = (document.getElementById('muapi-key') as HTMLInputElement)?.value?.trim();
                   const videodbKey = (document.getElementById('videodb-key') as HTMLInputElement)?.value?.trim();
 
                   const errors: string[] = [];
@@ -625,13 +641,7 @@ export function Settings() {
                       errors.push(`OpenAI key: ${error instanceof Error ? error.message : String(error)}`);
                     }
                   }
-                  if (muapiKey) {
-                    try {
-                      await apiKeyManager.setKey(muapiKey, 'muapi');
-                    } catch (error) {
-                      errors.push(`MuAPI key: ${error instanceof Error ? error.message : String(error)}`);
-                    }
-                  }
+                  // muapi key is managed by the centralized API Key Center
                   if (videodbKey) {
                     try {
                       await apiKeyManager.setKey(videodbKey, 'videodb');

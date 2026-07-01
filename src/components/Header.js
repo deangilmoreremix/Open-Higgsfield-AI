@@ -114,6 +114,25 @@ export function Header(navigate) {
 
     rightPart.appendChild(settingsBtn);
 
+    // Dedicated API Key button — opens the single, centralized API key UI
+    const apiKeyBtn = document.createElement('button');
+    apiKeyBtn.id = 'header-api-key-btn';
+    apiKeyBtn.className = 'flex items-center gap-2 px-3 py-1.5 rounded-md border border-primary/30 bg-primary/10 text-[13px] font-bold text-primary hover:bg-primary/20 hover:border-primary/50 transition-colors';
+    apiKeyBtn.title = 'Manage your Muapi API key';
+    apiKeyBtn.setAttribute('data-tooltip', 'Manage your API key — single source of truth');
+    apiKeyBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l-2.25-2.25"/>
+        </svg>
+        <span>API Key</span>
+    `;
+    apiKeyBtn.onclick = () => {
+        import('./modals/ApiKeyCenterModal.jsx').then(({ openApiKeyCenterModal }) => {
+            openApiKeyCenterModal({ name: 'muapi' });
+        });
+    };
+    rightPart.appendChild(apiKeyBtn);
+
     navBar.appendChild(leftPart);
     navBar.appendChild(rightPart);
 

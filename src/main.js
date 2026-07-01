@@ -78,6 +78,13 @@ import { initRouter, navigate } from './lib/router.js';
     // Defer onboarding until after render
     setTimeout(() => initOnboarding(), 1000);
 
+    // Start the 90-second API key prompt (no-op if a key is already saved)
+    import('./lib/services/ApiKeyPrompt.js').then(({ startApiKeyPrompt }) => {
+      startApiKeyPrompt();
+    }).catch((err) => {
+      console.warn('[App] Failed to start API key prompt:', err);
+    });
+
     // Initialize global personalizer floating button
     const personalizerBtn = document.createElement('button');
     personalizerBtn.id = 'global-personalizer-btn';

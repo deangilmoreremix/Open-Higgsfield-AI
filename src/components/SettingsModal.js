@@ -1,6 +1,5 @@
 import { LocalModelManager } from './LocalModelManager.js';
 import { isLocalAIAvailable } from '../lib/localInferenceClient.js';
-import { apiKeyManager } from '../lib/apiKeyManager.js';
 
 export function SettingsModal(onClose) {
     const overlay = document.createElement('div');
@@ -51,18 +50,11 @@ export function SettingsModal(onClose) {
     const apiPanel = document.createElement('div');
     apiPanel.innerHTML = `
         <div style="display:flex;flex-direction:column;gap:0.75rem;">
-            <div>
-                <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;font-weight:600;">Muapi API Key</label>
-                <input id="settings-api-key" type="password"
-                    style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;padding:0.6rem 0.9rem;color:#fff;font-size:0.875rem;outline:none;"
-                    placeholder="Enter your Muapi API key...">
-            </div>
-            <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin:0;">
-                Your API key is stored locally and never sent anywhere except api.muapi.ai.
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin:0 0 0.5rem 0;">
+                Your API key is stored locally and encrypted. Click the button below to add, update, or remove it.
             </p>
             <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:0.5rem;">
-                <button id="settings-cancel-btn" style="padding:0.5rem 1rem;border-radius:0.5rem;background:none;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;cursor:pointer;">Cancel</button>
-                <button id="settings-save-btn" style="padding:0.5rem 1rem;border-radius:0.5rem;background:var(--color-primary,#d9ff00);color:#000;font-size:0.75rem;font-weight:700;cursor:pointer;border:none;">Save</button>
+                <button id="settings-open-key-center" style="padding:0.5rem 1rem;border-radius:0.5rem;background:var(--color-primary,#d9ff00);color:#000;font-size:0.75rem;font-weight:700;cursor:pointer;border:none;">Manage API Key</button>
             </div>
         </div>
     `;
@@ -98,39 +90,16 @@ export function SettingsModal(onClose) {
         if (onClose) onClose();
     };
 
-    apiPanel.querySelector('#settings-cancel-btn').onclick = close;
-    apiPanel.querySelector('#settings-save-btn').onclick = async () => {
-        const key = apiPanel.querySelector('#settings-api-key').value.trim();
-        const input = apiPanel.querySelector('#settings-api-key');
-        if (!key) {
-            alert('Please enter an API key.');
-            input.style.borderColor = '#ef4444';
-            return;
-        }
-        try {
-            await apiKeyManager.setKey(key, 'muapi');
-            close();
-        } catch (err) {
-            console.error('[SettingsModal] Failed to save API key:', err);
-            input.style.borderColor = '#ef4444';
-            alert('Failed to save API key. Please try again.');
-        }
+    apiPanel.querySelector('#settings-open-key-center').onclick = () => {
+        import('./modals/ApiKeyCenterModal.jsx').then(({ openApiKeyCenterModal }) => {
+            openApiKeyCenterModal({ name: 'muapi' });
+        });
     };
 
     header.querySelector('#settings-close-btn').onclick = close;
     overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
 
     overlay.appendChild(modal);
-
-    (async () => {
-        try {
-            const key = await apiKeyManager.getKey('muapi');
-            const input = overlay.querySelector('#settings-api-key');
-            if (key != null && input) input.value = key;
-        } catch {
-            // input remains empty on error
-        }
-    })();
 
     return overlay;
 }
