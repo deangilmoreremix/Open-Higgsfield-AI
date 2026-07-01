@@ -10,7 +10,6 @@ const EXISTING_APPS = [
   { id: 'effects', name: 'Effects Studio', description: 'Apply 350+ visual effects', category: 'Tools', icon: '✨' },
   { id: 'edit', name: 'Edit Studio', description: 'Remove objects, backgrounds, reframe', category: 'Tools', icon: '✏️' },
   { id: 'upscale', name: 'Upscale Suite', description: 'AI upscale and enhance images', category: 'Tools', icon: '🔍' },
-  { id: 'headshots', name: 'AI Headshot Studio', description: 'Professional headshots for LinkedIn', category: 'Tools', icon: '📸' },
   { id: 'character', name: 'Character Studio', description: 'Consistent character generation', category: 'Tools', icon: '👤' },
   { id: 'commercial', name: 'Commercial Studio', description: 'Product photography and ads', category: 'Tools', icon: '📢' },
   { id: 'audio', name: 'Audio Studio', description: 'Generate music, speech, and sound effects', category: 'Tools', icon: '🎵' },
@@ -27,7 +26,6 @@ const EXISTING_APPS = [
 
 // New upstream-inspired apps
 const NEW_APPS = [
-  { id: 'studio', name: 'Unified Studio', description: 'Launch all creative tools from one dashboard', category: 'AI Command Center', icon: '🎥' },
   { id: 'workflow-builder', name: 'Workflow Builder', description: 'Build multi-step AI pipelines', category: 'AI Command Center', icon: '🔗' },
   { id: 'ai-agent', name: 'AI Agent', description: 'Create and run AI agents for production', category: 'AI Command Center', icon: '🤖' },
     ];

@@ -9,9 +9,6 @@ const KNOWN_COMPLETE_APPS = [
   { id: 'edit', name: 'Edit Studio', description: 'Professional non-linear video editing', category: 'edit', route: '/edit', status: 'complete', icon: '✂️' },
   { id: 'character', name: 'Character Studio', description: 'Create and animate consistent characters', category: 'character', route: '/character', status: 'complete', icon: '👤' },
   { id: 'influencer', name: 'Influencer Studio', description: 'AI influencer creation and content generation', category: 'social', route: '/influencer', status: 'complete', icon: '📱' },
-  { id: 'workflows', name: 'Workflows', description: 'Visual node-based AI workflow builder', category: 'workflow', route: '/workflows', status: 'complete', icon: '🔀' },
-  { id: 'agents', name: 'AI Agents', description: 'Autonomous agents with memory and tool use', category: 'ai', route: '/agents', status: 'complete', icon: '🤖' },
-  { id: 'studio', name: 'Studio', description: 'Unified professional workspace', category: 'core', route: '/studio', status: 'complete', icon: '🎨' },
   ];
 
 const SHELL_APP_DIRS = [
