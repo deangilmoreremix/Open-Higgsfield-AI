@@ -68,6 +68,10 @@ services:
       - key: PUBLIC_SITE_URL
         value: https://higgsfield-web.onrender.com
 
+      # Director backend URL
+      - key: VITE_DIRECTOR_BACKEND_URL
+        value: https://director-backend.onrender.com
+
       # Node version
       - key: NODE_VERSION
         value: "22.12.0"
@@ -138,3 +142,36 @@ services:
         sync: false
       - key: NODE_ENV
         value: production
+
+  # ─── Director Backend (45 VideoDB agents) ───
+  - type: web
+    name: director-backend
+    runtime: node
+    plan: starter
+    region: singapore
+    rootDir: director-backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: VIDEO_DB_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        value: https://bzxohkrxcwodllketcpz.supabase.co
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: DIRECTOR_SERVICE_KEY
+        sync: false
+      - key: NODE_VERSION
+        value: "22.12.0"
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: "https://higgsfield.ai,https://studio.higgsfield.ai,http://localhost:8080"
