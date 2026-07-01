@@ -36,6 +36,12 @@ import { SubtitleControls } from './SubtitleControls.jsx';
 import { SubtitleEditorModal } from './modals/SubtitleEditorModal.jsx';
 import { whisperService } from '../services/whisper-client.js';
 
+// Subtitle system integration
+import { SubtitleTimeline } from '../lib/editor/subtitleTimeline.js';
+import { SubtitleControls } from './SubtitleControls.jsx';
+import { SubtitleEditorModal } from './modals/SubtitleEditorModal.jsx';
+import { whisperService } from '../services/whisper-client.js';
+
 // Modal imports - these are vanilla JS modal implementations
 import { EndScreenModal } from './modals/EndScreenModal.jsx';
 import { SaveProjectModal } from './modals/SaveProjectModal.jsx';
@@ -885,8 +891,23 @@ button, input, textarea, select { font: inherit; }
         <div class="media-note">Choose what you want to add to the timeline. Each tile inserts a different type of source asset.</div>
         <div class="media-grid" id="mediaGrid"></div>
       </aside>
-      <aside class="side-card" id="sceneDetectorPanel" data-tooltip="AI scene detection">
+      <aside class="side-card" id="sceneDetectorPanel">
         <div id="sceneDetectorContainer"></div>
+      </aside>
+      <aside class="side-card" id="cameraEffectsPanel">
+        <div id="cameraEffectsContainer"></div>
+      </aside>
+      <aside class="side-card generate">
+        <div class="generate-head"><div class="card-title cyan">⚡ Generate</div><div style="color: rgba(255,255,255,0.4)">✕</div></div>
+        <div class="generate-types" id="generateTypes"></div>
+        <textarea class="text-area" id="promptInput" placeholder="A cinematic shot of..."></textarea>
+        <input class="text-input" id="negativeInput" placeholder="Negative prompt" />
+        <div class="select-row">
+          <select class="select-input" id="durationSelect"><option>5s</option><option>8s</option><option>12s</option></select>
+          <select class="select-input" id="aspectSelect"><option>16:9</option><option>9:16</option><option>1:1</option></select>
+          <select class="select-input" id="styleSelect"><option>Cinematic</option><option>Commercial</option><option>Documentary</option></select>
+        </div>
+        <button class="primary-btn" id="generateBtn" aria-label="Generate a new asset from the prompt settings">⚡ Generate</button>
       </aside>
             <aside class="side-card" id="cinegenResultsPanel" data-tooltip="CineGen AI Tools Results">
               <div class="card-title">🎨 CineGen Results</div>
@@ -1054,7 +1075,7 @@ button, input, textarea, select { font: inherit; }
       ],
       generateTypes: [['✍️', 'Text'], ['🖼️', 'Image'], ['🔄', 'Retake'], ['➡️', 'Extend'], ['🎞️', 'B-Roll']],
       quickCommands: ['⚡Generate','Retake','Extend','B-Roll','🎬 Detect Scenes'],
-      railActions: [['⚡', 'Generate', true], ['✂️', 'Split'], ['🎬', 'Scenes'], ['💬', 'Subtitle'], ['🎞️', 'B-Roll'], ['⏱️', 'Speed'], ['🪄', 'Stabilize'], ['📝', 'Text'], ['🔄', 'Transitions'], ['🎬', 'AI Video'], ['🎥', 'Recorder'], ['🎙️', 'Enhanced Recorder'], ['📋', 'Templates'], ['👀', 'Preview Template'], ['📱', 'Social'], ['📧', 'Email Campaign'], ['🔗', 'URL Video'], ['📸', 'Page Shot'], ['👥', 'Contacts'], ['🎨', 'Canvas'], ['🏷️', 'Token Editor'], ['📦', 'Batch Generator'], ['🔄', 'Workflow'], ['👤', 'Personalization'], ['✏️', 'Personalization Editor'], ['🎬', 'Personalization Suite'], ['🏠', 'Landing Pages'], ['📋', 'Lead Generator'], ['🤖', 'AI Personalizer']],
+      railActions: [['⚡', 'Generate', true], ['✂️', 'Split'], ['🎬', 'Scenes'], ['💬', 'Subtitle'], ['🎞️', 'B-Roll'], ['⏱️', 'Speed'], ['🪄', 'Stabilize'], ['📝', 'Text'], ['🔄', 'Transitions'], ['🎬', 'AI Video'], ['🎥', 'Recorder'], ['🎙️', 'Enhanced Recorder'], ['📋', 'Templates'], ['👀', 'Preview Template'], ['📱', 'Social'], ['📧', 'Email Campaign'], ['🔗', 'URL Video'], ['📸', 'Page Shot'], ['👥', 'Contacts'], ['🎨', 'Canvas'], ['🏷️', 'Token Editor'], ['📦', 'Batch Generator'], ['🔄', 'Workflow'], ['👤', 'Personalization'], ['✏️', 'Personalization Editor'], ['🎬', 'Personalization Suite'], ['🏠', 'Landing Pages'], ['📋', 'Lead Generator']],
 
       // Enhanced state management
       projectId: null,
@@ -1171,7 +1192,7 @@ button, input, textarea, select { font: inherit; }
     let sceneDetector = null;
     let cameraEffects = null;
     let aiChatPanel = null;
-    let colorCorrectionSystem = null;
+    // let colorCorrectionSystem = null; // Disabled - file not found
 
     // Keyboard shortcuts for undo/redo
     function handleKeyboardShortcuts(event) {
@@ -1969,7 +1990,10 @@ button, input, textarea, select { font: inherit; }
             window.timelineState.selectedClipId = clip.id;
             renderTracksBasic(state, els, showToast);
             updatePreview({ id: clip.id, name: clip.name, type: clip.type, src: clip.src });
-            if (cameraEffects) cameraEffects.setSelectedClip(clip.id);
+            // Update camera effects with selected clip
+            if (cameraEffects) {
+              cameraEffects.setSelectedClip(clip.id);
+            }
           });
 
           // Basic trim handle logic
@@ -2574,224 +2598,11 @@ button, input, textarea, select { font: inherit; }
             state.playheadPercent = (time / state.timelineSeconds) * 100;
             renderPlayhead();
             renderPreview();
-          },
-          onScenesDetected: (scenes) => {
-            state.sceneMarkers = scenes;
-            renderSceneMarkers();
-            
           }
         }, {
           showToast: showToast
         });
       }
-    }
-
-    async function generateVideoFromTimeline() {
-      const payload = prepareTimelineForVideoGeneration();
-      
-      
-
-      try {
-        const { data, error } = await supabase.functions.invoke('muapi-proxy', {
-          body: {
-            endpoint: 'video-generation',
-            method: 'POST',
-            data: {
-              prompt: 'Render final video from current timeline',
-              duration: payload.totalDuration,
-              timelineData: payload,
-              includeSubtitles: payload.hasSubtitles,
-              includeTransitions: payload.hasTransitions
-            }
-          }
-        });
-
-        if (error) throw error;
-
-        
-        console.log('Timeline → Video result:', data);
-        
-        return data;
-      } catch (err) {
-        console.error('Timeline video generation failed:', err);
-        
-        throw err;
-      }
-    }
-
-    function prepareTimelineForVideoGeneration() {
-      const tracks = state.project?.tracks || [];
-      
-      const clips = tracks.flatMap(track => 
-        (track.items || []).map(clip => ({
-          id: clip.id,
-          name: clip.name,
-          type: clip.type,
-          start: clip.start,
-          end: clip.end,
-          duration: clip.duration || (clip.end - clip.start),
-          trackType: track.type,
-          hasTransition: !!clip.transition,
-          transition: clip.transition || null,
-          metadata: clip.metadata || {}
-        }))
-      );
-
-      const subtitles = tracks
-        .filter(t => t.type === 'subtitle' || t.type === 'text')
-        .flatMap(track => 
-          (track.items || []).map(item => ({
-            start: item.start,
-            end: item.end,
-            text: item.text || item.name
-          }))
-        );
-
-      const transitions = clips
-        .filter(c => c.hasTransition)
-        .map(c => ({
-          clipId: c.id,
-          type: c.transition.type,
-          duration: c.transition.duration || 0.5
-        }));
-
-      const keyframeData = state.keyframeSystem?.keyframes 
-        ? Object.entries(state.keyframeSystem.keyframes).map(([clipId, kfs]) => ({
-            clipId,
-            count: kfs.length,
-            properties: [...new Set(kfs.map(k => k.property))]
-          }))
-        : [];
-
-      return {
-        version: '1.0',
-        totalDuration: state.timelineSeconds || 60,
-        trackCount: tracks.length,
-        clipCount: clips.length,
-        hasSubtitles: subtitles.length > 0,
-        hasTransitions: transitions.length > 0,
-        hasKeyframes: keyframeData.length > 0,
-        clips,
-        subtitles,
-        transitions,
-        keyframeData,
-        generatedAt: new Date().toISOString()
-      };
-    }
-
-    function applyCineGenResultToTimeline(result) {
-      if (!result || !result.success || !result.action) return;
-
-      const clipId = result.result?.clipId || state.selectedClipId;
-      if (!clipId) return;
-
-      // Find the clip across all tracks
-      let targetClip = null;
-      let targetTrack = null;
-
-      for (const track of state.project.tracks) {
-        const clip = (track.items || []).find(item => item.id === clipId);
-        if (clip) {
-          targetClip = clip;
-          targetTrack = track;
-          break;
-        }
-      }
-
-      if (!targetClip) return;
-
-      // Save state for undo/redo before modifying
-      saveStateSnapshot(state);
-
-      switch (result.action) {
-        case 'gap_fill':
-          if (result.result?.filledDuration) {
-            targetClip.end = (targetClip.end || targetClip.start + (targetClip.duration || 5)) + result.result.filledDuration;
-          }
-          break;
-
-        case 'extend':
-          if (result.result?.extendedBy) {
-            targetClip.end = (targetClip.end || targetClip.start + (targetClip.duration || 5)) + result.result.extendedBy;
-          }
-          break;
-
-        default:
-          targetClip.metadata = targetClip.metadata || {};
-          targetClip.metadata.cinegenProcessed = true;
-      }
-
-      if (result.action === 'sam3_segment') {
-        targetClip.metadata = targetClip.metadata || {};
-        targetClip.metadata.sam3Mask = {
-          prompt: result.result.prompt,
-          confidence: result.result.confidence,
-          appliedAt: new Date().toISOString()
-        };
-      }
-
-      if (result.action === 'audio_sync') {
-        targetClip.metadata = targetClip.metadata || {};
-        targetClip.metadata.audioSynced = true;
-      }
-
-      renderTracks();
-    }
-
-    let cinegenHistory = [];
-
-    function updateCineGenResults(result) {
-      const container = document.getElementById('cinegenResults');
-      if (!container) return;
-
-      if (result && result.success) {
-        cinegenHistory.unshift({
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          message: result.message,
-          action: result.action
-        });
-
-        // Keep only last 5 entries
-        if (cinegenHistory.length > 5) cinegenHistory.pop();
-
-        container.innerHTML = cinegenHistory.map(entry => `
-          <div style="margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
-            <div style="color: #22d3ee; font-size: 12px;">${entry.message}</div>
-            <div style="font-size: 10px; opacity: 0.6;">${entry.action || ''} • ${entry.time}</div>
-          </div>
-        `).join('');
-      } else {
-        container.innerHTML = `<div style="color: #f87171; font-size: 12px;">${result?.error || 'Tool failed'}</div>`;
-      }
-    }
-
-    function renderSceneMarkers() {
-      const container = els.compositingOverlay || document.getElementById('compositingOverlay');
-      if (!container || !state.sceneMarkers) return;
-
-      container.querySelectorAll('.scene-marker').forEach(el => el.remove());
-
-      state.sceneMarkers.forEach((scene, index) => {
-        const marker = document.createElement('div');
-        marker.className = 'scene-marker';
-        marker.style.left = `${(scene.time / (state.timelineSeconds || 60)) * 100}%`;
-        marker.title = `Scene ${scene.number || index + 1} at ${scene.time.toFixed(1)}s`;
-
-        marker.onclick = () => {
-          state.playheadPercent = (scene.time / (state.timelineSeconds || 60)) * 100;
-          updatePlaybackUI();
-          renderPreview();
-        };
-
-        // Right-click to delete marker
-        marker.oncontextmenu = (e) => {
-          e.preventDefault();
-          state.sceneMarkers = state.sceneMarkers.filter((_, i) => i !== index);
-          renderSceneMarkers();
-        };
-
-        container.appendChild(marker);
-      });
     }
 
     function initializeCameraEffects() {
@@ -2800,57 +2611,16 @@ button, input, textarea, select { font: inherit; }
           keyframeSystem: state.keyframeSystem,
           timelineState: state,
           onPreviewUpdate: (clipId, transform) => {
+            // Update preview with camera effect transform
             renderPreview();
           },
           onKeyframeUpdate: () => {
+            // Refresh timeline and keyframe displays
             renderTimeline();
             renderKeyframes();
           }
         });
       }
-    }
-
-    // 3D Camera Effects support
-    function applyCameraEffect(effectType, params = {}) {
-      const selected = findSelectedClip();
-      if (!selected) {
-        
-        return;
-      }
-
-      saveStateSnapshot(state);
-
-      const effect = {
-        type: effectType,
-        ...params,
-        startTime: (state.playheadPercent / 100) * (state.timelineSeconds || 60)
-      };
-
-      if (!selected.effects) selected.effects = [];
-      selected.effects.push(effect);
-
-      
-      renderTracks();
-    }
-
-    function addCameraShake(intensity = 5) {
-      applyCameraEffect('shake', { intensity, duration: 1.5 });
-    }
-
-    function addOrbitEffect(radius = 20) {
-      applyCameraEffect('orbit', { radius, speed: 1, direction: 1 });
-    }
-
-    function addHitchcockZoom(startScale = 1.0, endScale = 1.5) {
-      applyCameraEffect('hitchcock', { startScale, endScale, duration: 2.0 });
-    }
-
-    function addPanEffect(direction = 'left', distance = 20) {
-      applyCameraEffect(`pan-${direction}`, { distance, duration: 1.5 });
-    }
-
-    function addTiltEffect(direction = 'up', distance = 15) {
-      applyCameraEffect(`tilt-${direction}`, { distance, duration: 1.5 });
     }
 
     function initializeAIChatPanel() {
@@ -2870,45 +2640,45 @@ button, input, textarea, select { font: inherit; }
               if (selectedClip) {
                 const splitTime = (state.playheadPercent / 100) * state.timelineSeconds;
                 // Implement split logic here
-                
+                showToast('Clip split functionality to be implemented', 'info');
               }
             }
           },
           trimSelectedClip: (start, end) => {
             // Implement trim logic
-            
+            showToast('Trim clip functionality to be implemented', 'info');
           },
           addTransition: (type, duration) => {
             // Implement add transition logic
-            
+            showToast(`Add ${type} transition functionality to be implemented`, 'info');
           },
           addTextOverlay: (text, position) => {
             // Implement add text overlay logic
-            
+            showToast('Add text overlay functionality to be implemented', 'info');
           },
           generateSubtitles: async () => {
             // Implement subtitle generation
-            
+            showToast('Subtitle generation functionality to be implemented', 'info');
           },
           removeFillerWords: () => {
             // Implement filler word removal
-            
+            showToast('Remove filler words functionality to be implemented', 'info');
           },
           addBRoll: (query) => {
             // Implement B-roll addition
-            
+            showToast('Add B-roll functionality to be implemented', 'info');
           },
           speedRamp: (speed) => {
             // Implement speed ramp
-            
+            showToast(`Speed ramp to ${speed}x functionality to be implemented`, 'info');
           },
           stabilizeVideo: () => {
             // Implement video stabilization
-            
+            showToast('Video stabilization functionality to be implemented', 'info');
           },
           findRelatedFootage: async (query) => {
             // Implement semantic search
-            
+            showToast('Find related footage functionality to be implemented', 'info');
             return [];
           }
         });
@@ -3087,54 +2857,9 @@ button, input, textarea, select { font: inherit; }
         await sceneDetector.detectScenes();
       } else {
         // Fallback to API call if scene detector not initialized
-        
+        showToast('Scene detector not available', 'error');
       }
     }
-
-    async function generateSubtitles(language = 'en') {
-      console.log(`Generating subtitles (${language})...`);
-      try {
-        
-
-        // Prefer real Whisper transcription when possible
-        if (whisperService) {
-          // Try to find an audio or video clip to transcribe
-          const audioOrVideoClip = state.project.tracks
-            .flatMap(t => t.items || [])
-            .find(item => item.type === 'audio' || item.type === 'video');
-
-          if (audioOrVideoClip && audioOrVideoClip.src) {
-            const result = await whisperService.transcribe(audioOrVideoClip.src, {
-              language: 'en',
-              wordTimestamps: true
-            });
-
-            if (result.segments && result.segments.length > 0) {
-              let subtitleTrack = state.project.tracks.find(t => t.type === 'subtitle' || t.type === 'text');
-              if (!subtitleTrack) {
-                state.addTrack('Text');
-                subtitleTrack = state.project.tracks.find(t => t.type === 'text');
-              }
-
-              result.segments.forEach((segment, index) => {
-                const item = {
-                  id: `subtitle-${Date.now()}-${index}`,
-                  name: segment.text,
-                  type: 'text',
-                  start: segment.start,
-                  end: segment.end,
-                  text: segment.text,
-                  style: { fontSize: 18, color: '#ffffff', background: 'rgba(0,0,0,0.75)' }
-                };
-                subtitleTrack.items.push(item);
-              });
-
-              renderTracks();
-              
-              return;
-            }
-          }
-        }
 
         // Fallback: add sample subtitles
         let subtitleTrack = state.project.tracks.find(t => t.type === 'subtitle' || t.type === 'text');
@@ -4767,7 +4492,7 @@ button, input, textarea, select { font: inherit; }
 
       els.uploadBtn.addEventListener('click', () => els.uploadInput.click());
       els.uploadInput.addEventListener('change', (event) => handleUpload(event.target.files?.[0]));
-      els.backBtn.addEventListener('click', () => console.log('Back action clicked'));
+      els.backBtn.addEventListener('click', () => showToast('Back action clicked'));
 
       root.querySelectorAll('[data-add-track]').forEach((button) => button.addEventListener('click', () => addTrack(button.dataset.addTrack)));
       root.querySelectorAll('[data-action="zoom-in"]').forEach((button) => button.addEventListener('click', () => { state.zoom = Math.min(2, state.zoom + 0.1); console.log(`Zoom ${state.zoom.toFixed(1)}x`); }));
@@ -5083,8 +4808,6 @@ button, input, textarea, select { font: inherit; }
     initializeSceneDetector();
     initializeCameraEffects();
     initializeAIChatPanel();
-    // CineGen integration initialized via cinegenIntegration.js (v1.1)
-    // Features: Gap Fill, Extend, Music, Mask, Element Create, LLM Chat + structured results + auto-apply
 
     // Initialize multi-camera functionality
     window.timelineState = state; // Make state globally accessible for multi-camera functions
