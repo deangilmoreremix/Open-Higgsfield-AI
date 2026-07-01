@@ -478,6 +478,67 @@ export async function processMultipleFileUploads(files, options = {}) {
 }
 
 // ============================================================================
+// URL / CLOUD IMPORT
+// ============================================================================
+
+/**
+ * Fetch a URL and return it as a File object. Used by processUrlUpload
+ * and can be used directly for any URL → File conversion.
+ *
+ * @param {string} url - The URL to fetch (must be CORS-accessible or
+ *                       pass through a server proxy)
+ * @param {string} [filename] - Optional filename override; derived from
+ *                             URL if not provided
+ * @returns {Promise<File>}
+ */
+export async function fetchUrlAsFile(url, filename) {
+  if (!url || typeof url !== 'string') throw new Error('Invalid URL');
+  const response = await fetch(url, { mode: 'cors' });
+  if (!response.ok) throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
+  const blob = await response.blob();
+  const name = filename || deriveFilenameFromUrl(url) || `url-import-${Date.now()}`;
+  const mime = blob.type || '';
+  return new File([blob], name, { type: mime });
+}
+
+/**
+ * Derive a filename from a URL path.
+ */
+function deriveFilenameFromUrl(url) {
+  try {
+    const u = new URL(url);
+    const pathname = u.pathname || '';
+    const last = pathname.split('/').filter(Boolean).pop();
+    if (!last) return null;
+    // Strip query params if any leaked
+    return last.split('?')[0].split('#')[0] || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Process a URL import: fetch the URL, convert to File, then run
+ * through the full processFileUpload pipeline.
+ *
+ * @param {string} url
+ * @param {Object} options - Same as processFileUpload
+ * @returns {Promise<Object>} Result from processFileUpload
+ */
+export async function processUrlUpload(url, options = {}) {
+  if (!url || typeof url !== 'string') {
+    return { success: false, error: 'Invalid URL' };
+  }
+  try {
+    const file = await fetchUrlAsFile(url);
+    return await processFileUpload(file, { ...options, source: 'url' });
+  } catch (e) {
+    if (options.showToast) options.showToast(`URL import failed: ${e.message}`, 'error');
+    return { success: false, error: e.message || 'URL import failed' };
+  }
+}
+
+// ============================================================================
 // LEGACY-COMPATIBLE EXPORTS
 // ============================================================================
 
