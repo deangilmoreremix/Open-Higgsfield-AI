@@ -16,8 +16,6 @@ export function HeaderMegaMenu({ navigate, currentPage }) {
         { id: 'cinema', label: 'Cinema Studio', description: 'Cinematic shots', badge: '6 cameras' },
         { id: 'character', label: 'Character', description: 'Consistent characters', badge: 'Face ID' },
         { id: 'commercial', label: 'Commercial', description: 'Ads & commercials' },
-        { id: 'workflows', label: 'Workflows', description: 'Flow-based workflows' },
-        { id: 'agents', label: 'Agents', description: 'AI agents' },
         { id: 'mcp-cli', label: 'MCP & CLI', description: 'MCP & CLI tools' },
       ]
     },

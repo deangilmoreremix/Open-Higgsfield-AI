@@ -3,10 +3,7 @@
 
 [build]
   publish = "dist"
-  # Use pnpm for consistent monorepo workspace support
-  # Build wrapper: install deps and run monorepo build tasks
-  command = "pnpm install && pnpm run build"
-  # Functions directory - built artifacts should be placed under netlify/functions/dist
+  command = "npx vite build"
   functions = "netlify/functions/dist"
 
 [build.environment]
