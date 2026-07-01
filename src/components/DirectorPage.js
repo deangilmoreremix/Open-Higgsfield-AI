@@ -6,6 +6,19 @@ import { supabase } from '../lib/hybrid-supabase.js';
 import { VideoUpload } from './common/Upload.js';
 import { Tooltip, addTooltip } from './common/Tooltip.js';
 
+function mapActionToAgentId(action) {
+    const map = {
+        'summarize': 'summarizer', 'search': 'search', 'clip': 'clipper', 'dub': 'dubbing',
+        'subtitle': 'subtitler', 'highlight': 'highlighter', 'detect-scenes': 'scenes',
+        'add-broll': 'broll', 'voiceover': 'voiceover', 'edit': 'editor', 'enhance': 'enhancer',
+        'compile': 'compiler', 'meme': 'meme', 'music': 'musicvideo', 'trailer': 'trailer',
+        'build-compilation': 'compilation', 'create-social-clip': 'social',
+        'generate-preview': 'preview', 'create-montage': 'montage', 'build-story': 'story',
+        'color-correct': 'color', 'stabilize': 'stabilize',
+    };
+    return map[action] || 'editor';
+}
+
 const DIRECTOR_AGENTS = [
     { id: 'summarizer', name: 'Video Summarizer', icon: '📝', description: 'Summarize video content', category: 'analysis' },
     { id: 'search', name: 'Video Search', icon: '🔍', description: 'Search and index media library', category: 'search' },
@@ -691,15 +704,29 @@ export function DirectorPage() {
 
             container.querySelector('#processing-title').textContent = activatedAgents.join(', ');
 
-            // Call real videoagent API
-            const { data, error } = await supabase.functions.invoke('videoagent', {
-                body: {
-                    action,
-                    videoId: videoId || '',
-                    videoUrl: videoUrl || '',
-                    options: { command }
-                }
+            // Call real director backend (Render)
+            const backendUrl = import.meta.env.VITE_DIRECTOR_BACKEND_URL || 'https://director-backend.onrender.com';
+            const { data: sessionData } = await supabase.auth.getSession();
+            const token = sessionData?.session?.access_token;
+            const agentId = mapActionToAgentId(action);
+            const response = await fetch(`${backendUrl}/api/agents/${agentId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ input: command, videoUrl: videoUrl || '', options: {} }),
             });
+            const result = await response.json();
+            if (!response.ok) {
+                if (result.error?.code === 'INTEGRATION_REQUIRED') {
+                    window.dispatchEvent(new CustomEvent('open-integrations-modal', { detail: { type: result.error.details?.type || 'slack' } }));
+                    return;
+                }
+                throw new Error(result.error?.message || 'Agent failed');
+            }
+            const { jobId, output, streamUrl } = result;
+            const data = output;
 
             if (error) {
                 throw new Error(`Processing failed: ${error.message}`);
