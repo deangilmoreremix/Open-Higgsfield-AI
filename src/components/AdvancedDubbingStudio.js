@@ -19,7 +19,7 @@ export function AdvancedDubbingStudio() {
     let availableVoices = [];
     const isTranslating = false;
     const isDubbing = false;
-    const previewAudioUrl = null;
+    let previewAudioUrl = null;
     const currentJobId = null;
 
     // Voice cloning options

@@ -408,7 +408,7 @@ const asset = await assetStore.getAsset(assetId);
      })();
    }
 
-  let selectedPreset = 'Luxury Brand Grade';
+  const selectedPreset = 'Luxury Brand Grade';
   let activeAction = 'Export Video';
   let activeIntervals = [];
   let isRunning = false;
@@ -416,45 +416,44 @@ const asset = await assetStore.getAsset(assetId);
   const currentStage = 'finishing';
 
   // Advanced export settings state (CineGen Feature #1)
-   let exportSettings = {
-     format: 'mp4',
-     resolution: '1080p',
-     frameRate: 24,
-     codec: 'H.264',
-     quality: 82
-   };
-
-  // CineGen metadata and applied AI edits for render pipeline integration
-  let cinegenMetadata = {
-    appliedEdits: [],
-    gapFills: [],
-    extensions: [],
-    masks: [],
-    musicTracks: [],
-    lastUpdated: null
+  const exportSettings = {
+    format: 'mp4',
+    resolution: '1080p',
+    gpuAcceleration: true,
+    frameRate: 24,
+    codec: 'H.264',
+    quality: 82
   };
 
   // LLM Chat Assistant state (CineGen Feature #2)
-  let chatMessages = [
+  const chatMessages = [
     { type: 'assistant', content: 'Welcome! I can help optimize your rendering settings, suggest export formats, and provide guidance on cinematic techniques.' }
   ];
+
+  // GPU Rendering Engine state (LTX-Desktop Feature #4)
+  const gpuStatus = {
+    cudaCores: null,
+    vramAvailable: null,
+    computeCapability: null,
+    modelsLoaded: false
+  };
 
   // Scene Detection state (chatvideo-yucut Feature #15)
   let detectedScenes = [];
 
   // Performance Profiling state (Rendiv Feature #10)
-  let profilingInterval = null;
+  const profilingInterval = null;
 
   // Video loading state
-  let videoElement = null;
-  let videoMetadata = {
+  const videoElement = null;
+  const videoMetadata = {
     duration: null,
     width: null,
     height: null,
     loaded: false,
     error: null
   };
-  let isVideoLoading = false;
+  const isVideoLoading = false;
 
   const inner = document.createElement('div');
   inner.className = 'w-full';
@@ -1574,7 +1573,7 @@ const uploadComponent = VideoUpload({
   container.appendChild(renderChatAssistant);
 
   // CineGen Chat Assistant State Management
-  let renderChatHistory = [];
+  const renderChatHistory = [];
   const renderChatBtn = container.querySelector('#renderChatBtn');
   const renderChatPanel = container.querySelector('#renderChatPanel');
   const renderChatInput = container.querySelector('#renderChatInput');
