@@ -152,3 +152,8 @@
 
 [build.processing.html]
   pretty_urls = true
+
+# Environment variables (will be set in Netlify dashboard)
+# VITE_SUPABASE_URL
+# VITE_SUPABASE_ANON_KEY  
+# VITE_MUAPI_URL
