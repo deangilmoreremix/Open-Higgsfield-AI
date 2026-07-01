@@ -301,10 +301,12 @@ export function safeValidate(schema, data) {
  * Validate and coerce. If validation fails, returns the original data
  * untouched (so legacy code keeps working) and logs a warning. This is
  * the "permissive" mode used for loading from storage and accepting
- * external data.
+ * external data. If no schema is provided (null), the data is returned
+ * as-is (passthrough).
  */
 export function validateOrPass(schema, data, context = 'unknown') {
   if (data === null || data === undefined) return data;
+  if (!schema || typeof schema.safeParse !== 'function') return data;
   const result = schema.safeParse(data);
   if (result.success) return result.data;
   if (typeof console !== 'undefined' && console.warn) {
