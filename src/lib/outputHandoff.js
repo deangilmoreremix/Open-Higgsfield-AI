@@ -1,5 +1,4 @@
 import { supabase } from './supabase-client';
-import { uploadFile } from './muapiAdapter';
 
 export async function saveGeneratedAsset(metadata) {
   const { data, error } = await supabase

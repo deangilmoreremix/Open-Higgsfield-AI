@@ -6,17 +6,71 @@ import { supabase } from '../lib/hybrid-supabase.js';
 import { VideoUpload } from './common/Upload.js';
 import { Tooltip, addTooltip } from './common/Tooltip.js';
 
+// Map a quick-action slug OR an agent id directly to a backend agent id.
+// Accepts both action slugs (from quick-action buttons) and agent ids
+// (from agent-card clicks) so every card resolves to a real backend endpoint.
 function mapActionToAgentId(action) {
     const map = {
         'summarize': 'summarizer', 'search': 'search', 'clip': 'clipper', 'dub': 'dubbing',
-        'subtitle': 'subtitler', 'highlight': 'highlighter', 'detect-scenes': 'scenes',
-        'add-broll': 'broll', 'voiceover': 'voiceover', 'edit': 'editor', 'enhance': 'enhancer',
-        'compile': 'compiler', 'meme': 'meme', 'music': 'musicvideo', 'trailer': 'trailer',
+        'subtitle': 'subtitler', 'subtitles': 'subtitler', 'highlight': 'highlighter',
+        'highlights': 'highlighter', 'detect-scenes': 'scenes', 'scenes': 'scenes',
+        'add-broll': 'broll', 'voiceover': 'voiceover',
+        'edit': 'editor', 'enhance': 'enhancer', 'compile': 'compiler',
+        'meme': 'meme', 'music': 'musicvideo', 'trailer': 'trailer',
         'build-compilation': 'compilation', 'create-social-clip': 'social',
-        'generate-preview': 'preview', 'create-montage': 'montage', 'build-story': 'story',
-        'color-correct': 'color', 'stabilize': 'stabilize',
+        'shorts': 'social', 'generate-preview': 'preview', 'create-montage': 'montage',
+        'build-story': 'story', 'color-correct': 'color',
+        'stabilize': 'stabilize', 'speed': 'speed', 'reverse': 'reverse',
+        'voice_cloning': 'voice_cloning', 'comparison': 'comparison',
+        'audio_overlays': 'audio_overlays', 'ai_voiceovers': 'ai_voiceovers',
+        'keyword_search': 'keyword_search', 'output_formatting': 'output_formatting',
+        'auto_highlights': 'auto_highlights', 'thumbnail': 'thumbnail',
+        'subtitle_agent': 'subtitle_agent', 'visual_search': 'visual_search',
+        'text_to_movie': 'text_to_movie', 'storyboarding': 'storyboarding',
+        'faceless_video_creator': 'faceless_video_creator', 'ai_ad_films': 'ai_ad_films',
+        'tiktok_lyric_video': 'tiktok_lyric_video', 'trailer_narration': 'trailer_narration',
+        'kids_storyteller': 'kids_storyteller', 'year_in_frames': 'year_in_frames',
+        'profanity_remover': 'profanity_remover', 'slack_agent': 'slack_agent',
+        'sales_assistant': 'sales_assistant',
+        // Agent ids passed through directly
+        'summarizer': 'summarizer', 'clipper': 'clipper', 'dubbing': 'dubbing',
+        'subtitler': 'subtitler', 'highlighter': 'highlighter', 'broll': 'broll',
+        'editor': 'editor', 'enhancer': 'enhancer', 'compiler': 'compiler',
+        'compilation': 'compilation', 'social': 'social', 'preview': 'preview',
+        'montage': 'montage', 'story': 'story', 'musicvideo': 'musicvideo',
     };
     return map[action] || 'editor';
+}
+
+// Infer a quick-action slug from natural-language command text.
+// Used when no explicit agent id is provided (chat input / starter prompts).
+const KEYWORD_TO_SLUG = [
+  ['summarize', 'summarize'], ['summary', 'summarize'],
+  ['highlight', 'highlights'], ['best moment', 'highlights'],
+  ['scene', 'scenes'], ['detect scene', 'scenes'],
+  ['subtitle', 'subtitles'], ['caption', 'subtitles'],
+  ['dub', 'dubbing'], ['translate', 'dubbing'],
+  ['b-roll', 'broll'], ['broll', 'broll'], ['overlay', 'broll'],
+  ['voiceover', 'voiceover'], ['narration', 'voiceover'],
+  ['short', 'shorts'], ['tiktok', 'shorts'], ['reel', 'shorts'],
+  ['color', 'color'], ['color correct', 'color'], ['color grade', 'color'],
+  ['stabilize', 'stabilize'], ['shaky', 'stabilize'],
+  ['speed', 'speed'], ['slow motion', 'speed'], ['fast forward', 'speed'],
+  ['reverse', 'reverse'], ['backwards', 'reverse'],
+  ['thumbnail', 'thumbnail'],
+  ['music video', 'music'], ['trailer', 'trailer'],
+  ['meme', 'meme'], ['montage', 'montage'], ['story', 'build-story'],
+  ['enhance', 'enhance'], ['upscale', 'enhance'],
+  ['edit', 'edit'], ['trim', 'edit'], ['cut', 'edit'],
+  ['search', 'search'], ['clip', 'clip'],
+];
+
+function inferActionSlug(command) {
+  const lower = command.toLowerCase();
+  for (const [keyword, slug] of KEYWORD_TO_SLUG) {
+    if (lower.includes(keyword)) return slug;
+  }
+  return 'edit';
 }
 
 const DIRECTOR_AGENTS = [
@@ -44,6 +98,27 @@ const DIRECTOR_AGENTS = [
     { id: 'stabilize', name: 'Video Stabilize', icon: '🪄', description: 'Stabilize shaky footage', category: 'enhance' },
     { id: 'speed', name: 'Speed Control', icon: '⏱️', description: 'Adjust video speed', category: 'edit' },
     { id: 'reverse', name: 'Reverse Video', icon: '🔄', description: 'Play video backwards', category: 'edit' },
+    { id: 'voice_cloning', name: 'Voice Cloning', icon: '🗣️', description: 'Clone a voice sample', category: 'audio' },
+    { id: 'comparison', name: 'Comparison Agent', icon: '⚖️', description: 'Compare two videos', category: 'search' },
+    { id: 'audio_overlays', name: 'Gen AI Audio Overlays', icon: '🎶', description: 'AI-generated audio overlays', category: 'audio' },
+    { id: 'ai_voiceovers', name: 'AI Voiceovers', icon: '🔊', description: 'Generate AI voiceovers', category: 'audio' },
+    { id: 'keyword_search', name: 'Keyword Search & Compilation', icon: '🔎', description: 'Search by keyword and compile', category: 'search' },
+    { id: 'output_formatting', name: 'Intelligent Output Formatting', icon: '📐', description: 'Format output intelligently', category: 'create' },
+    { id: 'auto_highlights', name: 'Automated Video Highlights', icon: '🌟', description: 'Auto-ranked highlight reels', category: 'extract' },
+    { id: 'thumbnail', name: 'Thumbnail Agent', icon: '🖼️', description: 'Generate cover thumbnails', category: 'create' },
+    { id: 'subtitle_agent', name: 'Subtitle Agent', icon: '🗣️', description: 'Advanced subtitle workflows', category: 'accessibility' },
+    { id: 'visual_search', name: 'Visual Search', icon: '👁️', description: 'Search by visual query', category: 'search' },
+    { id: 'text_to_movie', name: 'Text to Movie', icon: '🎬', description: 'Turn a script into a movie', category: 'create' },
+    { id: 'storyboarding', name: 'Storyboarding Agent', icon: '🗂️', description: 'Generate storyboards', category: 'create' },
+    { id: 'faceless_video_creator', name: 'Faceless Video Creator', icon: '😶‍🌫️', description: 'No-face narration videos', category: 'create' },
+    { id: 'ai_ad_films', name: 'AI Ad Films', icon: '📢', description: 'Product advertisement films', category: 'create' },
+    { id: 'tiktok_lyric_video', name: 'TikTok Lyric Video', icon: '🎵', description: 'Lyric music videos', category: 'social' },
+    { id: 'trailer_narration', name: 'Trailer Narration', icon: '🎙️', description: 'Narration for trailers', category: 'create' },
+    { id: 'kids_storyteller', name: 'Kids Storyteller', icon: '🧸', description: 'Children storytelling videos', category: 'create' },
+    { id: 'year_in_frames', name: 'Year in Frames', icon: '📅', description: 'Yearly recap montage', category: 'create' },
+    { id: 'profanity_remover', name: 'Profanity Remover', icon: '🛡️', description: 'Clean audio language', category: 'safety' },
+    { id: 'slack_agent', name: 'Slack Agent', icon: '💬', description: 'Send clips to Slack', category: 'integrations' },
+    { id: 'sales_assistant', name: 'Sales Assistant', icon: '💼', description: 'CRM sales assistance', category: 'integrations' },
 ];
 
 const AGENT_CATEGORIES = {
@@ -57,6 +132,8 @@ const AGENT_CATEGORIES = {
     edit: { name: 'Edit', color: 'yellow' },
     create: { name: 'Create', color: 'teal' },
     social: { name: 'Social', color: 'indigo' },
+    safety: { name: 'Safety', color: 'rose' },
+    integrations: { name: 'Integrations', color: 'slate' },
 };
 
 export function DirectorPage() {
@@ -301,7 +378,7 @@ export function DirectorPage() {
                         <div class="chat-message flex gap-3">
                             <div class="w-8 h-8 bg-primary/20 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold">AI</div>
                             <div class="bg-white/10 rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
-                                <p class="text-sm text-white">Hello! I'm Director, your AI video assistant with ${DIRECTOR_AGENTS.length}+ specialized agents.</p>
+                                <p class="text-sm text-white">Hello! I'm Director, your AI video assistant with ${DIRECTOR_AGENTS.length} specialized agents.</p>
                                 <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
                                     <div class="bg-white/5 p-2 rounded">
                                         <span class="text-primary font-bold">🎬</span> Scene Detection
@@ -368,7 +445,7 @@ export function DirectorPage() {
                 
                 <!-- Quick Actions -->
                 <h3 class="font-bold text-white mb-3 text-sm uppercase tracking-wider">QUICK ACTIONS</h3>
-                <div class="space-y-2">
+                <div class="space-y-2 max-h-[480px] overflow-auto pr-1">
                     <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="summarize">
                         <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">📝</div>
                         <div>
@@ -446,6 +523,118 @@ export function DirectorPage() {
                         <div>
                             <div class="font-bold text-white text-sm">Stabilize</div>
                             <div class="text-xs text-secondary">Fix shaky footage</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="thumbnail">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🖼️</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Thumbnail</div>
+                            <div class="text-xs text-secondary">Generate cover image</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="music">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🎵</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Music Video</div>
+                            <div class="text-xs text-secondary">Sync footage to music</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="trailer">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🎥</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Trailer</div>
+                            <div class="text-xs text-secondary">Build cinematic trailer</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="faceless">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">😶‍🌫️</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Faceless Video</div>
+                            <div class="text-xs text-secondary">No-face narration</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="ad">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">📢</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">AI Ad Film</div>
+                            <div class="text-xs text-secondary">Product advertisement</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="tiktok">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🎵</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">TikTok Lyric</div>
+                            <div class="text-xs text-secondary">Lyric music video</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="kids">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🧸</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Kids Story</div>
+                            <div class="text-xs text-secondary">Children storytelling</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="year">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">📅</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Year in Frames</div>
+                            <div class="text-xs text-secondary">Yearly recap montage</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="profanity">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🛡️</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Remove Profanity</div>
+                            <div class="text-xs text-secondary">Clean audio language</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="movie">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🎬</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Text to Movie</div>
+                            <div class="text-xs text-secondary">Script to full movie</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="reverse">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🔄</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Reverse</div>
+                            <div class="text-xs text-secondary">Play backwards</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="speed">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">⏱️</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Speed Control</div>
+                            <div class="text-xs text-secondary">Adjust playback speed</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="visual">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">👁️</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Visual Search</div>
+                            <div class="text-xs text-secondary">Find by visual query</div>
+                        </div>
+                    </button>
+
+                    <button class="action-btn w-full p-3 bg-white/5 hover:bg-white/10 rounded-xl text-left flex items-center gap-3 transition-colors cursor-pointer" data-action="auto">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">🌟</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">Auto Highlights</div>
+                            <div class="text-xs text-secondary">AI-ranked highlights</div>
                         </div>
                     </button>
                 </div>
@@ -654,7 +843,7 @@ export function DirectorPage() {
         }
     };
     
-    const processCommand = async (command) => {
+    const processCommand = async (command, explicitAgentId = null) => {
         if (!command.trim() || isProcessing) return;
 
         isProcessing = true;
@@ -669,34 +858,10 @@ export function DirectorPage() {
             const progressPercent = container.querySelector('#progress-percent');
             statusEl.classList.remove('hidden');
 
-            // Map command to videoagent action
-            const actionMapping = {
-                'highlight': 'highlight-detection',
-                'clip': 'clip-segmentation',
-                'short': 'create-shorts',
-                'scene': 'scene-detection',
-                'auto-edit': 'auto-edit',
-                'edit': 'auto-edit'
-            };
-
-            let action = 'auto-edit'; // default
-            const cmd = command.toLowerCase();
-            for (const [key, val] of Object.entries(actionMapping)) {
-                if (cmd.includes(key)) {
-                    action = val;
-                    break;
-                }
-            }
-
-            // Determine activated agents based on action
-            const agentMapping = {
-                'highlight-detection': ['Highlight Extractor'],
-                'clip-segmentation': ['Clip Creator'],
-                'create-shorts': ['Highlight Extractor', 'Clip Creator'],
-                'scene-detection': ['Scene Detector'],
-                'auto-edit': ['Video Editor', 'Reasoning Engine']
-            };
-            const activatedAgents = agentMapping[action] || ['Video Editor'];
+            // Resolve the backend agent id: explicit (from card click) or inferred from the command text.
+            const agentId = explicitAgentId || mapActionToAgentId(inferActionSlug(command));
+            const agentMeta = DIRECTOR_AGENTS.find(a => a.id === agentId);
+            const activatedAgents = agentMeta ? [agentMeta.name] : ['Video Editor'];
 
             // Update active agents
             activatedAgents.forEach(a => activeAgents.add(a.toLowerCase().replace(/ /g, '_')));
@@ -704,11 +869,23 @@ export function DirectorPage() {
 
             container.querySelector('#processing-title').textContent = activatedAgents.join(', ');
 
+            // Progress simulation
+            let currentStep = 0;
+            const totalSteps = 1;
+            const jobSteps = ['Processing...'];
+            stepsEl.innerHTML = jobSteps.map((s, idx) => `
+                <div class="flex items-center gap-2 ${idx <= currentStep ? 'text-primary' : 'text-secondary'}">
+                    <span class="w-1.5 h-1.5 rounded-full ${idx <= currentStep ? 'bg-primary animate-pulse' : 'bg-secondary'}"></span>
+                    ${s}
+                </div>
+            `).join('');
+            progressBar.style.width = '50%';
+            progressPercent.textContent = '50%';
+
             // Call real director backend (Render)
             const backendUrl = import.meta.env.VITE_DIRECTOR_BACKEND_URL || 'https://director-backend.onrender.com';
             const { data: sessionData } = await supabase.auth.getSession();
             const token = sessionData?.session?.access_token;
-            const agentId = mapActionToAgentId(action);
             const response = await fetch(`${backendUrl}/api/agents/${agentId}`, {
                 method: 'POST',
                 headers: {
@@ -721,51 +898,31 @@ export function DirectorPage() {
             if (!response.ok) {
                 if (result.error?.code === 'INTEGRATION_REQUIRED') {
                     window.dispatchEvent(new CustomEvent('open-integrations-modal', { detail: { type: result.error.details?.type || 'slack' } }));
-                    return;
+                    throw new Error(`Please connect your ${result.error.details?.type || 'integration'} first.`);
                 }
                 throw new Error(result.error?.message || 'Agent failed');
             }
-            const { jobId, output, streamUrl } = result;
-            const data = output;
 
-            if (error) {
-                throw new Error(`Processing failed: ${error.message}`);
-            }
+            // Complete progress
+            currentStep = totalSteps;
+            progressBar.style.width = '100%';
+            progressPercent.textContent = '100%';
+            stepsEl.innerHTML = jobSteps.map((s) => `
+                <div class="flex items-center gap-2 text-white">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    ${s} done
+                </div>
+            `).join('');
 
-            const jobId = data.jobId;
+            // Build success message from the result
+            const { output, streamUrl } = result;
+            let successMessage = `Processing completed successfully with ${activatedAgents.join(', ')}.`;
+            if (streamUrl) successMessage += ` Watch: ${streamUrl}`;
+            else if (output?.summary) successMessage += ` ${output.summary}`;
+            else if (output?.script) successMessage += ` ${output.script}`;
 
-            // Poll for job status
-            const jobStatus = 'processing';
-            let currentStep = 0;
-            const totalSteps = 1;
-            const jobSteps = ['Initializing...'];
-
-            while (jobStatus === 'processing') {
-                try {
-                    // Since GET polling isn't implemented, we'll simulate progress for now
-                    // In production, this would poll the job status endpoint
-                    currentStep = Math.min(currentStep + 1, totalSteps);
-                    const percent = Math.round((currentStep / totalSteps) * 100);
-
-                    stepsEl.innerHTML = jobSteps.map((s, idx) => `
-                        <div class="flex items-center gap-2 ${idx < currentStep ? 'text-white' : idx === currentStep ? 'text-primary' : 'text-secondary'}">
-                            <span class="w-1.5 h-1.5 rounded-full ${idx < currentStep ? 'bg-primary' : idx === currentStep ? 'bg-primary animate-pulse' : 'bg-secondary'}"></span>
-                            ${s}
-                        </div>
-                    `).join('');
-
-                    progressBar.style.width = `${percent}%`;
-                    progressPercent.textContent = `${percent}%`;
-
-                    if (currentStep >= totalSteps) break;
-
-                    await new Promise(r => setTimeout(r, 1000));
-                } catch (pollError) {
-                    console.warn('Status polling failed, continuing:', pollError);
-                    break;
-                }
-            }
-
+            // Brief delay so the user sees 100%, then hide status
+            await new Promise(r => setTimeout(r, 600));
             statusEl.classList.add('hidden');
             progressBar.style.width = '0%';
             progressPercent.textContent = '0%';
@@ -776,8 +933,6 @@ export function DirectorPage() {
                 updateActiveAgents();
             }, 2000);
 
-            // Add success message
-            const successMessage = `Processing completed successfully! Your video has been processed with ${activatedAgents.join(', ')}.`;
             addMessage(successMessage, false, activatedAgents, true);
             addToHistory(command, activatedAgents);
 
@@ -817,32 +972,47 @@ export function DirectorPage() {
         if (e.key === 'Enter') processCommand(commandInput.value);
     });
     
-    // Agent buttons
+    // Agent buttons -> run the clicked agent directly by id
     container.querySelectorAll('.agent-btn').forEach(btn => {
         btn.onclick = () => {
             const agentId = btn.dataset.agent;
             const agent = DIRECTOR_AGENTS.find(a => a.id === agentId);
-            processCommand(`Use ${agent.name} to ${agent.description.toLowerCase()}`);
+            processCommand(`Use ${agent.name} to ${agent.description.toLowerCase()}`, agentId);
         };
     });
-    
-    // Quick action buttons
+
+    // Quick action buttons -> map each data-action to a backend agent id
+    const QUICK_ACTION_TEXTS = {
+        summarize: 'Summarize this video',
+        highlights: 'Extract the best highlights from this video',
+        scenes: 'Detect all scenes in this video',
+        subtitles: 'Add subtitles to this video',
+        dubbing: 'Dub this video to Spanish',
+        broll: 'Add relevant B-roll footage',
+        voiceover: 'Add voiceover narration',
+        shorts: 'Create short clips for social media',
+        color: 'Apply color correction to this video',
+        stabilize: 'Stabilize this video',
+        thumbnail: 'Generate a thumbnail for this video',
+        music: 'Create a music video from this footage',
+        trailer: 'Create a trailer from this video',
+        faceless: 'Create a faceless narration video',
+        ad: 'Create an AI ad film',
+        tiktok: 'Create a TikTok lyric video',
+        kids: 'Tell a kids story',
+        year: 'Build a year-in-frames montage',
+        profanity: 'Remove profanity from the audio',
+        movie: 'Turn this script into a movie',
+        reverse: 'Reverse this video',
+        speed: 'Adjust the speed of this video',
+        visual: 'Run a visual search',
+        auto: 'Generate automated highlights',
+    };
     container.querySelectorAll('.action-btn').forEach(btn => {
         btn.onclick = () => {
             const action = btn.dataset.action;
-            const actionTexts = {
-                summarize: 'Summarize this video',
-                highlights: 'Extract the best highlights from this video',
-                scenes: 'Detect all scenes in this video',
-                subtitles: 'Add subtitles to this video',
-                dubbing: 'Dub this video to Spanish',
-                broll: 'Add relevant B-roll footage',
-                voiceover: 'Add voiceover narration',
-                shorts: 'Create short clips for social media',
-                color: 'Apply color correction to this video',
-                stabilize: 'Stabilize this video'
-            };
-            processCommand(actionTexts[action]);
+            const agentId = mapActionToAgentId(action);
+            processCommand(QUICK_ACTION_TEXTS[action] || action, agentId);
         };
     });
     

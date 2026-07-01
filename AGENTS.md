@@ -243,3 +243,36 @@ Tests are configured to run in CI environments with:
 - **Build Command**: `npx vite build`
 - **Publish Directory**: `dist`
 - **Functions**: `netlify/functions/dist`
+## Canonical MuAPI Client
+
+`src/lib/muapi.js` is the **single canonical MuAPI client**. It exports standalone
+functions with the signature `fn(apiKey, params)` (e.g. `generateVideo`,
+`generateAudio`, `generateImage`, `executeWorkflow`) plus a `muapi` object and a
+`MuapiClient` class. Always pass the API key explicitly — this file never reads
+keys from env or storage.
+
+Do NOT import from any other MuAPI client file for new code. The broken
+half-duplicate clients have been removed:
+- `src/lib/muapiAdapter.js` — deleted (broken importer; unused import fixed in `outputHandoff.js`).
+- `src/lib/muapiWorkflowClient.js` — deleted; `WorkflowRunnerPage.js` now uses
+  `muapi.js`'s `executeWorkflow(apiKey, workflowId, inputs)`.
+
+Kept (distinct purposes, not duplicates):
+- `src/lib/muapi/` (directory) — RETAINED because several unit test files
+  (`tests/unit/advanced/video-features.unit.spec.ts`, `media-processing*.test.js`,
+  `simple-effects-test.js`) import `MuAPIAdvancedEffects` / `MuAPIConnection`
+  from it. Do not add NEW production imports from here; prefer `muapi.js`.
+  These tests should be migrated to `muapi.js` in a future pass, after which
+  the directory can be deleted.
+- `src/lib/muapi-lazy.js` — code-split shim for `local-ai.js` dynamic import.
+- `src/lib/muapiEnhanced.js` — enhancement layer (dubbing, TikTok carousel).
+- `src/lib/muapiConfig.js` — config/feature-flag data module.
+- `src/lib/muapi-key-manager.js` — encrypted key storage (currently unwired).
+
+### MuAPI key handling (server-side only)
+`MUAPI_API_KEY` is not `VITE_`-prefixed, so it is never exposed to the client
+bundle. Client components (e.g. `RenderPage.js`) must NOT call MuAPI directly.
+Instead they call the `cinegen-ai` Supabase Edge Function, which holds
+`MUAPI_API_KEY` server-side and makes the real MuAPI call. The client sources
+its MuAPI key (where needed) via `securityService.getDecryptedKey()` from
+`src/lib/services/SecurityService.js`.

@@ -8,14 +8,17 @@ import { VideoUpload } from './common/Upload.js';
 import { Tooltip, addTooltip } from './common/Tooltip.js';
 import { createVideoUpload, addVideoErrorRecovery } from '../lib/videoPlayer.js';
 
-// Repository endpoints
+// Feature modules — frontend feature groups adapted from other repos in this
+// monorepo. These are NOT connected repo APIs / backend services. RenderPage only
+// invokes real Edge Functions (cinegen-ai, videoagent, rendiv-render) directly;
+// the labels below are UI grouping only. 'ui' = frontend-only, no repo API.
 const REPO_ENDPOINTS = {
-  'open-higgsfield': { label: 'Open Higgsfield', status: 'connected', description: 'Primary orchestration layer for render workflows.' },
-  director: { label: 'Director', status: 'connected', description: 'Prompt-based cinematic editing and agentic scene direction.' },
-  vimax: { label: 'ViMax', status: 'connected', description: 'Enhancement, optimization, and cinematic finishing passes.' },
-  rendiv: { label: 'Rendiv', status: 'connected', description: 'Render/export pipeline for final outputs and format variants.' },
-  ltx: { label: 'LTX-Desktop', status: 'connected', description: 'Subtitles, dubbing, clips, and post-processing utilities.' },
-  yucut: { label: 'chatvideo-yucut', status: 'connected', description: 'Shorts, highlights, scene extraction, and social cutdowns.' },
+  'open-higgsfield': { label: 'Open Higgsfield', status: 'ui', description: 'Frontend feature group (this app). No external repo API.' },
+  director: { label: 'Director', status: 'ui', description: 'Frontend features adapted from the Director app. Not wired to a repo API here.' },
+  vimax: { label: 'ViMax', status: 'ui', description: 'Frontend features adapted from the ViMax app. Not wired to a repo API here.' },
+  rendiv: { label: 'Rendiv', status: 'ui', description: 'Frontend features. Export/render backed by the rendiv-render Edge Function (Phase 4).' },
+  ltx: { label: 'LTX-Desktop', status: 'ui', description: 'Frontend features adapted from LTX. Not wired to a repo API here.' },
+  yucut: { label: 'chatvideo-yucut', status: 'ui', description: 'Frontend features adapted from yucut. Not wired to a repo API here.' },
 };
 
 // Preset configurations
@@ -88,7 +91,7 @@ const RENDIV_RENDER_OPTIONS = {
       renderTime: 0,
       frameRate: 0,
       memoryUsage: 0,
-      gpuUtilization: 0
+      cpuUtilization: 0
     },
     title: 'Performance Profiling',
     description: 'Track rendering performance and optimization metrics',
@@ -97,7 +100,7 @@ const RENDIV_RENDER_OPTIONS = {
 };
 
 // Action tiles config (Enhanced with Rendiv capabilities)
-  // CineGen Advanced Export Formats - Multiple formats, resolutions, GPU acceleration
+   // CineGen Advanced Export Formats - Multiple formats, resolutions, CPU encoding
   const CINEGEN_EXPORT_PRESETS = {
     '4K Cinema Master': { format: 'mp4', resolution: '3840x2160', codec: 'h264', quality: 'lossless', description: 'Professional 4K cinema delivery with lossless quality' },
     'HD Web Optimized': { format: 'webm', resolution: '1920x1080', codec: 'vp9', quality: 'high', description: 'Web-optimized HD with VP9 codec for smaller file sizes' },
@@ -200,13 +203,13 @@ const ACTION_TILES = [
   // CineGen Advanced Export Features (4 features)
   {
     title: '4K Cinema Export',
-    desc: 'Professional 4K cinema delivery with lossless quality and GPU acceleration.',
+    desc: 'Professional 4K cinema delivery with lossless quality (CPU-encoded libx264).',
     icon: '🎥',
     accent: 'from-purple-500/16 via-pink-500/8 to-rose-500/12',
     iconBg: 'bg-purple-500/16',
     iconBorder: 'border-purple-400/25',
     cinegen: true,
-    tooltip: 'Exports video in 4K resolution with cinema-grade quality, optimized for theatrical distribution and professional workflows using GPU-accelerated FFmpeg rendering. Includes lossless compression and HDR support.'
+      tooltip: 'Exports video in 4K resolution with cinema-grade quality, optimized for theatrical distribution and professional workflows using CPU-encoded FFmpeg (libx264). Includes lossless compression and HDR support.'
   },
   {
     title: 'Web Optimized HD',
@@ -237,28 +240,6 @@ const ACTION_TILES = [
     iconBorder: 'border-gray-400/25',
     cinegen: true,
     tooltip: 'Exports using Apple ProRes 422 codec, the industry standard for professional video editing with minimal compression artifacts and high performance. Perfect for post-production workflows.'
-  },
-
-  // LTX-Desktop GPU Rendering Features (2 features)
-  {
-    title: 'GPU Accelerated Render',
-    desc: 'CUDA-powered rendering with local hardware acceleration.',
-    icon: '🚀',
-    accent: 'from-red-500/16 via-orange-500/8 to-yellow-500/12',
-    iconBg: 'bg-red-500/16',
-    iconBorder: 'border-red-400/25',
-    ltx: true,
-    tooltip: 'Leverages CUDA GPU acceleration for up to 10x faster rendering speeds using local hardware, with automatic fallback for unsupported GPUs. Includes hardware-specific optimizations and memory management.'
-  },
-  {
-    title: 'Model Weight Streaming',
-    desc: 'Dynamic AI model loading and memory optimization.',
-    icon: '🧠',
-    accent: 'from-indigo-500/16 via-purple-500/8 to-pink-500/12',
-    iconBg: 'bg-indigo-500/16',
-    iconBorder: 'border-indigo-400/25',
-    ltx: true,
-    tooltip: 'Streams AI model weights on-demand to optimize memory usage, enabling larger models and better quality rendering without memory constraints. Includes automatic model caching and prefetching.'
   },
 
   // Rendiv Parallel Rendering Features (4 features)
@@ -306,7 +287,7 @@ const ACTION_TILES = [
   // chatvideo-yucut AI Agent Features (2 features)
   {
     title: 'Scene Detection AI',
-    desc: 'TransNet V2 automatic shot boundary identification and scene analysis.',
+    desc: 'Automatic shot boundary identification and scene analysis.',
     icon: '👁️',
     accent: 'from-violet-500/16 via-purple-500/8 to-indigo-500/12',
     iconBg: 'bg-violet-500/16',
@@ -314,38 +295,7 @@ const ACTION_TILES = [
     yucut: true,
     tooltip: 'Uses advanced AI to automatically detect scene boundaries and shot changes, enabling intelligent scene-based rendering and export segmentation. Includes confidence scoring and manual override options.'
   },
-  {
-    title: 'Keyframe Animation',
-    desc: 'Advanced camera movements: shake, zoom, orbit, Hitchcock effects.',
-    icon: '🎭',
-    accent: 'from-pink-500/16 via-rose-500/8 to-red-500/12',
-    iconBg: 'bg-pink-500/16',
-    iconBorder: 'border-pink-400/25',
-    yucut: true,
-    tooltip: 'Applies cinematic camera movements and effects to rendered videos, including shake, zoom, orbit, and Hitchcock dolly zoom effects for dynamic motion. Includes customizable intensity and timing.'
-  },
 
-  // ViMax Consistency Features (2 features)
-  {
-    title: 'MLLM Quality Check',
-    desc: 'Automated visual quality validation using multimodal AI analysis.',
-    icon: '🔍',
-    accent: 'from-cyan-500/16 via-sky-500/8 to-blue-500/12',
-    iconBg: 'bg-cyan-500/16',
-    iconBorder: 'border-cyan-400/25',
-    vimax: true,
-    tooltip: 'Uses multimodal large language models to analyze rendered video quality, detecting artifacts, inconsistencies, and optimization opportunities automatically. Provides detailed quality reports and suggestions.'
-  },
-  {
-    title: 'Reference Asset Picker',
-    desc: 'Automated selection of reference materials for consistent rendering.',
-    icon: '🎯',
-    accent: 'from-lime-500/16 via-green-500/8 to-emerald-500/12',
-    iconBg: 'bg-lime-500/16',
-    iconBorder: 'border-lime-400/25',
-    vimax: true,
-    tooltip: 'Automatically selects and applies reference assets (color palettes, lighting references, style guides) to ensure visual consistency across rendered outputs. Includes smart matching algorithms.'
-  },
 
   // CineGen Edit AI Tools (Features #2-3)
   {
@@ -414,9 +364,19 @@ const NEXT_ACTIONS = [
 const QUICK_ACTIONS = ['Trailer Cut', 'Social Resize', 'Remix Scene', 'Copy Prompt', 'Duplicate Render', 'Save as Template', 'Send to Storyboard', 'Publish / Deliver'];
 const ACTION_BUTTONS = ['Export Video', 'Download Frame', 'Queue Render', 'Trailer Cut', 'Social Resize', 'Remix Scene'];
 
-function titleCasePipelineStep(step) {
-  return step.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
-}
+  function titleCasePipelineStep(step) {
+    return step.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+  }
+
+  function startPerformanceMonitoring() {
+    const cpuEl = container.querySelector('#cpuUtilization');
+    if (cpuEl) cpuEl.textContent = '-- %';
+  }
+
+  function stopPerformanceMonitoring() {
+    const cpuEl = container.querySelector('#cpuUtilization');
+    if (cpuEl) cpuEl.textContent = '-- %';
+  }
 
 
 
@@ -456,14 +416,13 @@ const asset = await assetStore.getAsset(assetId);
   const currentStage = 'finishing';
 
   // Advanced export settings state (CineGen Feature #1)
-  let exportSettings = {
-    format: 'mp4',
-    resolution: '1080p',
-    gpuAcceleration: true,
-    frameRate: 24,
-    codec: 'H.264',
-    quality: 82
-  };
+   let exportSettings = {
+     format: 'mp4',
+     resolution: '1080p',
+     frameRate: 24,
+     codec: 'H.264',
+     quality: 82
+   };
 
   // CineGen metadata and applied AI edits for render pipeline integration
   let cinegenMetadata = {
@@ -479,14 +438,6 @@ const asset = await assetStore.getAsset(assetId);
   let chatMessages = [
     { type: 'assistant', content: 'Welcome! I can help optimize your rendering settings, suggest export formats, and provide guidance on cinematic techniques.' }
   ];
-
-  // GPU Rendering Engine state (LTX-Desktop Feature #4)
-  let gpuStatus = {
-    cudaCores: null,
-    vramAvailable: null,
-    computeCapability: null,
-    modelsLoaded: false
-  };
 
   // Scene Detection state (chatvideo-yucut Feature #15)
   let detectedScenes = [];
@@ -811,128 +762,7 @@ const uploadComponent = VideoUpload({
         </select>
       </div>
     </div>
-  `;
-
-  // Enhanced Async Frame Control Option (Rendiv Feature #8)
-  const frameControlDiv = document.createElement('div');
-  frameControlDiv.className = 'p-3 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors';
-  frameControlDiv.innerHTML = `
-    <div class="flex items-center justify-between mb-3">
-      <div class="flex items-center gap-3">
-        <div class="text-lg">${RENDIV_RENDER_OPTIONS.asyncFrameControl.icon}</div>
-        <div>
-          <div class="font-semibold text-sm">${RENDIV_RENDER_OPTIONS.asyncFrameControl.title}</div>
-          <div class="text-xs text-white/60">${RENDIV_RENDER_OPTIONS.asyncFrameControl.description}</div>
-        </div>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="frameControl" class="sr-only peer">
-        <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-      </label>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
-      <div>
-        <label class="block text-xs text-white/60 mb-1">Start Frame</label>
-        <input type="number" id="startFrameInput" placeholder="0" class="w-full rounded-lg border border-white/10 bg-black/30 px-2 py-1 text-xs text-white placeholder-white/40" min="0">
-      </div>
-      <div>
-        <label class="block text-xs text-white/60 mb-1">End Frame</label>
-        <input type="number" id="endFrameInput" placeholder="Auto" class="w-full rounded-lg border border-white/10 bg-black/30 px-2 py-1 text-xs text-white placeholder-white/40" min="0">
-      </div>
-    </div>
-    <div class="mt-3 flex items-center gap-2">
-      <input type="checkbox" id="cancelSignal" class="rounded border-white/10">
-      <label for="cancelSignal" class="text-xs text-white/60">Enable cancellation signal</label>
-    </div>
-  `;
-
-  // Enhanced Advanced Encoding Option (Rendiv Feature #9)
-  const qualityEncodeDiv = document.createElement('div');
-  qualityEncodeDiv.className = 'p-3 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors';
-  qualityEncodeDiv.innerHTML = `
-    <div class="flex items-center justify-between mb-3">
-      <div class="flex items-center gap-3">
-        <div class="text-lg">${RENDIV_RENDER_OPTIONS.advancedEncoding.icon}</div>
-        <div>
-          <div class="font-semibold text-sm">${RENDIV_RENDER_OPTIONS.advancedEncoding.title}</div>
-          <div class="text-xs text-white/60">${RENDIV_RENDER_OPTIONS.advancedEncoding.description}</div>
-        </div>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="qualityEncode" class="sr-only peer" checked>
-        <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-      </label>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
-      <div>
-        <label class="block text-xs text-white/60 mb-1">CRF Quality</label>
-        <input type="number" id="crfInput" value="18" class="w-full rounded-lg border border-white/10 bg-black/30 px-2 py-1 text-xs text-white" min="0" max="51">
-      </div>
-      <div>
-        <label class="block text-xs text-white/60 mb-1">Preset</label>
-        <select id="presetSelect" class="w-full rounded-lg border border-white/10 bg-black/30 px-2 py-1 text-xs text-white">
-          <option value="ultrafast">Ultrafast</option>
-          <option value="superfast">Superfast</option>
-          <option value="veryfast">Veryfast</option>
-          <option value="faster">Faster</option>
-          <option value="fast" selected>Fast</option>
-          <option value="medium">Medium</option>
-          <option value="slow">Slow</option>
-          <option value="slower">Slower</option>
-          <option value="veryslow">Veryslow</option>
-        </select>
-      </div>
-    </div>
-    <div class="mt-3">
-      <label class="block text-xs text-white/60 mb-1">Video Encoder</label>
-      <select id="encoderSelect" class="w-full rounded-lg border border-white/10 bg-black/30 px-2 py-1 text-xs text-white">
-        <option value="libx264" selected>H.264 (libx264)</option>
-        <option value="libx265">H.265 (libx265)</option>
-        <option value="libvpx-vp9">VP9 (libvpx)</option>
-        <option value="libaom-av1">AV1 (libaom)</option>
-      </select>
-    </div>
-  `;
-
-  rendivControlsDiv.appendChild(parallelDiv);
-  rendivControlsDiv.appendChild(frameControlDiv);
-  rendivControlsDiv.appendChild(qualityEncodeDiv);
-  rendivOptionsDiv.appendChild(rendivControlsDiv);
-  leftSection.appendChild(rendivOptionsDiv);
-
-  // Scene Detection Integration (chatvideo-yucut Feature #15)
-  const sceneDetectionDiv = document.createElement('div');
-  sceneDetectionDiv.className = 'mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4';
-  sceneDetectionDiv.innerHTML = `
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <p class="text-xs uppercase tracking-[0.24em] text-white/40">AI Analysis</p>
-        <h3 class="mt-2 text-lg font-black">Scene Detection</h3>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-purple-400 font-semibold">chatvideo-yucut</span>
-        <div class="w-2 h-2 rounded-full bg-purple-400"></div>
-      </div>
-    </div>
-    <div class="space-y-3">
-      <button id="detectScenesBtn" class="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left hover:bg-white/[0.08] transition">
-        <div class="flex items-center gap-3">
-          <div class="text-lg">🎬</div>
-          <div>
-            <div class="font-semibold text-sm">Detect Scenes</div>
-            <div class="text-xs text-white/60">Automatically identify shot transitions</div>
-          </div>
-        </div>
-      </button>
-      <div id="sceneResults" class="hidden space-y-2">
-        <div class="text-sm font-semibold text-purple-200 mb-2">Detected Scenes:</div>
-        <div id="sceneList" class="space-y-1 max-h-32 overflow-y-auto"></div>
-      </div>
-    </div>
-  `;
-  leftSection.appendChild(sceneDetectionDiv);
-
-  mainGrid.appendChild(leftSection);
+   `;
 
   // Right sidebar
   const sidebar = document.createElement('aside');
@@ -1008,26 +838,10 @@ const uploadComponent = VideoUpload({
     </div>
     <div class="mt-4"><label class="mb-2 block text-sm text-white/50">Quality</label><div class="h-2 rounded-full bg-white/10"><div class="h-2 w-[82%] rounded-full bg-white"></div></div><p class="mt-2 text-xs text-white/40">High quality master export</p></div>
   `;
-
-  // GPU Acceleration toggle
-  const gpuToggle = document.createElement('div');
-  gpuToggle.className = 'flex items-center justify-between pt-4 border-t border-white/10';
-  gpuToggle.innerHTML = `
-    <div>
-      <div class="text-sm font-semibold text-white">GPU Acceleration</div>
-      <div class="text-xs text-white/60">CUDA/FFmpeg hardware acceleration</div>
-    </div>
-    <label class="relative inline-flex items-center cursor-pointer">
-      <input type="checkbox" id="gpuAcceleration" class="sr-only peer" checked>
-      <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
-    </label>
-  `;
-
-  outputSettings.appendChild(formatSelector);
-  outputSettings.appendChild(resolutionSelector);
-  outputSettings.appendChild(qualitySettings);
-  outputSettings.appendChild(gpuToggle);
-  sidebar.appendChild(outputSettings);
+   outputSettings.appendChild(formatSelector);
+   outputSettings.appendChild(resolutionSelector);
+   outputSettings.appendChild(qualitySettings);
+   sidebar.appendChild(outputSettings);
 
   // LLM Chat Assistant (CineGen Feature #2)
   const llmChatAssistant = document.createElement('div');
@@ -1054,65 +868,6 @@ const uploadComponent = VideoUpload({
     </div>
   `;
   sidebar.appendChild(llmChatAssistant);
-
-  // GPU Rendering Engine (LTX-Desktop Feature #4)
-  const gpuEngine = document.createElement('div');
-  gpuEngine.className = 'mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4';
-  gpuEngine.innerHTML = `
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <p class="text-xs uppercase tracking-[0.24em] text-white/40">GPU Engine</p>
-        <h3 class="mt-2 text-lg font-black">Hardware Acceleration</h3>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-blue-400 font-semibold">LTX-Desktop</span>
-        <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-      </div>
-    </div>
-    <div class="space-y-3">
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-white/70">CUDA Cores</span>
-        <span class="text-sm font-semibold text-blue-300" id="cudaCores">Detecting...</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-white/70">VRAM Available</span>
-        <span class="text-sm font-semibold text-blue-300" id="vramAvailable">Detecting...</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-white/70">Compute Capability</span>
-        <span class="text-sm font-semibold text-blue-300" id="computeCapability">Detecting...</span>
-      </div>
-      <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-sm font-semibold text-blue-200">Model Loading</span>
-          <button id="loadModelsBtn" class="text-xs px-2 py-1 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition">Load Models</button>
-        </div>
-        <div class="text-xs text-blue-200/70">Load/unload AI models for rendering tasks</div>
-      </div>
-    </div>
-  `;
-  sidebar.appendChild(gpuEngine);
-
-  // Real LTX-Desktop capability detection (replaces fake "Detecting...")
-  import('../services/ltx-client.js').then(async ({ default: ltxClient }) => {
-    try {
-      const caps = await ltxClient.checkCapabilities();
-      const cudaEl = container.querySelector('#cudaCores');
-      const vramEl = container.querySelector('#vramAvailable');
-      if (caps.available) {
-        if (cudaEl) cudaEl.textContent = caps.gpuInfo || 'Available';
-        if (vramEl) vramEl.textContent = caps.vram || 'Ready';
-      } else {
-        if (cudaEl) cudaEl.textContent = 'API mode';
-        if (vramEl) vramEl.textContent = 'Cloud';
-      }
-    } catch (e) {
-      const cudaEl = container.querySelector('#cudaCores');
-      const vramEl = container.querySelector('#vramAvailable');
-      if (cudaEl) cudaEl.textContent = 'Unavailable';
-      if (vramEl) vramEl.textContent = 'Check API key';
-    }
-  });
 
   // Performance Profiling Dashboard (Rendiv Feature #10)
   const profilingDashboard = document.createElement('div');
@@ -1142,8 +897,8 @@ const uploadComponent = VideoUpload({
         <span class="text-sm font-semibold text-orange-300" id="memoryUsage">-- MB</span>
       </div>
       <div class="flex items-center justify-between">
-        <span class="text-sm text-white/70">GPU Utilization</span>
-        <span class="text-sm font-semibold text-orange-300" id="gpuUtilization">-- %</span>
+        <span class="text-sm text-white/70">CPU Utilization</span>
+        <span class="text-sm font-semibold text-orange-300" id="cpuUtilization">-- %</span>
       </div>
       <div class="mt-4 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
         <div class="flex items-center justify-between mb-2">
@@ -1159,10 +914,10 @@ const uploadComponent = VideoUpload({
   `;
   sidebar.appendChild(profilingDashboard);
 
-  // Repo handlers
+  // Feature modules — frontend feature groups; NOT connected repo APIs
   const repoSection = document.createElement('div');
   repoSection.className = 'mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4';
-  repoSection.innerHTML = '<p class="text-xs uppercase tracking-[0.22em] text-white/40">Repo Handlers</p><div class="mt-3 space-y-2" id="repoHandlers"></div>';
+  repoSection.innerHTML = '<p class="text-xs uppercase tracking-[0.22em] text-white/40">Feature Modules</p><p class="mt-1 text-[11px] text-white/35">Frontend features adapted from other repos — not connected to repo APIs.</p><div class="mt-3 space-y-2" id="repoHandlers"></div>';
   const repoHandlers = repoSection.querySelector('#repoHandlers');
   ['open-higgsfield', 'rendiv'].forEach(repoKey => {
     const repo = REPO_ENDPOINTS[repoKey];
@@ -1170,7 +925,7 @@ const uploadComponent = VideoUpload({
       <div class="rounded-xl border border-white/10 bg-black/20 p-3">
         <div class="flex items-center justify-between gap-3">
           <div><p class="text-sm font-semibold text-white">${repo.label}</p><p class="mt-1 text-xs text-white/45">${repo.description}</p></div>
-          <span class="rounded-full border border-emerald-400/25 bg-emerald-500/12 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-emerald-200">${repo.status}</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/50">${repo.status}</span>
         </div>
       </div>
     `;
@@ -1237,15 +992,15 @@ const uploadComponent = VideoUpload({
   async function executeCineGenEditTool(toolAction, options) {
     try {
       switch (toolAction) {
-        case 'cinegen-gap-filler':
+        case 'gap-filler':
           return await executeGapFiller(options);
-        case 'cinegen-clip-extender':
+        case 'clip-extender':
           return await executeClipExtender(options);
-        case 'cinegen-music-generator':
+        case 'music-generator':
           return await executeMusicGenerator(options);
-        case 'cinegen-scene-analyzer':
+        case 'scene-analyzer':
           return await executeSceneAnalyzer(options);
-        case 'cinegen-pacing-optimizer':
+        case 'pacing-optimizer':
           return await executePacingOptimizer(options);
         default:
           throw new Error(`Unknown CineGen tool: ${toolAction}`);
@@ -1257,46 +1012,45 @@ const uploadComponent = VideoUpload({
   }
 
   async function executeGapFiller(options) {
-    // AI-powered gap filling between clips
-    
+    // Derive REAL gaps from detected scenes via the VideoDB-backed video-analysis
+    // function — no hardcoded gap coordinates. Different video -> different gaps.
+    const { data: sceneData, error: sceneError } = await supabase.functions.invoke('video-analysis', {
+      body: { action: 'scene-detection', videoUrl }
+    });
+    if (sceneError) throw new Error(sceneError.message || 'Scene detection for gap analysis failed');
+    if (sceneData?.status === 'indexing') {
+      return { success: false, indexing: true, message: 'Video is still indexing in VideoDB. Retry gap-filler in a few seconds.' };
+    }
 
-    // Simulate AI analysis and content generation
+    const scenes = (sceneData?.scenes || []).map((s) => ({ start: s.start, end: s.end }));
+    const gaps = [];
+    for (let i = 1; i < scenes.length; i++) {
+      const prevEnd = scenes[i - 1].end;
+      const curStart = scenes[i].start;
+      if (curStart > prevEnd + 0.5) {
+        gaps.push({ start: prevEnd, end: curStart, duration: Number((curStart - prevEnd).toFixed(2)), context: 'gap between detected scenes' });
+      }
+    }
     const analysis = {
-      gaps: [
-        { start: 10, end: 15, duration: 5, context: 'transition between scenes' },
-        { start: 25, end: 28, duration: 3, context: 'pace adjustment needed' }
-      ],
-      suggestions: [
-        'Generate smooth camera movement to bridge the gap',
-        'Add visual effects transition',
-        'Create AI-generated continuation of the scene'
-      ]
+      gaps,
+      suggestions: gaps.length
+        ? ['Generate smooth camera movement to bridge the gap', 'Add a visual transition', 'AI-continue the adjacent scene']
+        : ['No temporal gaps detected between scenes — consider extending short scenes instead']
     };
 
-    // Use MuAPI for content generation
-    const result = await muapiClient.generateVideo({
-      model: 'cinegen-gap-filler',
-      videoUrl: videoUrl,
-      gaps: analysis.gaps,
-      style: 'seamless-transition',
-      duration: 'auto'
+    const { data: result, error } = await supabase.functions.invoke('cinegen-ai', {
+      body: { action: 'gap-filler', videoUrl, options: { prompt: 'seamless transition content maintaining visual continuity', gaps } }
     });
+    if (error) throw new Error(error.message || 'Gap filler submission failed');
 
-    // Integrate CineGen result into render metadata
     cinegenMetadata.gapFills.push({ ...analysis, timestamp: Date.now() });
     cinegenMetadata.appliedEdits.push({ type: 'gap_fill', data: analysis, timestamp: Date.now() });
     cinegenMetadata.lastUpdated = Date.now();
 
     return {
       success: true,
-      data: {
-        url: result.url,
-        analysis: analysis,
-        filledGaps: analysis.gaps.length,
-        type: 'gap-filled-video',
-        cinegenMetadata: cinegenMetadata
-      },
-      message: `Successfully filled ${analysis.gaps.length} gaps with AI-generated content`
+      data: { url: result?.url, analysis, filledGaps: gaps.length, type: 'gap-filled-video', cinegenMetadata },
+      message: `Submitted gap-fill generation (${gaps.length} gaps detected from scenes)`
     };
   }
 
@@ -1311,13 +1065,10 @@ const uploadComponent = VideoUpload({
       context: 'extend scene naturally'
     };
 
-    const result = await muapiClient.generateVideo({
-      model: 'cinegen-clip-extender',
-      videoUrl: videoUrl,
-      extension: extension,
-      maintainStyle: true,
-      preserveMotion: true
+    const { data: result, error } = await supabase.functions.invoke('cinegen-ai', {
+      body: { action: 'clip-extender', videoUrl, options: { direction: extension.direction, duration: extension.duration } }
     });
+    if (error) throw new Error(error.message || 'Clip extender submission failed');
 
     // Integrate CineGen result into render metadata
     cinegenMetadata.extensions.push({ ...extension, timestamp: Date.now() });
@@ -1327,115 +1078,107 @@ const uploadComponent = VideoUpload({
     return {
       success: true,
       data: {
-        url: result.url,
+        url: result?.url,
         extension: extension,
         type: 'extended-clip',
         cinegenMetadata: cinegenMetadata
       },
-      message: `Successfully extended clip by ${extension.duration} seconds`
+      message: `Submitted clip extension by ${extension.duration} seconds`
     };
   }
 
   async function executeMusicGenerator(options) {
-    // AI music generation based on video mood and content
-    
+    // Derive REAL mood from the video's detected scene pacing via the VideoDB-backed
+    // video-analysis function — no hardcoded mood object. Different video -> different mood.
+    const { data: paceData, error: paceError } = await supabase.functions.invoke('video-analysis', {
+      body: { action: 'pacing-optimizer', videoUrl }
+    });
+    if (paceError) throw new Error(paceError.message || 'Pacing analysis for music mood failed');
+    if (paceData?.status === 'indexing') {
+      return { success: false, indexing: true, message: 'Video is still indexing in VideoDB. Retry music generator in a few seconds.' };
+    }
 
-    // Analyze video content for mood detection
+    const cp = paceData?.pacingAnalysis?.currentPacing || {};
+    const cutsPerMinute = cp.cutsPerMinute || 0;
+    const avgClip = cp.averageClipLength || 0;
+    const energy = cutsPerMinute > 12 ? 'high' : cutsPerMinute > 5 ? 'medium' : 'low';
+    const tempo = cutsPerMinute > 12 ? 'fast' : cutsPerMinute > 5 ? 'moderate' : 'slow';
+    const genre = energy === 'high' ? 'upbeat electronic' : energy === 'medium' ? 'cinematic' : 'ambient';
     const moodAnalysis = {
-      energy: 'medium',
-      tempo: 'moderate',
-      genre: 'cinematic',
-      instruments: ['piano', 'strings', 'ambient'],
+      energy, tempo, genre,
+      instruments: energy === 'high' ? ['drums', 'synth', 'bass'] : ['piano', 'strings', 'ambient'],
+      cutsPerMinute: Number(cutsPerMinute.toFixed(2)),
+      averageClipLength: Number(avgClip.toFixed(2)),
       duration: videoMetadata.duration || 60
     };
 
-    const result = await muapiClient.generateAudio({
-      model: 'cinegen-music-generator',
-      moodAnalysis: moodAnalysis,
-      videoUrl: videoUrl,
-      syncWithVideo: true,
-      genre: moodAnalysis.genre,
-      duration: moodAnalysis.duration
+    const { data: result, error } = await supabase.functions.invoke('cinegen-ai', {
+      body: { action: 'music-generator', videoUrl, options: { moodAnalysis, duration: moodAnalysis.duration, genre: moodAnalysis.genre } }
     });
+    if (error) throw new Error(error.message || 'Music generator submission failed');
 
-    // Integrate CineGen result into render metadata
     cinegenMetadata.musicTracks.push({ ...moodAnalysis, timestamp: Date.now() });
     cinegenMetadata.appliedEdits.push({ type: 'music_generation', data: moodAnalysis, timestamp: Date.now() });
     cinegenMetadata.lastUpdated = Date.now();
 
     return {
       success: true,
-      data: {
-        url: result.url,
-        moodAnalysis: moodAnalysis,
-        type: 'generated-music',
-        cinegenMetadata: cinegenMetadata
-      },
-      message: `Generated ${moodAnalysis.genre} music track synchronized with video`
+      data: { url: result?.url, moodAnalysis, type: 'generated-music', cinegenMetadata },
+      message: `Submitted ${moodAnalysis.genre} music (energy: ${moodAnalysis.energy}, tempo: ${moodAnalysis.tempo})`
     };
   }
 
   async function executeSceneAnalyzer(options) {
-    // AI-powered scene analysis for editing suggestions
-    
+    // Real scene analysis via the VideoDB-backed video-analysis Edge Function.
+    // Output is derived from the actual detected scenes (different video ->
+    // different output), not a hardcoded object.
+    const { data, error } = await supabase.functions.invoke('video-analysis', {
+      body: { action: 'scene-analyzer', videoUrl }
+    });
+    if (error) throw new Error(error.message || 'Scene analysis failed');
 
-    const analysis = {
-      scenes: [
-        { start: 0, end: 15, type: 'introduction', pacing: 'slow', suggestions: ['Add dramatic music', 'Consider slower cuts'] },
-        { start: 15, end: 35, type: 'action', pacing: 'fast', suggestions: ['Tighten cuts', 'Add sound effects'] },
-        { start: 35, end: 50, type: 'emotional', pacing: 'medium', suggestions: ['Build tension', 'Use close-ups'] }
-      ],
-      recommendations: [
-        'Scene transitions could be smoother at timestamp 15s',
-        'Consider adding B-roll footage during slower sections',
-        'Pacing analysis suggests 2-3 second clip lengths for optimal engagement'
-      ],
-      narrative: {
-        structure: 'three-act',
-        conflict: 'medium',
-        resolution: 'satisfying'
-      }
-    };
+    if (data?.status === 'indexing') {
+      return {
+        success: false,
+        indexing: true,
+        message: 'Video is still indexing in VideoDB. Retry in a few seconds.'
+      };
+    }
 
+    const analysis = data?.analysis || { scenes: [], recommendations: [], narrative: {} };
     return {
       success: true,
-      data: {
-        analysis: analysis,
-        type: 'scene-analysis'
-      },
-      message: `Analyzed ${analysis.scenes.length} scenes with ${analysis.recommendations.length} editing suggestions`
+      data: { analysis, type: 'scene-analysis' },
+      message: data?.message || `Analyzed ${analysis.scenes?.length || 0} scenes with ${analysis.recommendations?.length || 0} editing suggestions`
     };
   }
 
   async function executePacingOptimizer(options) {
-    // AI-powered pacing optimization
-    
+    // Real pacing metrics derived from the video's actual detected scenes via
+    // the VideoDB-backed video-analysis Edge Function. Different video ->
+    // different numbers, not a hardcoded pacing object.
+    const { data, error } = await supabase.functions.invoke('video-analysis', {
+      body: { action: 'pacing-optimizer', videoUrl }
+    });
+    if (error) throw new Error(error.message || 'Pacing optimization failed');
 
-    const pacingAnalysis = {
-      currentPacing: {
-        averageClipLength: 4.2,
-        cutsPerMinute: 14.3,
-        attentionCurve: [0.3, 0.7, 0.9, 0.6, 0.8, 0.4]
-      },
-      recommendations: [
-        { timestamp: 12, action: 'shorten', reason: 'attention dip detected' },
-        { timestamp: 28, action: 'extend', reason: 'emotional peak needs more time' },
-        { timestamp: 45, action: 'add transition', reason: 'scene change needs smoother flow' }
-      ],
-      optimizedTimeline: {
-        totalDuration: videoMetadata.duration || 60,
-        suggestedCuts: [0, 8, 15, 22, 30, 38, 45, 52, 60],
-        rhythmScore: 8.5
-      }
+    if (data?.status === 'indexing') {
+      return {
+        success: false,
+        indexing: true,
+        message: 'Video is still indexing in VideoDB. Retry in a few seconds.'
+      };
+    }
+
+    const pacingAnalysis = data?.pacingAnalysis || {
+      currentPacing: { averageClipLength: 0, cutsPerMinute: 0, attentionCurve: [] },
+      recommendations: [],
+      optimizedTimeline: { totalDuration: 0, suggestedCuts: [], rhythmScore: 0 }
     };
-
     return {
       success: true,
-      data: {
-        pacingAnalysis: pacingAnalysis,
-        type: 'pacing-optimization'
-      },
-      message: `Optimized pacing with ${pacingAnalysis.recommendations.length} timing adjustments (rhythm score: ${pacingAnalysis.optimizedTimeline.rhythmScore}/10)`
+      data: { pacingAnalysis, type: 'pacing-optimization' },
+      message: data?.message || `Optimized pacing with ${pacingAnalysis.recommendations?.length || 0} timing adjustments (rhythm score: ${pacingAnalysis.optimizedTimeline?.rhythmScore ?? 0}/10)`
     };
   }
 
@@ -1448,40 +1191,46 @@ const uploadComponent = VideoUpload({
     const progressPercent = container.querySelector('#progressPercent');
     const progressSteps = container.querySelector('#progressSteps');
 
-    // Map action to videoagent action (Enhanced with Rendiv capabilities)
-    const actionMap = {
-      'AI Auto-Edit': 'auto-edit',
-      'Agentic Editor': 'agentic-editor',
-      'Full Editor': 'timeline-editor',
-      'Create Shorts': 'create-shorts',
-      'Generate Highlights': 'highlight-detection',
-      'Add Subtitles': 'add-subtitles',
-      'Dub / Voiceover': 'dub-voiceover',
-      'Export Variations': 'export-variations',
-      'Trailer Cut': 'trailer-cut',
-      'Social Resize': 'social-resize',
-      'Remix Scene': 'remix-scene',
-      'Export Video': 'export-video',
-      'Download Frame': 'download-frame',
-      'Queue Render': 'queue-render',
-      'Copy Prompt': 'copy-prompt',
-      'Duplicate Render': 'duplicate-render',
-      'Save as Template': 'save-template',
-      'Send to Storyboard': 'send-storyboard',
-      'Publish / Deliver': 'publish-deliver',
-      // CineGen Edit AI Tools
-      'AI Gap Filler': 'cinegen-gap-filler',
-      'Clip Extender': 'cinegen-clip-extender',
-      'AI Music Generator': 'cinegen-music-generator',
-      'Scene Analyzer': 'cinegen-scene-analyzer',
-      'Pacing Optimizer': 'cinegen-pacing-optimizer',
-      // New Rendiv-enhanced actions
-      'Parallel Render': 'parallel-render',
-      'Frame Control': 'frame-control-render',
-      'Quality Encode': 'quality-encode'
+    // S1 routing table: every action maps to a real backend or is honestly disabled.
+    const ACTION_ROUTING = {
+      'AI Gap Filler': { target: 'cinegen-ai', action: 'gap-filler', enabled: true },
+      'Clip Extender': { target: 'cinegen-ai', action: 'clip-extender', enabled: true },
+      'AI Music Generator': { target: 'cinegen-ai', action: 'music-generator', enabled: true },
+      'Add Subtitles': { target: 'videoagent', action: 'generate-subtitles', enabled: true },
+      'Generate Highlights': { target: 'videoagent', action: 'extract-highlights', enabled: true },
+      'Copy Prompt': { target: 'client', action: 'copy-prompt', enabled: true },
+      'Duplicate Render': { target: 'client', action: 'duplicate-render', enabled: true },
+      'Save as Template': { target: 'client', action: 'save-template', enabled: true },
+      'Send to Storyboard': { target: 'navigate', action: 'storyboard', enabled: true },
+      'Agentic Editor': { target: 'navigate', action: 'agentic-editor', enabled: true },
+      'Full Editor': { target: 'navigate', action: 'timeline-editor', enabled: true },
+      'AI Auto-Edit': { disabled: 'Phase 2 (VideoDB scene analysis + multi-step pipeline)' },
+      'Scene Analyzer': { target: 'video-analysis', action: 'scene-analyzer', enabled: true },
+      'Pacing Optimizer': { target: 'video-analysis', action: 'pacing-optimizer', enabled: true },
+      'Scene Detection AI': { target: 'video-analysis', action: 'scene-detection', enabled: true },
+      'Dub / Voiceover': { disabled: 'Phase 2 (muapiEnhanced dub)' },
+      'Trailer Cut': { disabled: 'Phase 2/4' },
+      'Remix Scene': { disabled: 'Phase 2/4' },
+      'Export Video': { target: 'rendiv-render', action: 'export-video', disabled: 'Phase 4 (CPU FFmpeg worker)' },
+      'Export Variations': { target: 'rendiv-render', action: 'export-variations', disabled: 'Phase 4' },
+      'Parallel Render': { target: 'rendiv-render', action: 'parallel-render', disabled: 'Phase 4' },
+      'Frame Control': { target: 'rendiv-render', action: 'frame-control', disabled: 'Phase 4' },
+      'Quality Encode': { target: 'rendiv-render', action: 'quality-encode', disabled: 'Phase 4' },
+      'Queue Render': { target: 'rendiv-render', action: 'queue-render', disabled: 'Phase 4' },
+      'Download Frame': { target: 'rendiv-render', action: 'download-frame', disabled: 'Phase 4' },
+      'Create Shorts': { disabled: 'Phase 4 (vertical reframe pipeline)' },
+      'Social Resize': { disabled: 'Phase 4' },
+      'Publish / Deliver': { disabled: 'Phase 3' },
     };
 
-    const videoAction = actionMap[action] || 'auto-edit';
+    const route = ACTION_ROUTING[action];
+    if (!route) {
+      throw new Error(`Unknown action: ${action}`);
+    }
+    if (route.disabled) {
+      if (progressSteps) progressSteps.innerHTML = `<div class="flex items-center gap-3 text-white/50"><div class="h-2.5 w-2.5 rounded-full bg-white/30"></div><span class="font-semibold">Not yet available — ${route.disabled}</span></div>`;
+      return { success: false, disabled: true, message: `${action} is not yet available (${route.disabled}).` };
+    }
 
     // Update progress steps
     if (progressSteps && pipeline?.pipeline) {
@@ -1494,84 +1243,45 @@ const uploadComponent = VideoUpload({
       }).join('');
     }
 
-    // Prepare enhanced options with Rendiv capabilities
+    // Prepare enhanced options (no fake repoKeys — edge functions don't read them)
     const enhancedOptions = {
-      repoKeys: pipeline?.repoKeys || ['open-higgsfield'],
       pipeline: pipeline?.pipeline || ['scene-detect', 'highlight-pass']
     };
 
-    // Add Rendiv-specific options for advanced rendering
-    if (['parallel-render', 'frame-control-render', 'quality-encode'].includes(videoAction)) {
-      enhancedOptions.rendiv = {
-        advanced: true,
-        parallelProcessing: RENDIV_RENDER_OPTIONS.parallelProcessing,
-        frameControl: RENDIV_RENDER_OPTIONS.frameControl,
-        encoding: RENDIV_RENDER_OPTIONS.advancedEncoding,
-        profiling: RENDIV_RENDER_OPTIONS.profiling
-      };
-
-      // Specific options based on action
-      if (videoAction === 'parallel-render') {
-        enhancedOptions.rendiv.concurrency = 4;
-        enhancedOptions.rendiv.imageFormat = 'png';
-      } else if (videoAction === 'frame-control-render') {
-        enhancedOptions.rendiv.frameRange = [0, null]; // Full range by default
-        enhancedOptions.rendiv.cancelSignal = true; // Enable cancellation
-      } else if (videoAction === 'quality-encode') {
-        enhancedOptions.rendiv.crf = 18;
-        enhancedOptions.rendiv.preset = 'slow';
-        enhancedOptions.rendiv.videoEncoder = 'libx264';
-      }
+    if (route.target === 'cinegen-ai') {
+      return await executeCineGenEditTool(route.action, enhancedOptions);
     }
 
-    // Handle CineGen Edit AI Tools locally (client-side processing)
-    if (videoAction.startsWith('cinegen-')) {
-      return await executeCineGenEditTool(videoAction, enhancedOptions);
+    if (route.target === 'client' || route.target === 'navigate') {
+      if (progressSteps) progressSteps.innerHTML = `<div class="flex items-center gap-3 text-emerald-200"><div class="h-2.5 w-2.5 rounded-full bg-emerald-400"></div><span class="font-semibold">${pipeline?.statusLabel || action}</span></div>`;
+      if (progressBar) progressBar.style.width = '100%';
+      if (progressPercent) progressPercent.textContent = '100%';
+      return { success: true, message: pipeline?.statusLabel || action };
     }
 
-    // Execute via videoagent function with enhanced options
-    // Include CineGen metadata and AI edits in render pipeline
-    const response = await supabase.functions.invoke('videoagent', {
+    const fnResponse = await supabase.functions.invoke(route.target, {
       body: {
-        action: videoAction,
+        action: route.action,
         videoId: videoId || 'uploaded-video',
         videoUrl: videoUrl,
-        options: enhancedOptions,
-        cinegenMetadata: cinegenMetadata.appliedEdits.length > 0 ? cinegenMetadata : null
+        options: { pipeline: pipeline?.pipeline || [] }
       }
     });
-
-    if (response.error) {
-      throw new Error(response.error.message || 'Processing failed');
+    if (fnResponse.error) {
+      throw new Error(fnResponse.error.message || 'Processing failed');
     }
 
-    // Update progress incrementally
-    let currentProgress = 0;
-    const totalSteps = pipeline?.pipeline?.length || 4;
-
-    for (let i = 0; i < totalSteps; i++) {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate step processing
-      currentProgress = ((i + 1) / totalSteps) * 100;
-
-      if (progressBar) progressBar.style.width = `${currentProgress}%`;
-      if (progressPercent) progressPercent.textContent = `${Math.round(currentProgress)}%`;
-
-      // Update step status
-      if (progressSteps && pipeline?.pipeline) {
-        const steps = progressSteps.querySelectorAll('.flex.items-center.gap-3');
-        steps.forEach((step, index) => {
-          if (index < i + 1) {
-            step.classList.remove('text-indigo-300');
-            step.classList.add('text-emerald-200');
-            const icon = step.querySelector('.h-2.5.w-2.5');
-            if (icon) {
-              icon.className = 'h-2.5 w-2.5 rounded-full bg-emerald-400';
-              icon.classList.remove('animate-pulse');
-            }
-          }
-        });
-      }
+    if (progressPercent) progressPercent.textContent = 'Processing…';
+    if (progressBar) progressBar.style.width = '100%';
+    if (progressSteps && pipeline?.pipeline) {
+      progressSteps.querySelectorAll('.flex.items-center.gap-3').forEach((step) => {
+        step.classList.remove('text-indigo-300');
+        step.classList.add('text-emerald-200');
+        const icon = step.querySelector('.h-2.5.w-2.5');
+        if (icon) { icon.className = 'h-2.5 w-2.5 rounded-full bg-emerald-400'; icon.classList.remove('animate-pulse'); }
+      });
     }
+    return fnResponse.data || { success: true, message: pipeline?.statusLabel || action };
   }
 
   // Performance Profiling Event Listener (Rendiv Feature #10)
@@ -1620,16 +1330,6 @@ const uploadComponent = VideoUpload({
     });
   });
 
-  // GPU acceleration toggle (already declared above)
-  const gpuToggleElement = container.querySelector('#gpuAcceleration');
-  if (gpuToggleElement) {
-    addTooltip(gpuToggleElement.parentElement, { text: 'Enable hardware-accelerated rendering for faster exports', placement: 'left' });
-    gpuToggleElement.addEventListener('change', (e) => {
-      exportSettings.gpuAcceleration = e.target.checked;
-      
-    });
-  }
-
   // LLM Chat Assistant Event Listeners (CineGen Feature #2)
   const chatInput = container.querySelector('#chatInput');
   const sendChatBtn = container.querySelector('#sendChatBtn');
@@ -1649,7 +1349,7 @@ const uploadComponent = VideoUpload({
       addChatMessage('assistant', '...', true);
 
       try {
-        // Simulate CineGen LLM API call
+        // Placeholder CineGen LLM response (real model wiring in Phase 2)
         const response = await getLLMResponse(message);
         removeTypingIndicator();
         addChatMessage('assistant', response);
@@ -1663,37 +1363,6 @@ const uploadComponent = VideoUpload({
     sendChatBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
-    });
-  }
-
-  // GPU Engine Event Listeners (LTX-Desktop Feature #4)
-  const loadModelsBtn = container.querySelector('#loadModelsBtn');
-  if (loadModelsBtn) {
-    addTooltip(loadModelsBtn, { text: 'Load/unload AI models for GPU-accelerated rendering', placement: 'top' });
-    loadModelsBtn.addEventListener('click', async () => {
-      const isLoading = loadModelsBtn.textContent === 'Load Models';
-      loadModelsBtn.textContent = isLoading ? 'Loading...' : 'Unload Models';
-      loadModelsBtn.disabled = true;
-
-      try {
-        const { default: ltxClient } = await import('../services/ltx-client.js');
-        if (isLoading) {
-          const caps = await ltxClient.checkCapabilities();
-          gpuStatus.modelsLoaded = caps.available;
-          loadModelsBtn.textContent = 'Unload Models';
-          
-        } else {
-          gpuStatus.modelsLoaded = false;
-          loadModelsBtn.textContent = 'Load Models';
-          
-        }
-      } catch (error) {
-        console.error('GPU model operation failed:', error);
-        loadModelsBtn.textContent = isLoading ? 'Load Models' : 'Unload Models';
-        
-      } finally {
-        loadModelsBtn.disabled = false;
-      }
     });
   }
 
@@ -1782,7 +1451,7 @@ const uploadComponent = VideoUpload({
   // Scene Detection Event Listener (chatvideo-yucut Feature #15)
   const detectScenesBtn = container.querySelector('#detectScenesBtn');
   if (detectScenesBtn) {
-    addTooltip(detectScenesBtn, { text: 'Use TransNet V2 to automatically detect scene changes', placement: 'top' });
+    addTooltip(detectScenesBtn, { text: 'Use VideoDB to automatically detect scene changes (available in Phase 2)', placement: 'top' });
     detectScenesBtn.addEventListener('click', async () => {
       if (!videoUrl) {
         
@@ -1936,7 +1605,7 @@ const uploadComponent = VideoUpload({
 
     // Quality and Resolution Advice
     if (lowerQuery.includes('4k') || lowerQuery.includes('quality') || lowerQuery.includes('high quality')) {
-      return `For premium quality rendering, I recommend CineGen's "4K Cinema Export" preset with GPU acceleration enabled. This provides lossless compression perfect for professional distribution. Your current project "${projectContext.videoTitle}" would benefit from the ProRes 422 intermediate codec for maximum quality retention during post-production.`;
+      return `For premium quality rendering, I recommend CineGen's "4K Cinema Export" preset with CPU encoding (libx264). This provides lossless compression perfect for professional distribution. Your current project "${projectContext.videoTitle}" would benefit from the ProRes 422 intermediate codec for maximum quality retention during post-production.`;
     }
 
     // Web and Streaming Optimization
@@ -1946,7 +1615,7 @@ const uploadComponent = VideoUpload({
 
     // Performance and Speed Optimization
     if (lowerQuery.includes('performance') || lowerQuery.includes('speed') || lowerQuery.includes('faster') || lowerQuery.includes('slow')) {
-      return `To maximize rendering performance: 1) Enable LTX-Desktop GPU acceleration for 10x speed improvement, 2) Use Rendiv's parallel frame rendering with 4 concurrent threads, 3) Enable frame range control for segmented processing, 4) Monitor performance with Rendiv's profiling tools. Your hardware should see significant improvements with these optimizations.`;
+      return `To maximize rendering performance: 1) Use Rendiv's CPU-based parallel frame rendering, 2) Use Rendiv's parallel frame rendering with 4 concurrent threads, 3) Enable frame range control for segmented processing, 4) Monitor performance with Rendiv's profiling tools. Your hardware should see significant improvements with these optimizations.`;
     }
 
     // Mobile and Social Media Formats
@@ -1966,12 +1635,12 @@ const uploadComponent = VideoUpload({
 
     // Scene Detection and Editing
     if (lowerQuery.includes('scene') || lowerQuery.includes('cut') || lowerQuery.includes('edit') || lowerQuery.includes('segment')) {
-      return `For intelligent scene detection, use chatvideo-yucut's TransNet V2 AI to automatically identify shot boundaries. This enables precise scene-based rendering with confidence scoring. Combine with CineGen's edit AI tools for automatic gap filling and clip extension based on visual context.`;
+      return `For intelligent scene detection, use VideoDB scene detection to automatically identify shot boundaries (available in Phase 2). This enables precise scene-based rendering with confidence scoring. Combine with CineGen's edit AI tools for automatic gap filling and clip extension based on visual context.`;
     }
 
     // Troubleshooting and Error Resolution
     if (lowerQuery.includes('error') || lowerQuery.includes('problem') || lowerQuery.includes('issue') || lowerQuery.includes('not working')) {
-      return `Common rendering issues can be resolved by: 1) Ensuring LTX-Desktop GPU drivers are up to date, 2) Checking video codec compatibility, 3) Verifying frame rate consistency, 4) Using Rendiv's performance profiling to identify bottlenecks. Enable ViMax's quality validation for automated issue detection.`;
+      return `Common rendering issues can be resolved by: 1) Ensuring FFmpeg is available on the render worker, 2) Checking video codec compatibility, 3) Verifying frame rate consistency, 4) Using Rendiv's performance profiling to identify bottlenecks. Enable ViMax's quality validation for automated issue detection.`;
     }
 
     // General Guidance
@@ -2003,7 +1672,7 @@ const uploadComponent = VideoUpload({
       aiMessage.className = 'bg-gray-800 text-gray-300 p-3 rounded-lg max-w-xs break-words';
       renderChatMessages.appendChild(aiMessage);
 
-      // Simulate typing effect
+      // Typing effect for chat assistant
       let charIndex = 0;
       const typeWriter = () => {
         if (charIndex < aiResponse.length) {

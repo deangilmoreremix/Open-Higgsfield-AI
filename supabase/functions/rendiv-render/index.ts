@@ -67,11 +67,23 @@ export async function handler(req: Request): Promise<Response> {
     // Rendiv-style rendering logic using Director API
     switch (action) {
       case 'export-video':
-        // Start video rendering process with Director API
+        // Start video rendering process with Director API (S4 Render worker).
         if (!videoUrl) {
           return new Response(
             JSON.stringify({ error: 'Video URL is required for export' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Honest 503 when no render worker is configured (S4 sets DIRECTOR_API_KEY
+        // to the real Render.com worker). Do NOT insert a doomed job row.
+        if (!DIRECTOR_API_KEY) {
+          return new Response(
+            JSON.stringify({
+              error: 'Render worker not configured',
+              hint: 'Set DIRECTOR_API_KEY (and DIRECTOR_API_BASE_URL) to the Render.com FFmpeg worker. Available in Phase 4.',
+            }),
+            { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
 

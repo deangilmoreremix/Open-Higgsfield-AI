@@ -1,7 +1,8 @@
 import { workflowRegistryBySlug } from '../lib/workflowRegistry.js';
 import { WorkflowInputForm } from './WorkflowInputForm.js';
 import { WorkflowOutputViewer } from './WorkflowOutputViewer.js';
-import { runWorkflow, pollWorkflowUntilComplete } from '../lib/muapiWorkflowClient.js';
+import { executeWorkflow } from '../lib/muapi.js';
+import { securityService } from '../lib/services/SecurityService.js';
 import { navigate } from '../lib/router.js';
 
 export function WorkflowRunnerPage(slug) {
@@ -20,9 +21,8 @@ export function WorkflowRunnerPage(slug) {
     try {
       status.textContent = 'Running workflow...'; runBtn.disabled = true;
       const payload = Object.fromEntries(new FormData(form).entries());
-      const start = await runWorkflow({ workflowId: workflow.id, inputs: payload });
-      const runId = start.run_id || start.id;
-      const out = runId ? await pollWorkflowUntilComplete({ runId }) : start;
+      const apiKey = await securityService.getDecryptedKey();
+      const out = await executeWorkflow(apiKey, workflow.id, payload);
       status.textContent = 'Completed'; outputWrap.innerHTML = ''; outputWrap.appendChild(WorkflowOutputViewer(out));
     } catch (e) { status.textContent = `Error: ${e.message}`; }
     finally { runBtn.disabled = false; }
