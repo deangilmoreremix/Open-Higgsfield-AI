@@ -7,7 +7,7 @@
  */
 
 import { GenerationModes, GenerationProviders, createDefaultProject } from './types.js';
-import { muapi } from '../muapi.js';
+import { MuapiClient, submitOnly, checkStatus, downloadResult } from '../muapi.js';
 import { t2vModels, i2vModels, getVideoModelById, getI2VModelById } from '../models.js';
 import { circuitBreaker } from '../services/CircuitBreaker.js';
 import { aiService } from '../services/aiService.js';
@@ -77,47 +77,41 @@ const DEFAULT_CONFIG = {
 class MuAPIProvider {
   constructor(config = {}) {
     this.config = { ...DEFAULT_CONFIG.muapi, ...config };
+    this.client = new MuapiClient();
+    // Map of generationId → requestId (for real polling)
+    this.requestIds = new Map();
+    // Map of generationId → completed result (cached from submit or poll)
+    this.results = new Map();
   }
 
+  /**
+   * Submit a generation request. Returns immediately with a generationId
+   * and status 'queued'. The actual MuAPI requestId is stored internally
+   * for real polling via poll().
+   */
   async submit(request) {
     const generationId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
+    const serviceName = this.getServiceNameForMode(request.mode);
 
     try {
-      let result;
+      // Build endpoint + payload based on mode
+      const { endpoint, payload } = this.buildRequest(request);
 
-      switch (request.mode) {
-        case 'text-to-video':
-          result = await this.generateTextToVideo(request);
-          break;
-        case 'image-to-video':
-          result = await this.generateImageToVideo(request);
-          break;
-        case 'audio-to-video':
-          result = await this.generateAudioToVideo(request);
-          break;
-        case 'retake':
-          result = await this.generateRetake(request);
-          break;
-        case 'extend':
-          result = await this.generateExtend(request);
-          break;
-        case 'broll':
-          result = await this.generateBroll(request);
-          break;
-        default:
-          throw new Error(`Unsupported generation mode: ${request.mode}`);
-      }
+      // Submit WITHOUT polling (fire-and-forget). The requestId is captured
+      // for real status checks via poll().
+      const { requestId, submitData } = await submitOnly(endpoint, payload, null);
+      this.requestIds.set(generationId, requestId);
 
       // Record success with circuit breaker
       circuitBreaker.recordSuccess(serviceName);
 
       return {
         generationId,
-        status: result.status || 'queued',
-        previewUrl: result.url || result.previewUrl || null,
-        assetIds: result.assetIds || [],
-        metadata: result,
+        status: 'queued',
+        requestId,
+        previewUrl: null,
+        assetIds: [],
+        metadata: submitData,
       };
     } catch (error) {
       console.error(`[MuAPIProvider] Generation ${generationId} failed:`, error);
@@ -135,93 +129,86 @@ class MuAPIProvider {
     }
   }
 
-  async generateTextToVideo(request) {
+  /**
+   * Build the MuAPI endpoint + payload from a generation request.
+   */
+  buildRequest(request) {
     const modelKey = request.model || 'ltx-2-fast';
-    const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
-    
-    const params = {
-      model: modelInfo.id,
-      prompt: request.prompt,
-      aspect_ratio: request.aspectRatio || '16:9',
-      duration: request.duration || 6,
-    };
 
-    return await muapi.generateVideo(params);
-  }
-
-  async generateImageToVideo(request) {
-    const modelKey = request.model || 'ltx-2-fast';
-    const modelInfo = LTX_I2V_MODELS[modelKey] || LTX_I2V_MODELS['ltx-2-fast'];
-    
-    const params = {
-      model: modelInfo.id,
-      prompt: request.prompt,
-      image_url: request.references?.[0] || request.sourceAssetId,
-      aspect_ratio: request.aspectRatio || '16:9',
-      duration: request.duration || 6,
-    };
-
-    return await muapi.generateI2V(params);
-  }
-
-  async generateAudioToVideo(request) {
-    const modelKey = request.model || 'ltx-2-fast';
-    const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
-    
-    const params = {
-      model: modelInfo.id,
-      prompt: request.prompt || 'Video generated from audio',
-      aspect_ratio: request.aspectRatio || '16:9',
-      duration: request.duration || 6,
-    };
-
-    return await muapi.generateVideo(params);
-  }
-
-  async generateRetake(request) {
-    const modelKey = request.model || 'ltx-2-fast';
-    const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
-    
-    const params = {
-      model: modelInfo.id,
-      prompt: request.prompt,
-      aspect_ratio: request.aspectRatio || '16:9',
-      duration: request.duration || 6,
-    };
-
-    return await muapi.generateVideo(params);
-  }
-
-  async generateExtend(request) {
-    const modelKey = request.model || 'ltx-2-fast';
-    const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
-    
-    const params = {
-      model: modelInfo.id,
-      prompt: request.prompt || 'Continue the scene',
-      aspect_ratio: request.aspectRatio || '16:9',
-      duration: request.duration || 6,
-    };
-
-    return await muapi.generateVideo(params);
-  }
-
-  async generateBroll(request) {
-    const modelKey = request.model || 'ltx-2-fast';
-    const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
-    
-    const params = {
-      model: modelInfo.id,
-      prompt: request.prompt,
-      aspect_ratio: request.aspectRatio || '16:9',
-      duration: request.duration || 3,
-    };
-
-    return await muapi.generateVideo(params);
+    switch (request.mode) {
+      case 'text-to-video': {
+        const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
+        return {
+          endpoint: modelInfo.id,
+          payload: {
+            prompt: request.prompt,
+            aspect_ratio: request.aspectRatio || '16:9',
+            duration: request.duration || 6,
+          }
+        };
+      }
+      case 'image-to-video': {
+        const modelInfo = LTX_I2V_MODELS[modelKey] || LTX_I2V_MODELS['ltx-2-fast'];
+        return {
+          endpoint: modelInfo.id,
+          payload: {
+            prompt: request.prompt,
+            image_url: request.references?.[0] || request.sourceAssetId,
+            aspect_ratio: request.aspectRatio || '16:9',
+            duration: request.duration || 6,
+          }
+        };
+      }
+      case 'audio-to-video': {
+        const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
+        return {
+          endpoint: modelInfo.id,
+          payload: {
+            prompt: request.prompt || 'Video generated from audio',
+            aspect_ratio: request.aspectRatio || '16:9',
+            duration: request.duration || 6,
+          }
+        };
+      }
+      case 'retake': {
+        const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
+        return {
+          endpoint: modelInfo.id,
+          payload: {
+            prompt: request.prompt,
+            aspect_ratio: request.aspectRatio || '16:9',
+            duration: request.duration || 6,
+          }
+        };
+      }
+      case 'extend': {
+        const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
+        return {
+          endpoint: modelInfo.id,
+          payload: {
+            prompt: request.prompt || 'Continue the scene',
+            aspect_ratio: request.aspectRatio || '16:9',
+            duration: request.duration || 6,
+          }
+        };
+      }
+      case 'broll': {
+        const modelInfo = LTX_T2V_MODELS[modelKey] || LTX_T2V_MODELS['ltx-2-fast'];
+        return {
+          endpoint: modelInfo.id,
+          payload: {
+            prompt: request.prompt,
+            aspect_ratio: request.aspectRatio || '16:9',
+            duration: request.duration || 3,
+          }
+        };
+      }
+      default:
+        throw new Error(`Unsupported generation mode: ${request.mode}`);
+    }
   }
 
   getServiceNameForMode(mode) {
-    // Map generation modes to circuit breaker service names
     const serviceMap = {
       'text-to-video': 'video_generation',
       'image-to-video': 'video_generation',
@@ -233,19 +220,61 @@ class MuAPIProvider {
       'remove-background': 'background_removal',
       'text-to-speech': 'audio_generation'
     };
-
     return serviceMap[mode] || 'api_request';
   }
 
+  /**
+   * Poll for job status ONCE via real MuAPI checkStatus endpoint.
+   * Returns { generationId, status, progress, url, error }.
+   */
   async poll(generationId) {
-    return {
+    // If we already have a completed result cached, return it
+    if (this.results.has(generationId)) {
+      const cached = this.results.get(generationId);
+      return { generationId, ...cached };
+    }
+
+    const requestId = this.requestIds.get(generationId);
+    if (!requestId) {
+      return { generationId, status: 'failed', error: 'No requestId for this generation' };
+    }
+
+    // Real single-poll against MuAPI
+    const result = await checkStatus(requestId, null);
+
+    const statusResult = {
       generationId,
-      status: 'completed',
+      status: result.status,
+      progress: result.progress != null ? result.progress : 0,
+      url: result.url || null,
+      error: result.error || null,
     };
+
+    // Cache completed/failed results
+    if (result.status === 'completed' || result.status === 'failed') {
+      this.results.set(generationId, statusResult);
+    }
+
+    return statusResult;
   }
 
+  /**
+   * Cancel a generation. MuAPI doesn't have a dedicated cancel endpoint,
+   * so we mark it as cancelled locally and stop tracking it.
+   */
   async cancel(generationId) {
-    muapi.cancelRequest(generationId);
+    this.requestIds.delete(generationId);
+    this.results.delete(generationId);
+    return { generationId, status: 'cancelled' };
+  }
+
+  /**
+   * Download the result of a completed generation.
+   */
+  async download(generationId) {
+    const result = this.results.get(generationId) || await this.poll(generationId);
+    if (!result || !result.url) return null;
+    return await downloadResult(result.url);
   }
 }
 
@@ -274,6 +303,10 @@ class GenerationService {
   }
 
   configureProvider(name, config) {
+    // Single-provider mode: reconfigure the MuAPIProvider with merged config
+    if (name === 'muapi' || name === undefined) {
+      this.provider.config = { ...this.provider.config, ...config };
+    }
   }
 
   getAvailableProviders() {
@@ -378,8 +411,7 @@ class GenerationService {
       throw new Error(`Unknown job: ${generationId}`);
     }
 
-    const provider = this.providers[job.provider];
-    const result = await provider.poll(generationId);
+    const result = await this.provider.poll(generationId);
 
     this.activeJobs.set(generationId, {
       ...job,
@@ -409,17 +441,45 @@ class GenerationService {
    * @param {Function} onUpdate
    * @param {number} interval
    */
-  startPolling(generationId, onUpdate, interval = 2000) {
+  /**
+   * Start polling for a job with real timeout handling.
+   * @param {string} generationId
+   * @param {Function} onUpdate - Called with each poll result
+   * @param {number} interval - Poll interval in ms (default 2000)
+   * @param {number} timeout - Max wait in ms (default 300000 = 5 min)
+   * @returns {Function} Cancel function to stop polling early
+   */
+  startPolling(generationId, onUpdate, interval = 2000, timeout = 300000) {
+    let cancelled = false;
+    const startTime = Date.now();
+    let timer = null;
+
     const poll = async () => {
+      if (cancelled) return;
+      if (Date.now() - startTime > timeout) {
+        onUpdate({ generationId, status: 'failed', error: 'Generation timed out', progress: 0 });
+        this.emit('job-timeout', { generationId });
+        return;
+      }
       const result = await this.poll(generationId);
+      if (cancelled) return;
       onUpdate(result);
 
       if (result.status === 'processing' || result.status === 'queued') {
-        setTimeout(poll, interval);
+        timer = setTimeout(poll, interval);
+      } else if (result.status === 'completed') {
+        // Cache for graceful degradation
+        const job = this.activeJobs.get(generationId);
+        if (job) this.cacheResultForMode(job.request?.mode, result);
       }
     };
 
-    setTimeout(poll, interval);
+    timer = setTimeout(poll, interval);
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
   }
 
   /**
@@ -432,9 +492,8 @@ class GenerationService {
       throw new Error(`Unknown job: ${generationId}`);
     }
 
-    const provider = this.providers[job.provider];
-    if (provider.cancel) {
-      await provider.cancel(generationId);
+    if (this.provider.cancel) {
+      await this.provider.cancel(generationId);
     }
 
     this.activeJobs.delete(generationId);
@@ -606,9 +665,85 @@ class GenerationService {
    * @returns {Object[]} Cached results
    */
   getCachedResultsForMode(mode) {
-    // This could be implemented to return recently generated content
-    // for the same or similar prompts when the service is unavailable
-    return [];
+    // Return recently generated content for this mode from localStorage.
+    // Used for graceful degradation when the circuit breaker is open.
+    try {
+      const cacheKey = `muapi-cache-${mode}`;
+      const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(cacheKey) : null;
+      if (!raw) return [];
+      const entries = JSON.parse(raw);
+      if (!Array.isArray(entries)) return [];
+      // Filter out entries older than 1 hour
+      const oneHourAgo = Date.now() - 3600000;
+      return entries.filter(e => e.savedAt && e.savedAt > oneHourAgo);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /**
+   * Cache a successful generation result for the mode (for graceful
+   * degradation when the circuit breaker is open).
+   */
+  cacheResultForMode(mode, result) {
+    try {
+      if (!result || result.status !== 'completed') return;
+      const cacheKey = `muapi-cache-${mode}`;
+      const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(cacheKey) : null;
+      const entries = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(entries)) entries.length = 0;
+      entries.unshift({
+        url: result.url || result.previewUrl,
+        prompt: result.prompt,
+        savedAt: Date.now(),
+        mode
+      });
+      // Keep max 20 entries
+      while (entries.length > 20) entries.pop();
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(cacheKey, JSON.stringify(entries));
+      }
+    } catch (e) { /* best-effort */ }
+  }
+
+  /**
+   * Retry a failed generation. Re-submits the original request.
+   * @param {string} generationId
+   * @param {Object} [overrides] - Optional request overrides
+   * @returns {Promise<GenerationResult>}
+   */
+  async retry(generationId, overrides = {}) {
+    const job = this.activeJobs.get(generationId);
+    if (!job) throw new Error(`Unknown job: ${generationId}`);
+    const request = { ...job.request, ...overrides };
+    // Remove old job
+    this.activeJobs.delete(generationId);
+    // Re-submit
+    return await this.submit(request, job.provider);
+  }
+
+  /**
+   * Get current progress for a generation (0-100).
+   * Polls once and returns the progress percentage.
+   * @param {string} generationId
+   * @returns {Promise<{ progress: number, status: string, message?: string }>}
+   */
+  async progress(generationId) {
+    const result = await this.poll(generationId);
+    return {
+      progress: result.progress != null ? result.progress : 0,
+      status: result.status,
+      message: result.error || null
+    };
+  }
+
+  /**
+   * Download the result of a completed generation as a Blob.
+   * @param {string} generationId
+   * @returns {Promise<Blob|null>}
+   */
+  async download(generationId) {
+    return await this.provider.download(generationId);
   }
 
   /**

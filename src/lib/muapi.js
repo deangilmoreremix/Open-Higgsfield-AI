@@ -772,7 +772,10 @@ const muapi = {
     getAppInterests,
     runClipping,
     runMotionGraphics,
-    runMotionGraphicsEdit
+    runMotionGraphicsEdit,
+    submitOnly,
+    checkStatus,
+    downloadResult
 };
 
 class MuapiClient {
@@ -802,6 +805,109 @@ class MuapiClient {
     }
     async runMotionGraphicsEdit(params) {
         return runMotionGraphicsEdit(null, params);
+    }
+    async submitOnly(endpoint, payload) {
+        return submitOnly(endpoint, payload, null);
+    }
+    async checkStatus(requestId) {
+        return checkStatus(requestId, null);
+    }
+    async downloadResult(url) {
+        return downloadResult(url);
+    }
+}
+
+// ============================================================================
+// NON-BLOCKING SUBMIT + POLL (for generationService.js)
+// These are additive: they don't change the existing submitAndPoll behavior.
+// Callers that want fire-and-forget submit use submitOnly, then checkStatus
+// to poll a single time. Callers that want blocking submit+poll keep using
+// the existing generateVideo/generateImage/etc. functions.
+// ============================================================================
+
+/**
+ * Submit a generation request WITHOUT polling. Returns the requestId
+ * immediately so the caller can poll separately via checkStatus().
+ *
+ * @param {string} endpoint - The MuAPI endpoint (e.g. 'generate_video')
+ * @param {Object} payload - Request payload
+ * @param {string} key - API key (null for proxy path)
+ * @returns {Promise<{ requestId: string|null, submitData: Object }>}
+ */
+export async function submitOnly(endpoint, payload, key) {
+    const url = `${BASE_URL}/api/v1/${endpoint}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key },
+        body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`API Request Failed: ${response.status} ${response.statusText} - ${errText.slice(0, 100)}`);
+    }
+    const submitData = await response.json();
+    const requestId = submitData.request_id || submitData.id || null;
+    return { requestId, submitData };
+}
+
+/**
+ * Check the status of a generation request ONCE (single poll).
+ * Returns { status, progress, url, error, data }.
+ *
+ * Status values: 'queued' | 'processing' | 'completed' | 'failed'.
+ *
+ * @param {string} requestId - The request ID from submitOnly
+ * @param {string} key - API key (null for proxy path)
+ * @returns {Promise<Object>}
+ */
+export async function checkStatus(requestId, key) {
+    if (!requestId) {
+        return { status: 'failed', error: 'No requestId provided' };
+    }
+    const pollUrl = `${BASE_URL}/api/v1/predictions/${requestId}/result`;
+    try {
+        const response = await fetch(pollUrl, {
+            headers: { 'Content-Type': 'application/json', 'x-api-key': key }
+        });
+        if (!response.ok) {
+            const errText = await response.text();
+            if (response.status >= 500) {
+                return { status: 'processing', error: `Server error: ${response.status}`, retryable: true };
+            }
+            return { status: 'failed', error: `Poll Failed: ${response.status} - ${errText.slice(0, 100)}` };
+        }
+        const data = await response.json();
+        const status = (data.status || '').toLowerCase();
+        const outputUrl = data.outputs?.[0] || data.url || data.output?.url || null;
+        if (status === 'completed' || status === 'succeeded' || status === 'success') {
+            return { status: 'completed', url: outputUrl, data, progress: 100 };
+        }
+        if (status === 'failed' || status === 'error') {
+            return { status: 'failed', error: data.error || 'Generation failed', data };
+        }
+        // Still processing — estimate progress from attempt count if available
+        const progress = data.progress != null ? data.progress : 50;
+        return { status: 'processing', progress, data, url: null };
+    } catch (error) {
+        return { status: 'failed', error: error.message || 'Poll request failed', retryable: true };
+    }
+}
+
+/**
+ * Download the result of a completed generation. Fetches the URL and
+ * returns a Blob. Returns null if no URL or fetch fails.
+ *
+ * @param {string} url - The result URL from a completed generation
+ * @returns {Promise<Blob|null>}
+ */
+export async function downloadResult(url) {
+    if (!url) return null;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) return null;
+        return await response.blob();
+    } catch (e) {
+        return null;
     }
 }
 
