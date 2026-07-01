@@ -1,5 +1,36 @@
 // main.js - Vanilla JS Director Page
 
+async function getSupabaseAccessToken() {
+  const c = window.DIRECTOR_CONFIG;
+  if (!window.supabaseClient) {
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    window.supabaseClient = createClient(c.SUPABASE_URL, c.SUPABASE_ANON_KEY);
+  }
+  const { data } = await window.supabaseClient.auth.getSession();
+  return data?.session?.access_token || '';
+}
+
+const AGENT_NAME_TO_ID = {
+  'Video Summarizer': 'summarizer', 'Video Search': 'search', 'Clip Creator': 'clipper',
+  'Video Dubbing': 'dubbing', 'Subtitle Generator': 'subtitler', 'Highlight Extractor': 'highlighter',
+  'Scene Detector': 'scenes', 'B-Roll Adder': 'broll', 'Voiceover': 'voiceover',
+  'Video Editor': 'editor', 'Video Enhancer': 'enhancer', 'Content Compiler': 'compiler',
+  'Meme Generator': 'meme', 'Music Video Maker': 'musicvideo', 'Trailer Creator': 'trailer',
+  'Compilation Builder': 'compilation', 'Social Media Clip': 'social', 'Preview Generator': 'preview',
+  'Montage Builder': 'montage', 'Story Builder': 'story', 'Color Correction': 'color',
+  'Video Stabilize': 'stabilize', 'Speed Control': 'speed', 'Reverse Video': 'reverse',
+  'Voice Cloning': 'voice_cloning', 'Comparison Agent': 'comparison', 'Gen AI Audio Overlays': 'audio_overlays',
+  'Keyword Search & Compilation': 'keyword_search', 'Intelligent Output Formatting': 'output_formatting',
+  'Automated Video Highlights': 'auto_highlights', 'Thumbnail Agent': 'thumbnail',
+  'Subtitle Agent': 'subtitle_agent', 'Visual Search': 'visual_search', 'Slack Agent': 'slack_agent',
+  'Text to Movie': 'text_to_movie', 'Storyboarding Agent': 'storyboarding',
+  'Faceless Video Creator': 'faceless_video_creator', 'AI Ad Films': 'ai_ad_films',
+  'TikTok Lyric Video': 'tiktok_lyric_video', 'AI Voiceovers': 'ai_voiceovers',
+  'Trailer Narration': 'trailer_narration', 'Kids Storyteller': 'kids_storyteller',
+  'Year in Frames': 'year_in_frames', 'Profanity Remover': 'profanity_remover',
+  'Sales Assistant': 'sales_assistant',
+};
+
 // Data
 const leftAgents = [
   { name: 'Video Summarizer', icon: 'BookOpenText' },
@@ -24,6 +55,29 @@ const leftAgents = [
   { name: 'Story Builder', icon: 'BookOpenText' },
   { name: 'Color Correction', icon: 'Palette' },
   { name: 'Video Stabilize', icon: 'Clapperboard' },
+  { name: 'Speed Control', icon: 'FastForward' },
+  { name: 'Reverse Video', icon: 'Rewind' },
+  { name: 'Voice Cloning', icon: 'AudioLines' },
+  { name: 'Comparison Agent', icon: 'Columns2' },
+  { name: 'Gen AI Audio Overlays', icon: 'Music2' },
+  { name: 'Keyword Search & Compilation', icon: 'SearchCode' },
+  { name: 'Intelligent Output Formatting', icon: 'FileOutput' },
+  { name: 'Automated Video Highlights', icon: 'Zap' },
+  { name: 'Thumbnail Agent', icon: 'Image' },
+  { name: 'Subtitle Agent', icon: 'MessageSquare' },
+  { name: 'Visual Search', icon: 'ScanEye' },
+  { name: 'Slack Agent', icon: 'MessageCircle' },
+  { name: 'Text to Movie', icon: 'Film' },
+  { name: 'Storyboarding Agent', icon: 'LayoutGrid' },
+  { name: 'Faceless Video Creator', icon: 'UserX' },
+  { name: 'AI Ad Films', icon: 'Megaphone' },
+  { name: 'TikTok Lyric Video', icon: 'Music' },
+  { name: 'AI Voiceovers', icon: 'Volume2' },
+  { name: 'Trailer Narration', icon: 'Mic2' },
+  { name: 'Kids Storyteller', icon: 'Baby' },
+  { name: 'Year in Frames', icon: 'Calendar' },
+  { name: 'Profanity Remover', icon: 'ShieldAlert' },
+  { name: 'Sales Assistant', icon: 'Briefcase' },
 ];
 
 const quickActions = [
@@ -103,22 +157,35 @@ async function agentReply(input) {
 
   if (agentId) {
     try {
-      // Call backend agent
-      const response = await fetch('/supabase/functions/videoagent', {
+      const config = window.DIRECTOR_CONFIG;
+      const accessToken = await getSupabaseAccessToken();
+      const response = await fetch(`${config.BACKEND_URL}/api/agents/${agentId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          action: getActionFromAgent(agentId),
-          tool: getToolFromAgent(agentId),
-          prompt: input,
-          videoUrl: null // TODO: get from state
-        })
+          input: input,
+          videoUrl: window.currentVideoUrl || null,
+          options: {},
+        }),
       });
-
       if (response.ok) {
         const result = await response.json();
-        return result.message || getSuccessMessage(agentId);
+        if (result.streamUrl) return `Done! Watch: ${result.streamUrl}`;
+        if (result.output?.summary) return result.output.summary;
+        if (result.output?.script) return result.output.script;
+        return 'Done';
       }
+      if (response.status === 400) {
+        const err = await response.json();
+        if (err.error?.code === 'INTEGRATION_REQUIRED') {
+          if (window.openIntegrationModal) window.openIntegrationModal(err.error.details?.type || 'slack');
+          return 'Please connect your integration first.';
+        }
+      }
+      return getSuccessMessage(agentId);
     } catch (error) {
       console.warn('Backend call failed, using fallback:', error);
     }
