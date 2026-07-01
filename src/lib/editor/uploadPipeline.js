@@ -31,6 +31,7 @@ import { uploadFileToStorage } from '../hybrid-supabase.js';
 import { mediaWorker } from '../media-worker-manager.js';
 import { saveProject } from './persistence.js';
 import { validateOrPass } from './schemas.js';
+import { extractMetadata as extractMetadataImpl, generateThumbnail as generateThumbnailImpl, extractWaveform as extractWaveformImpl } from './metadataExtractor.js';
 
 // ============================================================================
 // CONFIGURATION
@@ -56,28 +57,23 @@ const DEFAULT_OPTIONS = {
  * Returns { duration, width, height, codec, fps, bitrate, channels, ... }.
  */
 export async function readMetadata(file, type) {
-  const meta = {};
-  if (!file) return meta;
-  try {
-    if (type === 'video' || type === 'audio') {
-      const dur = await mediaWorker.getMediaDuration?.(file);
-      if (typeof dur === 'number' && Number.isFinite(dur)) {
-        meta.duration = dur;
-      }
-    }
-    if (type === 'image') {
-      const dims = await mediaWorker.getImageDimensions?.(file);
-      if (dims && typeof dims.width === 'number') {
-        meta.width = dims.width;
-        meta.height = dims.height;
-      }
-    }
-  } catch (e) {
-    if (typeof console !== 'undefined' && console.warn) {
-      console.warn('[UploadPipeline] readMetadata failed:', e);
-    }
-  }
-  return meta;
+  // Delegate to the production metadata extractor (mediainfo.js, exifr,
+  // music-metadata-browser, mp4box) and return only the basic fields
+  // for backwards compatibility.
+  const full = await extractMetadataImpl(file, type, { thumbnail: false, waveform: false });
+  // Return the legacy shape (duration, width, height, etc.)
+  return {
+    duration: full.duration,
+    width: full.width,
+    height: full.height,
+    fps: full.fps,
+    codec: full.codec,
+    bitrate: full.bitrate,
+    sampleRate: full.sampleRate,
+    channels: full.channels,
+    container: full.container,
+    rotation: full.rotation
+  };
 }
 
 // ============================================================================
@@ -384,8 +380,26 @@ export async function processFileUpload(file, options = {}) {
   const { type } = validation;
   const fileName = file.name || 'Untitled';
 
-  // Step 2: Read metadata
-  const meta = await readMetadata(file, type);
+  // Step 2: Read metadata (full production extraction via metadataExtractor:
+  // mediainfo.js for codec/fps/bitrate, exifr for orientation, mp4box for
+  // MP4 boxes, music-metadata-browser for audio tags)
+  const fullMeta = await extractMetadataImpl(file, type, {
+    thumbnail: opts.thumbnail !== false,
+    waveform: opts.waveform !== false
+  });
+  // Legacy shape for backwards compat with buildAsset
+  const meta = {
+    duration: fullMeta.duration,
+    width: fullMeta.width,
+    height: fullMeta.height,
+    fps: fullMeta.fps,
+    codec: fullMeta.codec,
+    bitrate: fullMeta.bitrate,
+    sampleRate: fullMeta.sampleRate,
+    channels: fullMeta.channels,
+    container: fullMeta.container,
+    rotation: fullMeta.rotation
+  };
 
   // Step 3: Upload
   let publicUrl;
@@ -396,14 +410,31 @@ export async function processFileUpload(file, options = {}) {
     return { success: false, error: e.message || 'Upload failed', validation };
   }
 
-  // Step 4: Generate thumbnail
-  let thumbnail = null;
-  if (opts.thumbnail && (type === 'image' || type === 'video')) {
+  // Step 4: Generate thumbnail (use the one from fullMeta, or fall back)
+  let thumbnail = fullMeta.thumbnail;
+  if (!thumbnail && opts.thumbnail && (type === 'image' || type === 'video')) {
     thumbnail = await generateThumbnail(file, type);
   }
 
-  // Step 5: Build asset
+  // Step 5: Build asset (merge full production metadata: codec, fps,
+  // bitrate, sampleRate, channels, rotation, camera, gps, tags, waveform)
   const asset = buildAsset({ file, type, publicUrl, meta, thumbnail });
+  // Augment with extended metadata
+  asset.metadata = {
+    ...(asset.metadata || {}),
+    ...(fullMeta.fps ? { fps: fullMeta.fps } : {}),
+    ...(fullMeta.bitrate ? { bitrate: fullMeta.bitrate } : {}),
+    ...(fullMeta.codec ? { codec: fullMeta.codec } : {}),
+    ...(fullMeta.container ? { container: fullMeta.container } : {}),
+    ...(fullMeta.sampleRate ? { sampleRate: fullMeta.sampleRate } : {}),
+    ...(fullMeta.channels ? { channels: fullMeta.channels } : {}),
+    ...(fullMeta.rotation ? { rotation: fullMeta.rotation } : {}),
+    ...(fullMeta.orientation ? { orientation: fullMeta.orientation } : {}),
+    ...(fullMeta.camera ? { camera: fullMeta.camera } : {}),
+    ...(fullMeta.gps ? { gps: fullMeta.gps } : {}),
+    ...(fullMeta.tags && Object.keys(fullMeta.tags).length ? { tags: fullMeta.tags } : {}),
+    ...(fullMeta.waveform ? { waveform: fullMeta.waveform } : {})
+  };
   // Validate the asset against the schema (permissive)
   validateOrPass(null, asset, 'UploadPipeline.asset');
 

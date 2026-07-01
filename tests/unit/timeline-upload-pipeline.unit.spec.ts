@@ -284,9 +284,11 @@ describe('UploadPipeline — readMetadata', () => {
     expect(meta.height).toBe(1080);
   });
 
-  it('returns empty object on null file', async () => {
+  it('returns zeroed object on null file', async () => {
     const meta = await readMetadata(null, 'video');
-    expect(meta).toEqual({});
+    // readMetadata now delegates to extractMetadata which returns zeroed fields
+    expect(meta.duration).toBe(0);
+    expect(meta.width).toBe(0);
   });
 });
 
