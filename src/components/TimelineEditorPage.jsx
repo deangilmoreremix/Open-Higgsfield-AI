@@ -1,5 +1,7 @@
 import { supabase, uploadFileToStorage } from '../lib/hybrid-supabase.js';
 import { initializeMediaLibraryDragDrop, setupEnhancedTooltips } from '../lib/editor/dragDrop.js';
+import { processFileUpload } from '../lib/editor/uploadPipeline.js';
+import { saveProjectToStorage } from '../lib/editor/persistence.js';
 import { renderMediaGrid, addMediaToTimeline } from '../lib/editor/mediaLibrary.js';
 import { assetStore } from '../lib/assets/assetStore.js';
 import { extendClipContextMenu, extendGenerationPanel, extendMediaLibrary, extendTopActions } from '../lib/uiIntegration.js';
@@ -2170,11 +2172,31 @@ button, input, textarea, select { font: inherit; }
               track.clips.sort((a, b) => a.left - b.left);
               saveStateSnapshot(state);
               renderTracks();
-  // DISABLED:               
+            }
+          } else if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            // OS file drop: route through the unified upload pipeline.
+            // This replaces the previous hardcoded MDN-sample behavior.
+            for (const file of e.dataTransfer.files) {
+              await processFileUpload(file, {
+                state,
+                dropZone: track ? track.id : 'timeline',
+                dropPercent: percent,
+                showToast: (msg, type) => {
+                  if (typeof showToast === 'function') showToast(msg, type);
+                },
+                renderTracks: () => { try { renderTracks(); } catch (e) {} }
+              });
             }
           } else if (data.type === 'media' && track) {
+            // Media-library drag-to-timeline (dataTransfer JSON with mediaData).
+            // Falls back to a placeholder clip if the mediaData has no real src.
             const extra = {};
-            if (data.mediaType === 'video') {
+            const src = data.src || data.url;
+            if (src) {
+              extra.src = src;
+            } else if (data.mediaType === 'video') {
+              // Legacy demo fallback: only used if a media-library entry
+              // has no real src. New code should always provide src.
               extra.src = 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
             } else if (data.mediaType === 'image') {
               extra.src = svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#111827"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs><rect width="1280" height="720" fill="url(#g)"/><text x="90" y="320" fill="white" font-size="74" font-family="Arial" font-weight="700">${data.label}</text></svg>`);
@@ -2184,14 +2206,13 @@ button, input, textarea, select { font: inherit; }
             } else {
               extra.heading = data.label;
               extra.body = 'Dragged text asset.';
-    }
+            }
             const newClip = { id: Date.now(), name: data.label, left: Math.max(0, percent), width: 16, type: data.mediaType, ...extra };
             track.clips.push(newClip);
             state.selectedClipId = newClip.id;
             saveStateSnapshot(state);
             renderTracks();
             updatePreview(newClip);
-  // DISABLED:             
           }
         });
         track.clips.forEach((clip) => {
@@ -4532,37 +4553,20 @@ button, input, textarea, select { font: inherit; }
     async function handleUpload(file) {
       if (!file) return;
 
-  // DISABLED:       
-
-      try {
-        // Upload file to Supabase storage
-        const publicUrl = await uploadFileToStorage(file);
-
-        // Create clip with uploaded file
-        const clip = createClipForMedia(file.name, { ...file, src: publicUrl });
-
-        // Add to media library
-        state.mediaLibrary.push({
-          id: Date.now(),
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          url: publicUrl,
-          uploadedAt: new Date().toISOString()
-        });
-
-        // Insert into appropriate track
-        const target = clip.type === 'video' ? 'Video' : clip.type === 'audio' ? 'Audio' : clip.type === 'image' ? 'Text' : 'Text';
-        insertClipIntoTrack(clip, target);
-
-        // Save project state
-        saveProjectToStorage(state);
-
-  // DISABLED:         
-      } catch (error) {
-        console.error('Upload error:', error);
-  // DISABLED:         
-      }
+      // Route through the unified upload pipeline. The pipeline handles
+      // validation (magic bytes), metadata extraction, Supabase upload,
+      // asset creation, timeline insertion (track.items via alias),
+      // undo snapshot, persistence, and toast.
+      await processFileUpload(file, {
+        state,
+        showToast: (msg, type) => {
+          // Use the page's existing toast mechanism if available
+          if (typeof showToast === 'function') showToast(msg, type);
+        },
+        renderTracks: () => {
+          try { renderTracks(); } catch (e) { /* best-effort */ }
+        }
+      });
     }
 
     // Rendiv Animation Demo Functions

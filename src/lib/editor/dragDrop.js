@@ -12,6 +12,8 @@
 
 import { uploadFileToStorage } from '../hybrid-supabase.js';
 import { mediaWorker } from '../media-worker-manager.js';
+import { processFileUpload } from './uploadPipeline.js';
+import { addMediaToTimeline } from './mediaLibrary.js';
 
 // Enhanced drag state management
 const dragState = {
@@ -975,11 +977,15 @@ function cleanupDrag() {
 }
 
 // Media library drag and drop
-export function initializeMediaLibraryDragDrop(state, mediaContainer) {
+export function initializeMediaLibraryDragDrop(state, mediaContainer, opts = {}) {
 
   if (!mediaContainer) {
     return;
   }
+
+  // Wire editor state and toast into dragState so handleMediaDrop can use them.
+  dragState.state = state;
+  dragState.showToast = opts.showToast || null;
 
   // Add listeners to media container instead of document to avoid conflicts
   mediaContainer.addEventListener('mousedown', handleMediaMouseDown);
@@ -1102,13 +1108,76 @@ function findTimelineDropTarget(e) {
   );
 }
 
-function handleMediaDrop() {
-  // Add media to timeline at drop position
-  const mediaData = dragState.dragData.mediaData;
-  // DISABLED:   
+async function handleMediaDrop(dropTarget, e) {
+  // Add media to timeline at drop position.
+  // The media library uses mouse-based dragging (not HTML5 drag), so the
+  // dataTransfer JSON payload is not set. We look up the media data from
+  // dragState.dragData and route through addMediaToTimeline.
+  const dragData = dragState.dragData;
+  if (!dragData || !dragData.mediaData) { cleanupDrag(); return; }
 
-  // Here we would call the media library function to add to timeline
-  // addMediaToTimeline(mediaData, index, state, showToast);
+  const mediaData = dragData.mediaData;
+  const mediaItem = dragState.draggedElement;
+  const mediaIndex = mediaItem && mediaItem.dataset ? parseInt(mediaItem.dataset.mediaIndex, 10) : -1;
+  const state = dragState.state;
+  const showToast = dragState.showToast;
+
+  // If this is a real uploaded asset (not a CineGen placeholder), it will
+  // be in state.mediaLibrary. Look it up by index.
+  if (state && Array.isArray(state.mediaLibrary) && mediaIndex >= 0 && mediaIndex < state.mediaLibrary.length) {
+    const asset = state.mediaLibrary[mediaIndex];
+    if (asset && asset.url) {
+      // Real asset: insert directly via the pipeline's helper.
+      const { insertAssetIntoTimeline } = await import('./uploadPipeline.js');
+      const dropPercent = dropTarget ? computeDropPercent(dropTarget, e) : undefined;
+      const result = insertAssetIntoTimeline(state, asset, { dropPercent });
+      if (result && result.clip) {
+        state.selectedClipId = result.clip.id;
+        if (showToast) showToast(`Added ${asset.name}`, 'success');
+        // Persist and push undo snapshot
+        try {
+          const { saveProject } = await import('./persistence.js');
+          await saveProject(state);
+        } catch (e) { /* best-effort */ }
+        if (Array.isArray(state.undoStack)) {
+          try {
+            const snap = JSON.parse(JSON.stringify({
+              projectTitle: state.projectTitle,
+              tracks: state.tracks,
+              selectedClipId: state.selectedClipId
+            }));
+            state.undoStack.push(snap);
+            if (state.undoStack.length > 50) state.undoStack.shift();
+            state.redoStack = Array.isArray(state.redoStack) ? [] : state.redoStack;
+          } catch (e) { /* snapshot failure non-fatal */ }
+        }
+        if (typeof window !== 'undefined' && window.renderTimeline) {
+          try { window.renderTimeline(state); } catch (e) { /* best-effort */ }
+        }
+      }
+      cleanupDrag();
+      return;
+    }
+  }
+
+  // Fallback: route through addMediaToTimeline (handles CineGen placeholders,
+  // Pexels assets, etc.). This is what the original commented-out code intended.
+  if (state && typeof addMediaToTimeline === 'function') {
+    addMediaToTimeline(
+      { ...mediaData, mediaType: mediaData.type || 'video' },
+      mediaIndex,
+      state,
+      showToast
+    );
+  }
+  cleanupDrag();
+}
+
+function computeDropPercent(dropTarget, e) {
+  if (!dropTarget || !e) return undefined;
+  const rect = dropTarget.getBoundingClientRect();
+  if (!rect || !rect.width) return undefined;
+  return Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
 }
 
 function highlightTimelineDropZone() {

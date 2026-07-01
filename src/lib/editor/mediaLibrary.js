@@ -611,7 +611,7 @@ export function renderMediaGrid(mediaItems, container, onMediaSelect, showToast,
   // Initialize drag and drop for media items
   if (state) {
     import('./dragDrop-lazy.js').then(({ initializeMediaLibraryDragDrop }) => {
-      initializeMediaLibraryDragDrop(state, container);
+      initializeMediaLibraryDragDrop(state, container, { showToast });
     });
   }
 }
@@ -942,9 +942,26 @@ export function addGeneratedAssetToLibrary(asset, state) {
   return newAsset;
 }
 
-export function handleUpload(showToast) {
-  // Placeholder for upload functionality
-  // DISABLED:   
+export function handleUpload(showToast, state) {
+  // Open a hidden file picker and route the selected file(s) through the
+  // unified upload pipeline (processFileUpload).
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.multiple = true;
+  input.accept = 'video/*,audio/*,image/*,text/*,application/pdf';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+  input.addEventListener('change', async () => {
+    const files = Array.from(input.files || []);
+    document.body.removeChild(input);
+    if (files.length === 0) return;
+    // Lazy-load the pipeline to avoid a circular import
+    const { processFileUpload } = await import('./uploadPipeline.js');
+    for (const file of files) {
+      await processFileUpload(file, { state, showToast });
+    }
+  });
+  input.click();
 }
 
 export function searchMedia(query, mediaItems) {
