@@ -6,27 +6,22 @@ module.exports = {
         "./app/**/*.{js,ts,jsx,tsx}",
         "./components/**/*.{js,ts,jsx,tsx}",
         "./packages/studio/src/**/*.{js,jsx}",
+        "./packages/Open-AI-Design-Agent/packages/design-agent/src/**/*.{js,jsx}",
+        "./packages/Open-Poe-AI/packages/agents/src/**/*.{js,jsx,ts,tsx}",
+        "./packages/Vibe-Workflow/packages/workflow-builder/src/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: '#ffffff',
-                    hover: '#c9ccd1',
+                    DEFAULT: '#22d3ee',
+                    hover: '#06b6d4',
                 },
-                secondary: '#767d88',
-                accent: {
-                    DEFAULT: '#404040',
-                    hover: '#7d848e',
-                },
-                'app-bg': '#000000',
-                'panel-bg': '#030303',
-                'card-bg': '#1a1a1a',
-                'elevated-bg': '#1a1a1a',
-                'header-bg': '#000000',
-                'text-secondary': '#767d88',
-                'text-muted': '#7d848e',
-                'text-dim': '#a7a7a7',
+                'app-bg': '#050505',
+                'panel-bg': '#0a0a0a',
+                'card-bg': '#141414',
+                secondary: '#a1a1aa',
+                muted: '#52525b',
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
@@ -37,8 +32,9 @@ module.exports = {
                 '3xl': '2rem',
             },
             boxShadow: {
+                'glow': '0 0 20px rgba(34, 211, 238, 0.4)',
+                'glow-accent': '0 0 20px rgba(168, 85, 247, 0.4)',
                 '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.8)',
-                '4xl': '0 45px 80px -20px rgba(0, 0, 0, 0.9)',
             }
         },
     },

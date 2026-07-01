@@ -108,7 +108,7 @@
   },
   "packageManager": "pnpm@10.18.3",
   "pnpm": {
-    "trustedDependencies": [
+    "allowedBuiltDependencies": [
       "better-sqlite3",
       "canvas",
       "electron",

@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { WorkflowBuilder } from "workflow-builder";
 import "reactflow/dist/style.css";
 import "react-toastify/dist/ReactToastify.css";
-import "workflow-builder/dist/tailwind.css";
+
 
 const WorkflowUI = ({ workflowId, initialNodeSchemas, initialWorkflowData }) => {
   useEffect(() => {
