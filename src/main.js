@@ -78,6 +78,21 @@ import { initRouter, navigate } from './lib/router.js';
     // Defer onboarding until after render
     setTimeout(() => initOnboarding(), 1000);
 
+    // Wire the muapi wrapper so every generation call can use the stored key
+    const { muapi } = await import('./lib/muapi.js');
+    const { apiKeyCenter } = await import('./lib/services/ApiKeyCenter.js');
+
+    (async () => {
+        const key = await apiKeyCenter.getKey('muapi');
+        muapi.setApiKey(key);
+    })();
+
+    apiKeyCenter.onChange(({ name }) => {
+        if (name === 'muapi') {
+            apiKeyCenter.getKey('muapi').then(k => muapi.setApiKey(k));
+        }
+    });
+
     // Start the 90-second API key prompt (no-op if a key is already saved)
     import('./lib/services/ApiKeyPrompt.js').then(({ startApiKeyPrompt }) => {
       startApiKeyPrompt();

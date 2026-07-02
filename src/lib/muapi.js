@@ -734,87 +734,87 @@ export async function runMotionGraphicsEdit(apiKey, params) {
     return submitAndPoll("motion-graphics-edit", payload, apiKey, params.onRequestId, 900);
 }
 
-const muapi = {
-    generateImage,
-    generateI2I,
-    generateVideo,
-    generateVideoEffect,
-    generateI2V,
-    generateMarketingStudioAd,
-    processV2V,
-    processLipSync,
-    generateAvatar,
-    generateAudio,
-    uploadFile,
-    getUserBalance,
-    getTemplateWorkflows,
-    getUserWorkflows,
-    getPublishedWorkflows,
-    getTemplateAgents,
-    getUserAgents,
-    getPublishedAgents,
-    getUserConversations,
-    createWorkflow,
-    updateWorkflowName,
-    deleteWorkflow,
-    getWorkflowInputs,
-    executeWorkflow,
-    getAllNodeSchemas,
-    getWorkflowData,
-    getNodeSchemas,
-    runSingleNode,
-    deleteNodeRun,
-    getNodeStatus,
-    handleProxyRequest,
-    handleServerSideProxy,
-    calculateDynamicCost,
-    registerAppInterest,
-    getAppInterests,
-    runClipping,
-    runMotionGraphics,
-    runMotionGraphicsEdit,
-    submitOnly,
-    checkStatus,
-    downloadResult
-};
+const muapi = new MuapiClient();
 
 class MuapiClient {
-    async generateImage(params) {
-        return generateImage(null, params);
+    constructor() {
+        this.apiKey = null;
     }
-    async generateVideo(params) {
-        return generateVideo(null, params);
+
+    setApiKey(key) {
+        this.apiKey = key;
     }
-    async generateVideoEffect(params) {
-        return generateVideoEffect(params);
+
+    _resolve(...args) {
+        if (args.length >= 2 && typeof args[0] === 'string') {
+            return [args[0], ...args.slice(1)];
+        }
+        return [this.apiKey, ...args];
     }
-    async generateI2V(params) {
-        return generateI2V(null, params);
+
+    async generateImage(...args) { return generateImage(...this._resolve(...args)); }
+    async generateI2I(...args) { return generateI2I(...this._resolve(...args)); }
+    async generateVideo(...args) { return generateVideo(...this._resolve(...args)); }
+    async generateI2V(...args) { return generateI2V(...this._resolve(...args)); }
+    async generateVideoEffect(...args) {
+        const [apiKey, params] = this._resolve(...args);
+        return generateVideoEffect({ ...params, apiKey });
     }
-    async processV2V(params) {
-        return processV2V(null, params);
+    async generateMarketingStudioAd(...args) { return generateMarketingStudioAd(...this._resolve(...args)); }
+    async processV2V(...args) { return processV2V(...this._resolve(...args)); }
+    async processLipSync(...args) { return processLipSync(...this._resolve(...args)); }
+    async generateAvatar(...args) {
+        const [apiKey, params] = this._resolve(...args);
+        return generateAvatar({ ...params, apiKey });
     }
-    async processLipSync(params) {
-        return processLipSync(null, params);
+    async generateAudio(...args) {
+        const [apiKey, params] = this._resolve(...args);
+        return generateAudio({ ...params, apiKey });
     }
-    async runClipping(params) {
-        return runClipping(null, params);
+    async uploadFile(...args) { return uploadFile(this.apiKey, ...args); }
+    async getUserBalance() { return getUserBalance(this.apiKey); }
+    async getTemplateWorkflows() { return getTemplateWorkflows(this.apiKey); }
+    async getUserWorkflows() { return getUserWorkflows(this.apiKey); }
+    async getPublishedWorkflows() { return getPublishedWorkflows(this.apiKey); }
+    async getTemplateAgents() { return getTemplateAgents(this.apiKey); }
+    async getUserAgents() { return getUserAgents(this.apiKey); }
+    async getPublishedAgents() { return getPublishedAgents(this.apiKey); }
+    async getUserConversations() { return getUserConversations(this.apiKey); }
+    async createWorkflow(payload) { return createWorkflow(this.apiKey, payload); }
+    async updateWorkflowName(workflowId, name) { return updateWorkflowName(this.apiKey, workflowId, name); }
+    async deleteWorkflow(workflowId) { return deleteWorkflow(this.apiKey, workflowId); }
+    async getWorkflowInputs(workflowId) { return getWorkflowInputs(this.apiKey, workflowId); }
+    async executeWorkflow(workflowId, inputs) { return executeWorkflow(this.apiKey, workflowId, inputs); }
+    async getAllNodeSchemas(workflowId) { return getAllNodeSchemas(this.apiKey, workflowId); }
+    async getWorkflowData(workflowId) { return getWorkflowData(this.apiKey, workflowId); }
+    async getNodeSchemas(workflowId) { return getNodeSchemas(this.apiKey, workflowId); }
+    async runSingleNode(workflowId, nodeId, payload) { return runSingleNode(this.apiKey, workflowId, nodeId, payload); }
+    async deleteNodeRun(nodeRunId) { return deleteNodeRun(this.apiKey, nodeRunId); }
+    async getNodeStatus(runId) { return getNodeStatus(this.apiKey, runId); }
+    async handleProxyRequest(prefix, path, method, headers, body) { return handleProxyRequest(prefix, path, method, headers, body, this.apiKey); }
+    async handleServerSideProxy(prefix, request, params) { return handleServerSideProxy(prefix, request, params, this.apiKey); }
+    async calculateDynamicCost(taskName, payload) { return calculateDynamicCost(this.apiKey, taskName, payload); }
+    async registerAppInterest(appName) { return registerAppInterest(this.apiKey, appName); }
+    async getAppInterests() { return getAppInterests(this.apiKey); }
+    async runClipping(...args) { return runClipping(...this._resolve(...args)); }
+    async runMotionGraphics(...args) { return runMotionGraphics(...this._resolve(...args)); }
+    async runMotionGraphicsEdit(...args) { return runMotionGraphicsEdit(...this._resolve(...args)); }
+    async submitOnly(endpoint, payload) { return submitOnly(endpoint, payload, this.apiKey); }
+    async checkStatus(requestId) { return checkStatus(requestId, this.apiKey); }
+    async pollForResult(...args) {
+        let requestId, apiKey, maxAttempts, interval;
+        if (args.length === 1) {
+            requestId = args[0]; apiKey = this.apiKey; maxAttempts = 900; interval = 2000;
+        } else if (args.length === 2) {
+            [requestId, apiKey] = args; maxAttempts = 900; interval = 2000;
+        } else if (typeof args[1] === 'number') {
+            [requestId, maxAttempts, interval] = args; apiKey = this.apiKey;
+        } else {
+            [requestId, apiKey, maxAttempts, interval] = args;
+        }
+        return pollForResult(requestId, apiKey, maxAttempts, interval);
     }
-    async runMotionGraphics(params) {
-        return runMotionGraphics(null, params);
-    }
-    async runMotionGraphicsEdit(params) {
-        return runMotionGraphicsEdit(null, params);
-    }
-    async submitOnly(endpoint, payload) {
-        return submitOnly(endpoint, payload, null);
-    }
-    async checkStatus(requestId) {
-        return checkStatus(requestId, null);
-    }
-    async downloadResult(url) {
-        return downloadResult(url);
-    }
+    async downloadResult(url) { return downloadResult(url); }
 }
 
 // ============================================================================
