@@ -36,12 +36,6 @@ import { SubtitleControls } from './SubtitleControls.jsx';
 import { SubtitleEditorModal } from './modals/SubtitleEditorModal.jsx';
 import { whisperService } from '../services/whisper-client.js';
 
-// Subtitle system integration
-import { SubtitleTimeline } from '../lib/editor/subtitleTimeline.js';
-import { SubtitleControls } from './SubtitleControls.jsx';
-import { SubtitleEditorModal } from './modals/SubtitleEditorModal.jsx';
-import { whisperService } from '../services/whisper-client.js';
-
 // Modal imports - these are vanilla JS modal implementations
 import { EndScreenModal } from './modals/EndScreenModal.jsx';
 import { SaveProjectModal } from './modals/SaveProjectModal.jsx';
@@ -353,6 +347,7 @@ button, input, textarea, select { font: inherit; }
   transition: transform .15s ease, background .15s ease, border-color .15s ease;
 }
 .icon-btn:hover, .top-icon:hover, .mini-btn:hover, .rail-btn:hover, .tool-btn:hover, .clip:hover, .media-item:hover { transform: translateY(-1px); }
+.rail-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(34,211,238,0.4); }
 .icon-btn { width: 40px; height: 40px; border-radius: 12px; }
 .brand-mark {
   width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px;
@@ -363,7 +358,7 @@ button, input, textarea, select { font: inherit; }
 .project-head { text-align: center; }
 .project-head .title { font-size: 16px; font-weight: 700; }
 .project-head .sub { font-size: 10px; color: var(--dim); }
-.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 420px; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 640px; min-width: 0; }
 .top-icon { width: 36px; height: 36px; border-radius: 10px; font-size: 18px; }
 .top-icon.active { border-color: rgba(34,211,238,0.4); background: rgba(34,211,238,0.2); }
 .ready-pill {
@@ -372,10 +367,10 @@ button, input, textarea, select { font: inherit; }
   display: inline-flex; align-items: center; gap: 8px;
 }
 .ready-dot { width: 6px; height: 6px; border-radius: 999px; background: #86efac; }
-.main-grid { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 16px; }
+.main-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(280px, 360px); gap: 16px; }
 .left-col { min-width: 0; }
-.side-col { display: flex; flex-direction: column; gap: 16px; }
-.left-top { display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 16px; margin-bottom: 16px; align-items: stretch; }
+.side-col { display: flex; flex-direction: column; gap: 12px; }
+.left-top { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: 12px; margin-bottom: 12px; align-items: stretch; }
 .preview-card {
   position: relative; overflow: hidden; border-radius: var(--radius-xl); aspect-ratio: 16 / 9;
   border: 1px solid var(--border-soft); background: #000; box-shadow: 0 0 70px rgba(56,189,248,0.14);
@@ -437,18 +432,19 @@ button, input, textarea, select { font: inherit; }
   border-radius: 24px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
   box-shadow: 0 20px 60px rgba(0,0,0,0.35); backdrop-filter: blur(20px);
 }
-.timeline-card { padding: 16px; }
-.side-card { padding: 14px; border-radius: 20px; box-shadow: var(--shadow); }
+.timeline-card { padding: 12px; }
+.side-card { padding: 12px; border-radius: 20px; box-shadow: var(--shadow); }
 .side-card.generate { border-color: rgba(34,211,238,0.2); background: linear-gradient(180deg, rgba(56,189,248,0.08), rgba(17,24,39,0.75)); }
 .card-title { margin-bottom: 12px; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,0.82); }
 .card-title.cyan { color: #bae6fd; }
-.timeline-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.timeline-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .toolbar-left, .tool-group, .pill-row, .floating-rail, .track-actions, .generate-types, .quick-commands { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.toolbar-left { max-width: 100%; overflow-x: auto; }
 .tool-group { gap: 4px; padding: 4px; border-radius: 14px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); }
 .tool-btn, .mini-btn, .command-btn, .rail-btn, .generate-type { border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.72); cursor: pointer; transition: all .15s ease; }
 .tool-btn { width: 32px; height: 32px; border-radius: 8px; font-size: 14px; }
 .tool-btn.active, .generate-type.active, .rail-btn.active { border-color: rgba(34,211,238,0.45); background: rgba(34,211,238,0.22); color: #cffafe; }
-.mini-btn, .command-btn { border-radius: 10px; padding: 8px 12px; font-size: 12px; }
+.mini-btn, .command-btn { border-radius: 10px; padding: 6px 10px; font-size: 11px; }
 .pill-row { gap: 6px; }
 .pill { border-radius: 999px; padding: 7px 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); font-size: 10px; color: rgba(255,255,255,0.55); }
 .timeline-shell { position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--border-soft); background: rgba(0,0,0,0.2); }
@@ -685,7 +681,7 @@ button, input, textarea, select { font: inherit; }
   border-radius: 6px;
 }
 
-@media (max-width: 1180px) { .main-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1180px) { .main-grid { grid-template-columns: 1fr; } .side-col { max-width: 100%; } }
 @media (max-width: 980px) { .top-actions { max-width: none; } .left-top { grid-template-columns: 1fr; } }
 @media (max-width: 860px) {
   .header { flex-direction: column; align-items: stretch; }
@@ -894,41 +890,25 @@ button, input, textarea, select { font: inherit; }
       <aside class="side-card" id="sceneDetectorPanel">
         <div id="sceneDetectorContainer"></div>
       </aside>
-      <aside class="side-card" id="cameraEffectsPanel">
-        <div id="cameraEffectsContainer"></div>
-      </aside>
-      <aside class="side-card generate">
-        <div class="generate-head"><div class="card-title cyan">⚡ Generate</div><div style="color: rgba(255,255,255,0.4)">✕</div></div>
-        <div class="generate-types" id="generateTypes"></div>
-        <textarea class="text-area" id="promptInput" placeholder="A cinematic shot of..."></textarea>
-        <input class="text-input" id="negativeInput" placeholder="Negative prompt" />
-        <div class="select-row">
-          <select class="select-input" id="durationSelect"><option>5s</option><option>8s</option><option>12s</option></select>
-          <select class="select-input" id="aspectSelect"><option>16:9</option><option>9:16</option><option>1:1</option></select>
-          <select class="select-input" id="styleSelect"><option>Cinematic</option><option>Commercial</option><option>Documentary</option></select>
+      <aside class="side-card" id="cinegenResultsPanel" data-tooltip="CineGen AI Tools Results">
+        <div class="card-title">🎨 CineGen Results</div>
+        <div id="cinegenResults" style="font-size: 12px; color: var(--dim); min-height: 60px;">
+          No CineGen tools used yet
         </div>
-        <button class="primary-btn" id="generateBtn" aria-label="Generate a new asset from the prompt settings">⚡ Generate</button>
+        <button class="mini-btn" id="clearCineGenResults" style="margin-top: 8px; width: 100%;">Clear History</button>
       </aside>
-            <aside class="side-card" id="cinegenResultsPanel" data-tooltip="CineGen AI Tools Results">
-              <div class="card-title">🎨 CineGen Results</div>
-              <div id="cinegenResults" style="font-size: 12px; color: var(--dim); min-height: 60px;">
-                No CineGen tools used yet
-              </div>
-              <button class="mini-btn" id="clearCineGenResults" style="margin-top: 8px; width: 100%;">Clear History</button>
-            </aside>
-
-            <aside class="side-card" id="cameraEffectsPanel" data-tooltip="Camera effects and keyframes">
-              <div id="cameraEffectsContainer"></div>
-              <div class="camera-effects-quick">
-                <button class="mini-btn" data-camera-effect="shake">Shake</button>
-                <button class="mini-btn" data-camera-effect="orbit">Orbit</button>
-                <button class="mini-btn" data-camera-effect="hitchcock">Hitchcock</button>
-                <button class="mini-btn" data-camera-effect="pan-left">Pan L</button>
-                <button class="mini-btn" data-camera-effect="pan-right">Pan R</button>
-                <button class="mini-btn" data-camera-effect="tilt-up">Tilt U</button>
-                <button class="mini-btn" data-camera-effect="tilt-down">Tilt D</button>
-              </div>
-            </aside>
+      <aside class="side-card" id="cameraEffectsPanel" data-tooltip="Camera effects and keyframes">
+        <div id="cameraEffectsContainer"></div>
+        <div class="camera-effects-quick">
+          <button class="mini-btn" data-camera-effect="shake">Shake</button>
+          <button class="mini-btn" data-camera-effect="orbit">Orbit</button>
+          <button class="mini-btn" data-camera-effect="hitchcock">Hitchcock</button>
+          <button class="mini-btn" data-camera-effect="pan-left">Pan L</button>
+          <button class="mini-btn" data-camera-effect="pan-right">Pan R</button>
+          <button class="mini-btn" data-camera-effect="tilt-up">Tilt U</button>
+          <button class="mini-btn" data-camera-effect="tilt-down">Tilt D</button>
+        </div>
+      </aside>
       <aside class="side-card generate">
         <div class="generate-head"><div class="card-title cyan" data-tooltip="AI generation panel">⚡ Generate</div><div style="color: rgba(255,255,255,0.4)" data-tooltip="Close generation panel">✕</div></div>
         <div class="generate-types" id="generateTypes"></div>
@@ -2137,7 +2117,7 @@ button, input, textarea, select { font: inherit; }
           e.dataTransfer.dropEffect = 'move';
         });
 
-        lane.addEventListener('drop', (e) => {
+        lane.addEventListener('drop', async (e) => {
           e.preventDefault();
           const rect = lane.getBoundingClientRect();
           const percent = ((e.clientX - rect.left) / rect.width) * 100;
@@ -2860,42 +2840,6 @@ button, input, textarea, select { font: inherit; }
         showToast('Scene detector not available', 'error');
       }
     }
-
-        // Fallback: add sample subtitles
-        let subtitleTrack = state.project.tracks.find(t => t.type === 'subtitle' || t.type === 'text');
-        if (!subtitleTrack) {
-          state.addTrack('Text');
-          subtitleTrack = state.project.tracks.find(t => t.type === 'text');
-        }
-
-        const samples = [
-          { start: 0, end: 3.2, text: "Welcome to this video" },
-          { start: 3.5, end: 6.8, text: "Today we explore new techniques" },
-          { start: 7.2, end: 11.0, text: "Let's begin with the timeline" }
-        ];
-
-        samples.forEach((sub, i) => {
-          subtitleTrack.items.push({
-            id: `subtitle-${Date.now()}-${i}`,
-            name: sub.text,
-            type: 'text',
-            start: sub.start,
-            end: sub.end,
-            text: sub.text,
-            style: { fontSize: 18, color: '#ffffff', background: 'rgba(0,0,0,0.75)' }
-          });
-        });
-
-        renderTracks();
-        
-
-      } catch (err) {
-        console.error('Subtitle error:', err);
-        
-      }
-    }
-
-
 
     async function suggestBRoll() {
   // DISABLED:       
@@ -4714,7 +4658,6 @@ button, input, textarea, select { font: inherit; }
           applyCameraEffect(effect);
         });
       });
-    }
 
       const clearBtn = root.querySelector('#clearCineGenResults');
       if (clearBtn) {
@@ -4724,9 +4667,10 @@ button, input, textarea, select { font: inherit; }
             container.innerHTML = 'No CineGen tools used yet';
           }
           cinegenHistory = [];
-          
+
         });
       }
+    }
 
     function renderAll() {
       initializeDefaultTracks();

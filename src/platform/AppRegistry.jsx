@@ -192,23 +192,6 @@ registry.register({
   component: () => import('../components/cinegen/CineGenStudio.jsx'),
 });
 
-// Source: apps/sendspark + full extracted React App + muapi (real workflows) - Canonical native
-registry.register({
-  id: 'sendspark',
-  name: 'Sendspark',
-  description: 'Video outreach and messaging platform',
-  icon: 'Send',
-  category: 'communication',
-  route: '/sendspark',
-  source: 'native-react',
-  mount: 'react',
-  status: 'complete',
-  features: ['Video messaging', 'Outreach automation', 'Workflow grid', 'Real-time generation', 'Results viewer'],
-  capabilities: ['messaging', 'automation', 'ai', 'media-pipeline'],
-  legacy: false,
-  component: () => import('../apps/sendspark/index.jsx').then(m => m.SendsparkApp()),
-});
-
 // Source: apps/ai-storyboarder + full extracted React 19 (DnD-kit, Zustand, ReactFlow, Recharts, tabs, canvas, stores) - Canonical native
 registry.register({
   id: 'storyboard',

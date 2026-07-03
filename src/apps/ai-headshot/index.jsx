@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import HeadshotPage from './HeadshotPage.js';
+import HeadshotPage from './HeadshotPage.jsx';
 
 export function HeadshotApp() {
   const container = document.createElement('div');

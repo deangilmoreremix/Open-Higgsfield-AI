@@ -33,7 +33,7 @@ export function HeroSection() {
       </div>
 
       <!-- Main Headline with typewriter effect -->
-      <h1 id="hero-headline" class="hero-headline mb-6 leading-tight opacity-0" style="max-width: 100%;">
+      <h1 id="hero-headline" class="hero-headline mb-6 leading-tight" style="max-width: 100%;">
         <span class="text-cyan-400 italic font-black" id="headline-part-1">Create Cinematic AI Videos,</span><br/>
         <span class="text-white font-black" id="headline-part-2">Images, VFX, Commercials,</span><br/>
         <span class="text-cyan-400 italic font-black" id="headline-part-3">Characters, Agents &</span><br/>
@@ -42,12 +42,12 @@ export function HeroSection() {
       </h1>
 
       <!-- Subheadline -->
-      <p class="hero-subheadline text-lg md:text-xl text-gray-300 mb-10 max-w-4xl mx-auto leading-relaxed font-medium opacity-0" style="font-size: clamp(1.125rem, 2.5vw, 1.25rem);">
+      <p class="hero-subheadline text-lg md:text-xl text-gray-300 mb-10 max-w-4xl mx-auto leading-relaxed font-medium" style="font-size: clamp(1.125rem, 2.5vw, 1.25rem);">
         AI Video Agency Studio gives you a complete creative command center with 60+ AI-powered tools for generating videos, images, characters, commercials, cinematic effects, avatars, lip sync, dubbing, storyboards, edits, workflows, agents, and client-ready content packages — all from one organized platform.
       </p>
 
       <!-- Primary CTA with hover effects -->
-      <div class="hero-cta flex flex-col sm:flex-row gap-4 justify-center mb-12 opacity-0">
+      <div class="hero-cta flex flex-col sm:flex-row gap-4 justify-center mb-12">
         <button class="cta-primary px-8 md:px-12 py-4 bg-gradient-to-r from-cyan-400 to-cyan-300 text-[#020205] font-bold text-lg rounded-lg hover:from-cyan-300 hover:to-cyan-200 transition-all duration-300 shadow-2xl shadow-cyan-400/30 hover:shadow-cyan-300/50 hover:scale-105 group relative overflow-hidden">
           <span class="flex items-center justify-center gap-2">
             Start Building My AI Video Agency
@@ -71,7 +71,7 @@ export function HeroSection() {
       </div>
 
       <!-- Social Proof with stagger -->
-      <div class="hero-stats flex flex-wrap justify-center gap-8 md:gap-12 text-sm opacity-0" role="region" aria-labelledby="stats-heading">
+      <div class="hero-stats flex flex-wrap justify-center gap-8 md:gap-12 text-sm" role="region" aria-labelledby="stats-heading">
         <h2 id="stats-heading" class="sr-only">Platform Statistics</h2>
         <div class="stat-item text-center transform hover:scale-110 transition-transform duration-200">
           <div class="text-cyan-400 font-bold text-2xl md:text-3xl mb-1">33</div>
