@@ -14,7 +14,7 @@ import { FiDownload } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 // useRouter removed for native Higgsfield mount (no Next sub-app)
 import { downloadImage, headshotsExamples } from './lib/utils.js';
-import { saveGeneratedAsset } from '../../../lib/assets/assetActions.js';
+import { saveGeneratedAsset } from '../../lib/assets/assetActions.js';
 
 const ASPECT_RATIOS = [
   { label: "1:1 Square", value: "1:1" },

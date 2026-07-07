@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import PersonalizerDialog from '../components/personalizer/PersonalizerDialog';
 
 export function CampaignBuilder() {

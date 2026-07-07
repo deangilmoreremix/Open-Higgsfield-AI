@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PersonalizerDialog from './PersonalizerDialog';
 
 export default function GlobalPersonalizerButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [eventAppId, setEventAppId] = useState(undefined);
+  const [eventMode, setEventMode] = useState(undefined);
+  const [eventTarget, setEventTarget] = useState(undefined);
+
+  useEffect(() => {
+    const handler = (e) => {
+      const detail = e.detail || {};
+      if (detail.appId) setEventAppId(detail.appId);
+      if (detail.mode) setEventMode(detail.mode);
+      if (detail.target) setEventTarget(detail.target);
+      setIsOpen(true);
+    };
+    window.addEventListener('open-personalizer', handler);
+    return () => window.removeEventListener('open-personalizer', handler);
+  }, []);
 
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => { setEventAppId(undefined); setEventMode(undefined); setEventTarget(undefined); setIsOpen(true); }}
         className="fixed bottom-6 right-6 z-40 flex items-center justify-center w-12 h-12 bg-white text-black rounded-full shadow-lg hover:bg-gray-200 transition-all hover:scale-105 active:scale-95 group"
         aria-label="Open AI Personalizer"
         data-tooltip="AI Personalizer — Create personalized content for any video or image project"
@@ -27,7 +42,9 @@ export default function GlobalPersonalizerButton() {
         <PersonalizerDialog
           open={isOpen}
           onClose={() => setIsOpen(false)}
-          appId="ai-video-agency"
+          appId={eventAppId || "ai-video-agency"}
+          mode={eventMode}
+          initialTarget={eventTarget}
         />
       )}
     </>

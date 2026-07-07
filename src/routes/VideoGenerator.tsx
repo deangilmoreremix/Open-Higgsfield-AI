@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PersonalizerDialog from '../components/personalizer/PersonalizerDialog';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase, getVideos, createGenerationJob } from '../lib/supabase-client';

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase-client';
 import { validateTargetName } from '../../hooks/usePersonalizerStore';
 import { visualGenerationService } from '../../lib/personalizer/visualGenerationService';

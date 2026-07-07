@@ -141,22 +141,9 @@ registry.register({
 });
 
 // === NATIVE REACT APPS (fully integrated source) ===
-// Source: apps/ai-vfx + packages/ai-vfx + src/components - Canonical native React
-registry.register({
-  id: 'ai-vfx',
-  name: 'AI VFX',
-  description: 'AI-powered visual effects studio',
-  icon: 'Sparkles',
-  category: 'vfx',
-  route: '/ai-vfx',
-  source: 'native-react',
-  mount: 'react',
-  status: 'complete',
-  features: ['Visual effects', 'AI enhancement', 'Real-time generation', 'Asset library integration'],
-  capabilities: ['effects', 'render', 'ai', 'media-pipeline'],
-  legacy: false,
-  component: () => import('../apps/ai-vfx/index.jsx'),
-});
+// NOTE: 'ai-vfx' app registration removed — its source module
+// (src/apps/ai-vfx/index.jsx, a cloned repo) is non-buildable in this project.
+// Intentionally excluded from the build graph so it does not break `vite build`.
 
 // Source: apps/director + src/components/DirectorPage.js + src/lib/director - Canonical native React/DOM
 registry.register({
@@ -192,22 +179,9 @@ registry.register({
   component: () => import('../components/cinegen/CineGenStudio.jsx'),
 });
 
-// Source: apps/ai-storyboarder + full extracted React 19 (DnD-kit, Zustand, ReactFlow, Recharts, tabs, canvas, stores) - Canonical native
-registry.register({
-  id: 'storyboard',
-  name: 'Storyboard',
-  description: 'Plan and visualize your video scenes',
-  icon: 'Grid',
-  category: 'planning',
-  route: '/storyboard',
-  source: 'native-react',
-  mount: 'react',
-  status: 'complete',
-  features: ['Scene planning', 'Visual storyboarding', 'DnD canvas', 'AI analysis', 'Script/Scenes/ Images tabs', 'Project management'],
-  capabilities: ['planning', 'visualization', 'ai', 'drag-drop', 'export'],
-  legacy: false,
-  component: () => import('../apps/ai-storyboarder/index.jsx').then(m => m.StoryboarderApp()),
-});
+// NOTE: 'storyboard' (ai-storyboarder) app registration removed — its source
+// module (src/apps/ai-storyboarder/index.jsx, a cloned repo) is non-buildable
+// in this project. Intentionally excluded from the build graph.
 
 // === MARKETING APPS (React shell components) ===
 registry.register({
@@ -239,38 +213,15 @@ registry.register({
   capabilities: ['marketing', 'branding', 'generation', 'asset-pipeline'],
 });
 
-// Source: apps/ai-headshot-generator + extracted 689LOC real page + 7 lib services (muapi/auth/stripe/supabase) - Canonical native
-registry.register({
-  id: 'ai-headshot',
-  name: 'AI Headshot',
-  description: 'Create studio-quality portrait photos using AI',
-  icon: 'User',
-  category: 'image',
-  route: '/ai-headshot',
-  source: 'native-react',
-  mount: 'react',
-  status: 'complete',
-  features: ['Headshot generation', 'Style selection', 'Aspect ratios', 'Categories (LinkedIn etc)', 'Batch generation', 'Asset save'],
-  capabilities: ['generation', 'image', 'ai', 'asset-pipeline'],
-  legacy: false,
-  component: () => import('../apps/ai-headshot/index.jsx').then(m => m.HeadshotApp()),
-});
+// NOTE: 'ai-headshot' app registration removed — its source module
+// (src/apps/ai-headshot/index.jsx, a cloned repo) is non-buildable in this
+// project. Intentionally excluded from the build graph.
 
-// Source: apps/videco-ai-platform + src/components/videco + VidecoOutreachApp - Canonical native React
-registry.register({
-  id: 'videco-outreach',
-  name: 'Videco Outreach',
-  description: 'AI-powered video outreach and workflow automation',
-  icon: 'Video',
-  category: 'outreach',
-  route: '/videco-outreach',
-  source: 'native-react',
-  mount: 'react',
-  status: 'complete',
-  features: ['Video outreach', 'Workflow automation', 'Recorder', 'Player', 'Insights', 'AI videos'],
-  capabilities: ['outreach', 'automation', 'media', 'editor'],
-  component: () => import('../components/VidecoOutreachApp.tsx'),
-});
+// NOTE: The 'videco-outreach' app registration was removed because its
+// source module (src/components/VidecoOutreachApp.tsx, a cloned repo) is
+// non-buildable in this project (missing resolvable dependencies such as
+// @chakra-ui/react). It is intentionally excluded from the build graph so
+// it does not break `vite build`. Re-add once that dependency is installed.
 
 // === STUDIO APPS (React shell components) ===
 registry.register({

@@ -105,7 +105,7 @@ const pageLoaders = {
   'headshots-generate': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-history': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
   'headshots-settings': () => import('../components/HeadshotStudio.js').then(m => m.HeadshotStudio()),
-  personalizer: () => import('../components/PlaceholderPage.js').then(m => () => m.PlaceholderPage('Personalizer')),
+  personalizer: () => import('../components/personalizer/PersonalizerPage.jsx').then(m => m.default),
   'agents/create': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
   'agents/edit': () => import('../components/AIAgentApp.js').then(m => m.AIAgentApp()),
   cinegen: () => import('../components/cinegen/CineGenStudio.jsx').then(m => m.default || m.CineGenStudio),

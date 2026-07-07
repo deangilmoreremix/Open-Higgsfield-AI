@@ -78,14 +78,23 @@ import { initRouter, navigate } from './lib/router.js';
     // Defer onboarding until after render
     setTimeout(() => initOnboarding(), 1000);
 
-    // Initialize global personalizer floating button
-    const personalizerBtn = document.createElement('button');
-    personalizerBtn.id = 'global-personalizer-btn';
-    personalizerBtn.className = 'fixed bottom-6 right-6 z-40 flex items-center justify-center w-12 h-12 bg-white text-black rounded-full shadow-lg hover:bg-gray-200 transition-all hover:scale-105 active:scale-95';
-    personalizerBtn.setAttribute('aria-label', 'Open AI Personalizer');
-    personalizerBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>';
-    personalizerBtn.onclick = () => { window.dispatchEvent(new CustomEvent('open-personalizer')); };
-    document.body.appendChild(personalizerBtn);
+    // Initialize global personalizer floating button (React component)
+    // Wrapped in its own try/catch so a failure here (e.g. missing Supabase
+    // env vars causing the dialog module to throw on import) does not crash
+    // the entire app shell.
+    try {
+      const React = await import('react');
+      const { createRoot } = await import('react-dom/client');
+      const { default: GlobalPersonalizerButton } = await import('./components/personalizer/GlobalPersonalizerButton.js');
+      const personalizerHost = document.createElement('div');
+      personalizerHost.id = 'global-personalizer-host';
+      personalizerHost.setAttribute('data-testid', 'global-personalizer-host');
+      document.body.appendChild(personalizerHost);
+      const personalizerRoot = createRoot(personalizerHost);
+      personalizerRoot.render(React.createElement(GlobalPersonalizerButton));
+    } catch (personalizerError) {
+      console.warn('[App] Failed to initialize global personalizer button:', personalizerError?.message || personalizerError);
+    }
     
   } catch (error) {
     console.error('[App] Fatal initialization error:', error);

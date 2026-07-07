@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ApiKeyModal from './ApiKeyModal.jsx';
 import ImageUpload from './ImageUpload.jsx';
 import EffectGrid from './EffectGrid.jsx';
@@ -24,7 +24,6 @@ function App() {
   const [generatedVideo, setGeneratedVideo] = useState(null);
   const [generatedAssetId, setGeneratedAssetId] = useState(null);
   const [error, setError] = useState(null);
-  const assetActionsRef = useRef(null);
 
   useEffect(() => {
     if (apiKey) {
@@ -128,16 +127,6 @@ function App() {
     setGenerationProgress(0);
   };
 
-  useEffect(() => {
-    if (generatedAssetId && assetActionsRef.current) {
-      import('../../../components/shared/AssetActionsBar.js').then(({ createAssetActionsBar }) => {
-        const bar = createAssetActionsBar(generatedAssetId);
-        assetActionsRef.current.innerHTML = '';
-        assetActionsRef.current.appendChild(bar);
-      }).catch(() => {});
-    }
-  }, [generatedAssetId]);
-
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <div className="max-w-6xl mx-auto">
@@ -168,7 +157,6 @@ function App() {
             {generatedVideo && (
               <div className="space-y-4">
                 <VideoPlayer videoUrl={generatedVideo} />
-                <div ref={assetActionsRef} className="asset-actions-container"></div>
               </div>
             )}
           </div>
