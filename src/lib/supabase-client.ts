@@ -4,14 +4,18 @@ import { Database } from './supabase-types';
 const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Missing Supabase environment variables');
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+if (!isSupabaseConfigured) {
+  console.warn('Missing Supabase environment variables — Supabase features will be unavailable.');
 }
 
-export const supabase: SupabaseClient<any> = createClient<any>(
-  supabaseUrl,
-  supabaseAnonKey
-);
+// Guard the client creation: createClient throws on empty credentials, which
+// would break any module that imports this file (e.g. the personalizer UI)
+// even when Supabase is simply not configured in the current environment.
+export const supabase: SupabaseClient<any> = isSupabaseConfigured
+  ? createClient<any>(supabaseUrl, supabaseAnonKey)
+  : (undefined as unknown as SupabaseClient<any>);
 
 // Create a generation job (wrapper for insertion into generation_jobs table)
 export async function createGenerationJob(job: any) {
